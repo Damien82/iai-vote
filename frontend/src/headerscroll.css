@@ -1,0 +1,52 @@
+body{
+    font-family: 'Poppins', sans-serif;
+}
+header.sticky{
+    background: #E3E3E3;
+    padding: 10px 10px;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+}
+header.sticky #logo{
+    color: #000;
+}
+header.sticky #navbar li a {
+    color: #000;
+}
+header.sticky #icon {
+    color: #000;
+}
+header.sticky li a:hover{
+    color: #307DED;
+    border-bottom: 2px solid #307DED;
+} 
+header.sticky #li1 a:hover{
+    color: #307DED;
+    border-bottom: 2px solid #307DED;
+} 
+header.sticky #li2 a:hover{
+    color: #307DED;
+    border-bottom: 2px solid #307DED;
+} 
+header.sticky #li3 a:hover{
+    color: #307DED;
+    border-bottom: 2px solid #307DED;
+} 
+header.sticky #li4 a:hover{
+    color: #307DED;
+    border-bottom: 2px solid #307DED;
+} 
+header.sticky #li5 a:hover{
+    color: #fff;
+}
+
+/*nav a, nav button{
+    position: relative;
+    z-index: 1001;
+}*/
+
+
+@media (max-width:708px){
+header,header.sticky{
+    padding: 10px 20px;
+}
+}

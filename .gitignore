@@ -1,0 +1,15 @@
+# Node
+node_modules/
+dist/
+dist-ssr/
+*.log
+
+# Vercel
+.vercel/
+
+# IDE
+.vscode/
+.DS_Store
+
+# Environnements
+.env
