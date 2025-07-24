@@ -58,7 +58,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/authadmin", authRoutes_admin);
+app.use("/api/authAdmin", authRoutes_admin);
 
 // Lancement du serveur
 app.listen(PORT, () => {
