@@ -138,7 +138,7 @@ const RegisterPage: React.FC = () => {
           Déjà un compte ?{" "}
           <button
             type="button"
-            onClick={() => navigate("/connexion")}
+            onClick={() => navigate("/connexionAD")}
             className="text-blue-600 hover:underline font-semibold"
           >
             Connexion
