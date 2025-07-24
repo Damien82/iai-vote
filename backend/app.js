@@ -42,8 +42,15 @@ registeredAdminsDB.on("error", (err) => console.error("Erreur registered_Admins 
 app.use((req, res, next) => {
   req.db = {
     accesUsers: accesUsersDB,
-    accesAdmins: accesAdminsDB,
     registeredUsers: registeredUsersDB,
+  };
+  next();
+});
+
+// Injection des connexions dans `req.db`
+app.use((req, res, next) => {
+  req.db_admin = {
+    accesAdmins: accesAdminsDB,
     registeredAdmins: registeredAdminsDB
   };
   next();
@@ -51,7 +58,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/auth", authRoutes_admin);
+app.use("/api/authadmin", authRoutes_admin);
 
 // Lancement du serveur
 app.listen(PORT, () => {
