@@ -7,5 +7,5 @@ module.exports = (db_admin) => {
     prenom: String,
   });
 
-  return db_admin.model("AdminReference", AdminSchemaSchema, "allowed");
+  return db_admin.model("AdminReference", AdminSchema, "allowed");
 };
