@@ -16,7 +16,7 @@ exports.registerAdmin = async (req, res) => {
       return res.status(403).json({ message: "Matricule non autorisé." });
     }
 
-    const existingAdmin = await User.findOne({ matricule });
+    const existingAdmin = await Admin.findOne({ matricule });
     if (existingAdmin) {
       return res.status(400).json({ message: "Utilisateur déjà inscrit." });
     }
@@ -53,12 +53,12 @@ exports.loginAdmin = async (req, res) => {
   const Admin = require("../models/Admins")(req.db_admin.registeredAdmins);
 
   try {
-    const Admin = await Admin.findOne({ matricule });
-    if (!Admin) {
+    const admin = await Admin.findOne({ matricule });
+    if (!admin) {
       return res.status(401).json({ message: "Matricule ou mot de passe incorrect." });
     }
 
-    const isMatch = await bcrypt.compare(motDePasse, Admin.motDePasse);
+    const isMatch = await bcrypt.compare(motDePasse, admin.motDePasse);
     if (!isMatch) {
       return res.status(401).json({ message: "Matricule ou mot de passe incorrect." });
     }
