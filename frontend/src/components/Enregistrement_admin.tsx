@@ -28,7 +28,7 @@ const RegisterPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("https://iai-vote.onrender.com/api/auth/registerAdmin", {
+      const response = await fetch("https://iai-vote.onrender.com/api/authAdmin/registerAdmin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ matricule, nom, prenom, classe, motDePasse }),
