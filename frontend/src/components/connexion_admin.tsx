@@ -22,7 +22,7 @@ const LoginForm: React.FC = () => {
         className="bg-white rounded-xl shadow-xl p-8 w-full max-w-md"
       >
         <h2 className="text-3xl font-bold mb-6 text-center text-black">
-          Connexion Admin
+          Connexion
         </h2>
 
         <label className="block mb-4 relative">
