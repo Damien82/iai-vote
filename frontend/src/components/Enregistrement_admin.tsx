@@ -40,7 +40,7 @@ const RegisterPage: React.FC = () => {
         setError(data.message || "Erreur lors de l'inscription");
       } else {
         alert("Inscription réussie !");
-        navigate("/connexion");
+        navigate("/connexionAD");
       }
     } catch (err) {
       setError("Erreur serveur, veuillez réessayer plus tard.");
