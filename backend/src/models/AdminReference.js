@@ -1,4 +1,4 @@
-module.exports = (db) => {
+module.exports = (db_admin) => {
   const mongoose = require("mongoose");
 
   const AdminSchema = new mongoose.Schema({
@@ -7,5 +7,5 @@ module.exports = (db) => {
     prenom: String,
   });
 
-  return db.model("AdminReference", AdminSchemaSchema, "allowed");
+  return db_admin.model("AdminReference", AdminSchemaSchema, "allowed");
 };

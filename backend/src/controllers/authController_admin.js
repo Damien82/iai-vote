@@ -7,8 +7,8 @@ const JWT_SECRET = process.env.JWT_SECRET || "tonSecretJwtIci";
 exports.registerAdmin = async (req, res) => {
   const { matricule, nom, prenom, classe, motDePasse } = req.body;
 
-  const AllowedAdmin = require("../models/AdminReference")(req.db.accesAdmins);
-  const Admin = require("../models/Admins")(req.db.registeredAdmins);
+  const AllowedAdmin = require("../models/AdminReference")(req.db_admin.accesAdmins);
+  const Admin = require("../models/Admins")(req.db_admin.registeredAdmins);
 
   try {
     const allowedAdmin = await AllowedAdmin.findOne({ matricule });
@@ -50,7 +50,7 @@ exports.registerAdmin = async (req, res) => {
 exports.loginAdmin = async (req, res) => {
   const { matricule, motDePasse } = req.body;
 
-  const Admin = require("../models/Admins")(req.db.registeredAdmins);
+  const Admin = require("../models/Admins")(req.db_admin.registeredAdmins);
 
   try {
     const Admin = await Admin.findOne({ matricule });
