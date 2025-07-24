@@ -49,17 +49,13 @@ app.use((req, res, next) => {
     accesUsers: accesUsersDB,
     registeredUsers: registeredUsersDB,
   };
-  next();
-});
-
-// Injection des connexions dans `req.db`
-app.use((req, res, next) => {
   req.db_admin = {
     accesAdmins: accesAdminsDB,
     registeredAdmins: registeredAdminsDB
   };
   next();
 });
+
 
 // Routes
 app.use("/api/auth", authRoutes);
