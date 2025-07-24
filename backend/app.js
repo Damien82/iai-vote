@@ -18,7 +18,6 @@ const PORT = process.env.PORT || 5000;
 app.use(cors({
   origin: ['https://iai-vote-v12.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
 }));
 
 app.use(express.json());
