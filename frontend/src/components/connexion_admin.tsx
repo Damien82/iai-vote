@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faLock, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -7,85 +8,103 @@ const LoginForm: React.FC = () => {
   const [matricule, setMatricule] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Matricule: ${matricule}\nMot de passe: ${password}`);
+    setError(null);
+
+    try {
+      const response = await fetch("https://iai-vote.onrender.com/api/auth/loginAdmin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ matricule, motDePasse: password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Erreur lors de la connexion");
+        return;
+      }
+
+      login(data.token, {
+        nom: data.nom,
+        prenom: data.prenom,
+        matricule: data.matricule,
+      });
+
+      navigate("/");
+    } catch (err) {
+      setError("Erreur serveur, réessayez plus tard.");
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-200 p-6">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-xl shadow-xl p-8 w-full max-w-md"
-      >
-        <h2 className="text-3xl font-bold mb-6 text-center text-black">
-          Connexion
-        </h2>
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white rounded shadow relative">
+      <h2 className="text-2xl mb-6 text-center font-bold">Connexion</h2>
 
-        <label className="block mb-4 relative">
-          <span className="text-black font-semibold mb-1 block">Matricule</span>
-          <FontAwesomeIcon
-            icon={faEnvelope}
-            className="absolute left-3 top-[45px] text-gray-400"
-          />
-          <input
-            type="text"
-            required
-            value={matricule}
-            onChange={(e) => setMatricule(e.target.value)}
-            placeholder="Entrez votre matricule"
-            className="w-full pl-10 pr-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </label>
+      <label className="block mb-4 relative">
+        <FontAwesomeIcon
+          icon={faEnvelope}
+          className="absolute left-3 top-[18px] text-gray-400"
+        />
+        <input
+          type="text"
+          placeholder="Matricule"
+          value={matricule}
+          onChange={(e) => setMatricule(e.target.value)}
+          required
+          className="mb-4 w-full p-3 pl-10 border rounded"
+        />
+      </label>
 
-        <label className="block mb-4 relative">
-          <span className="text-black font-semibold mb-1 block">
-            Mot de passe
-          </span>
-          <FontAwesomeIcon
-            icon={faLock}
-            className="absolute left-3 top-[45px] text-gray-400"
-          />
-          <input
-            type={showPassword ? "text" : "password"}
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Votre mot de passe"
-            className="w-full pl-10 pr-12 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-[45px] text-black font-semibold focus:outline-none"
-            aria-label={showPassword ? "Cacher le mot de passe" : "Afficher le mot de passe"}
-          >
-            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-          </button>
-        </label>
-
+      <label className="block mb-4 relative">
+        <FontAwesomeIcon
+          icon={faLock}
+          className="absolute left-3 top-[18px] text-gray-400"
+        />
+        <input
+          type={showPassword ? "text" : "password"}
+          placeholder="Mot de passe"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className="mb-4 w-full p-3 pl-10 border rounded"
+        />
         <button
-          type="submit"
-          className="w-full bg-blue-500 text-white font-bold py-3 rounded-md hover:bg-blue-700 transition-colors"
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-3 top-[18px] text-gray-600 focus:outline-none"
+          aria-label={showPassword ? "Cacher le mot de passe" : "Afficher le mot de passe"}
         >
-          Se connecter
+          <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
         </button>
+      </label>
 
-        <p className="mt-6 text-center text-sm text-gray-700">
-          Pas encore de compte ?{" "}
-          <button
-            type="button"
-            onClick={() => navigate("/EnregistrementAD")}
-            className="text-blue-600 hover:underline font-semibold"
-          >
-            S'inscrire
-          </button>
-        </p>
-      </form>
-    </div>
+      {error && <p className="mb-4 text-red-600 font-semibold">{error}</p>}
+
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700 transition"
+      >
+        Se connecter
+      </button>
+
+      <p className="mt-6 text-center text-sm text-gray-700">
+        Pas encore de compte ?{" "}
+        <button
+          type="button"
+          onClick={() => navigate("/Enregistrement")}
+          className="text-blue-600 hover:underline font-semibold"
+        >
+          S'inscrire
+        </button>
+      </p>
+    </form>
   );
 };
 
