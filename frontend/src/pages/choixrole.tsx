@@ -21,7 +21,7 @@ const choixrole: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-full bg-gray-200 flex flex-col justify-center items-center px-6">
+    <div className=" sm:py-5 h-screen w-full bg-gray-200 flex flex-col justify-center items-center px-6">
       <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
         Bienvenue sur la plateforme IAI-vote !
       </h2>
