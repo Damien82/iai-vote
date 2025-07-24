@@ -16,9 +16,14 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: ['https://iai-vote-v12.vercel.app'],
+  origin: [
+    'http://localhost:5173',           // pour le dev local
+    'https://iai-vote-v12.vercel.app'  // pour le frontend en ligne
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
 }));
+
 
 app.use(express.json());
 
