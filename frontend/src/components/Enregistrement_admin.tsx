@@ -55,7 +55,7 @@ const RegisterPage: React.FC = () => {
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center">Inscription</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Inscription Admin</h2>
 
         <label className="block mb-4 relative">
           <FontAwesomeIcon icon={faIdBadge} className="absolute left-3 top-[18px] text-gray-400" />

@@ -45,7 +45,7 @@ const LoginForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white rounded shadow relative">
-      <h2 className="text-2xl mb-6 text-center font-bold">Connexion</h2>
+      <h2 className="text-2xl mb-6 text-center font-bold">Connexion Admin</h2>
 
       <label className="block mb-4 relative">
         <FontAwesomeIcon
@@ -98,7 +98,7 @@ const LoginForm: React.FC = () => {
         Pas encore de compte ?{" "}
         <button
           type="button"
-          onClick={() => navigate("/Enregistrement")}
+          onClick={() => navigate("/EnregistrementAD")}
           className="text-blue-600 hover:underline font-semibold"
         >
           S'inscrire
