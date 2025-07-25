@@ -10,7 +10,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require("./src/routes/authRoutes");
 const authRoutes_admin = require("./src/routes/authRoutes_admin");
-const verifyAdminRoute = require("./src/routes/verifyAdmin");
+const verifyAdminRoute = require("./src/routes/authRoutes_admin");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
