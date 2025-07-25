@@ -14,7 +14,7 @@ const RequireUser = ({ children }: RequireUserProps) => {
     const checkUserAccess = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        navigate("/unauthorized");
+        navigate("/unauthorizedAD");
         return;
       }
 
@@ -22,7 +22,7 @@ const RequireUser = ({ children }: RequireUserProps) => {
       const matricule = decodedToken?.matricule;
 
       if (!matricule) {
-        navigate("/unauthorized");
+        navigate("/unauthorizedAD");
         return;
       }
 
@@ -37,14 +37,14 @@ const RequireUser = ({ children }: RequireUserProps) => {
         });
 
         if (!response.ok) {
-          navigate("/unauthorized");
+          navigate("/unauthorizedAD");
           return;
         }
 
         setLoading(false); // ✅ On arrête le chargement si ok
       } catch (err) {
         console.error("Erreur réseau :", err);
-        navigate("/unauthorized");
+        navigate("/unauthorizedAD");
       }
     };
 
