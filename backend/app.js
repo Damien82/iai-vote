@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require("./src/routes/authRoutes");
 const authRoutes_admin = require("./src/routes/authRoutes_admin");
+const verifyAdminRoute = require("./src/routes/verifyAdmin");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -64,6 +65,7 @@ app.use((req, res, next) => {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/authAdmin", authRoutes_admin);
+app.use("/api", verifyAdminRoute);
 
 // Lancement du serveur
 app.listen(PORT, () => {

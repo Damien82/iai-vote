@@ -5,6 +5,9 @@ import Vote from "./pages/vote";
 import "./assets/fonts/font.css";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
+import RequireAdmin from "./components/RequireAdmin";
+import Dashboard from "./pages/Dashboard";
+import Unauthorized from "./pages/Unauthorized.tsx";
 import Enregistrement from "./pages/Enregistrement_users";
 import Connexion from "./pages/Connexion_users.tsx";
 import ConnexionAD from "./pages/connexion_admin.js";
@@ -23,6 +26,7 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
+        <Route path="/Dashboard" element={<RequireAdmin><Dashboard /></RequireAdmin>} />
         <Route path="/vote" element={<PrivateRoute><Vote /></PrivateRoute>} />
         <Route path="/choixrole" element={<Choixrole />} />
         <Route path="/Connexion" element={<Connexion />} />
@@ -30,6 +34,7 @@ const App: React.FC = () => {
         <Route path="/EnregistrementAD" element={<EnregistrementAD />} />
         <Route path="/results" element={<PrivateRoute><Progression /></PrivateRoute>} />
         <Route path="/Enregistrement" element={<Enregistrement />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>
 
       {/* ✅ Ajoute ici le composant Analytics */}
