@@ -1,13 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import RequireAdmin from "./components/RequireAdmin";
+import Unauthorized from "./pages/Unauthorized.tsx";
 import Home from "./pages/home";
 import Vote from "./pages/vote";
 import "./assets/fonts/font.css";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
-import RequireAdmin from "./components/RequireAdmin";
 import Dashboard from "./pages/Dashboard";
-import Unauthorized from "./pages/Unauthorized.tsx";
 import Enregistrement from "./pages/Enregistrement_users";
 import Connexion from "./pages/Connexion_users.tsx";
 import ConnexionAD from "./pages/connexion_admin.js";
@@ -26,7 +26,7 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
-        <Route path="/Dashboard" element={<RequireAdmin><Dashboard /></RequireAdmin>} />
+        <Route path="/Dashboard" element={<PrivateRoute><RequireAdmin><Dashboard /></RequireAdmin></PrivateRoute>} />
         <Route path="/vote" element={<PrivateRoute><Vote /></PrivateRoute>} />
         <Route path="/choixrole" element={<Choixrole />} />
         <Route path="/Connexion" element={<Connexion />} />

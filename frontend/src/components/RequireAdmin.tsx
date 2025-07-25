@@ -1,6 +1,7 @@
 // src/components/RequireAdmin.tsx
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Loader from "./Loader"; // ✅ Assure-toi que ce fichier existe
 
 interface RequireAdminProps {
   children: ReactNode;
@@ -8,6 +9,7 @@ interface RequireAdminProps {
 
 const RequireAdmin = ({ children }: RequireAdminProps) => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // ✅ état de chargement
 
   useEffect(() => {
     const checkAdminAccess = async () => {
@@ -37,7 +39,10 @@ const RequireAdmin = ({ children }: RequireAdminProps) => {
 
         if (!response.ok) {
           navigate("/unauthorized");
+          return;
         }
+
+        setLoading(false); // ✅ On arrête le chargement si ok
       } catch (err) {
         console.error("Erreur réseau :", err);
         navigate("/unauthorized");
@@ -46,6 +51,8 @@ const RequireAdmin = ({ children }: RequireAdminProps) => {
 
     checkAdminAccess();
   }, [navigate]);
+
+  if (loading) return <Loader />; // ✅ Affichage du loader pendant la vérif
 
   return <>{children}</>;
 };
