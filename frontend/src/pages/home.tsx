@@ -45,7 +45,7 @@ const HomePage: React.FC = () => {
                   </p>
                   <Button
                     onClick={() => navigate("/vote")}
-                    className="!rounded-button whitespace-nowrap bg-white text-gray-900 hover:bg-gray-100 transform hover:scale-105 hover:shadow-lg active:scale-95"
+                    className="!rounded-button whitespace-nowrap bg-white text-gray-900 hover:bg-blue-200 transform hover:scale-105 hover:shadow-lg active:scale-95"
                   >
                     Commencer à Voter
                     <FontAwesomeIcon icon={faArrowRight} className="ml-2" />

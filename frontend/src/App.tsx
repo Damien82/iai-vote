@@ -1,7 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import RequireAdmin from "./components/RequireAdmin";
+import RequireUser from "./components/RequireUser";
 import Unauthorized from "./pages/Unauthorized.tsx";
+import UnauthorizedAD from "./pages/Unauthorized-admin.tsx";
 import Home from "./pages/home";
 import Vote from "./pages/vote";
 import "./assets/fonts/font.css";
@@ -27,7 +29,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
         <Route path="/Dashboard" element={<PrivateRoute><RequireAdmin><Dashboard /></RequireAdmin></PrivateRoute>} />
-        <Route path="/vote" element={<PrivateRoute><Vote /></PrivateRoute>} />
+        <Route path="/vote" element={<PrivateRoute><RequireUser><Vote /></RequireUser></PrivateRoute>} />
         <Route path="/choixrole" element={<Choixrole />} />
         <Route path="/Connexion" element={<Connexion />} />
         <Route path="/ConnexionAD" element={<ConnexionAD />} />
@@ -35,6 +37,7 @@ const App: React.FC = () => {
         <Route path="/results" element={<PrivateRoute><Progression /></PrivateRoute>} />
         <Route path="/Enregistrement" element={<Enregistrement />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/unauthorizedAD" element={<UnauthorizedAD />} />
       </Routes>
 
       {/* ✅ Ajoute ici le composant Analytics */}

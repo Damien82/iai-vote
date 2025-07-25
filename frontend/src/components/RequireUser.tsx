@@ -2,16 +2,16 @@ import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loader from "./Loader"; // ✅ Assure-toi que ce fichier existe
 
-interface RequireAdminProps {
+interface RequireUserProps {
   children: ReactNode;
 }
 
-const RequireAdmin = ({ children }: RequireAdminProps) => {
+const RequireUser = ({ children }: RequireUserProps) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true); // ✅ état de chargement
 
   useEffect(() => {
-    const checkAdminAccess = async () => {
+    const checkUserAccess = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
         navigate("/unauthorized");
@@ -27,7 +27,7 @@ const RequireAdmin = ({ children }: RequireAdminProps) => {
       }
 
       try {
-        const response = await fetch("https://iai-vote.onrender.com/api/verify-admin", {
+        const response = await fetch("https://iai-vote.onrender.com/api/verify-user", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -48,7 +48,7 @@ const RequireAdmin = ({ children }: RequireAdminProps) => {
       }
     };
 
-    checkAdminAccess();
+    checkUserAccess();
   }, [navigate]);
 
   if (loading) return <Loader />; // ✅ Affichage du loader pendant la vérif
@@ -56,4 +56,4 @@ const RequireAdmin = ({ children }: RequireAdminProps) => {
   return <>{children}</>;
 };
 
-export default RequireAdmin;
+export default RequireUser;
