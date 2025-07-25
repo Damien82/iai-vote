@@ -63,13 +63,14 @@ app.use((req, res, next) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/authAdmin", authRoutes_admin);
 
-// ✅ Routes protégées
-app.get("/dashboard", isAdmin, (req, res) => {
-  res.status(200).json({ message: "Bienvenue sur le dashboard admin", nom: req.admin?.nom || null });
+// Route pour les ADMIN uniquement
+app.get("/dashboard", verifyRole("admin"), (req, res) => {
+  res.json({ message: "Bienvenue sur le dashboard admin", nom: req.user.nom });
 });
 
-app.get("/vote", isUser, (req, res) => {
-  res.status(200).json({ message: "Bienvenue sur la page de vote", nom: req.user?.nom || null });
+// Route pour les UTILISATEURS uniquement
+app.get("/vote", verifyRole("user"), (req, res) => {
+  res.json({ message: "Bienvenue sur la page de vote utilisateur", nom: req.user.nom });
 });
 
 // Lancement du serveur
