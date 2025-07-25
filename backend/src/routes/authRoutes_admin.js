@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { registerAdmin, loginAdmin } = require("../controllers/authController_admin");
+const { registerAdmin, loginAdmin } = require("../controllers/authController");
 
 // Route inscription
 router.post("/registerAdmin", registerAdmin);
