@@ -75,3 +75,24 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
+
+//== ROUTE:POST /api/verifyUser ====
+exports.verifyUser = async (req, res) => {
+  const { matricule } = req.body;
+  if (!matricule) return res.status(400).json({ message: "Matricule requis" });
+
+  const User = require("../models/Users")(req.db.registeredUsers);
+
+  try {
+    const user = await User.findOne({ matricule });
+
+    if (!user) {
+      return res.status(403).json({ message: "Accès refusé" });
+    }
+
+    return res.status(200).json({ message: "Utilisateur confirmé" });
+  } catch (err) {
+    console.error("Erreur de vérification utilisateur :", err);
+    return res.status(500).json({ message: "Erreur serveur" });
+  }
+};
