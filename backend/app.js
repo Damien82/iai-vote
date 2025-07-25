@@ -64,10 +64,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/authAdmin", authRoutes_admin);
 
 // Route pour les ADMIN uniquement
-app.get("/dashboard", verifyRole("admin"), (req, res) => {
-  res.json({ message: "Bienvenue sur le dashboard admin", nom: req.user.nom });
+router.get("/dashboard", verifyRole("admin"), (req, res) => {
+  res.send("Hello admin");
 });
-
 // Route pour les UTILISATEURS uniquement
 app.get("/vote", verifyRole("user"), (req, res) => {
   res.json({ message: "Bienvenue sur la page de vote utilisateur", nom: req.user.nom });

@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const verifyToken = require("../middlewares/authMiddleware");
+const verifyRole = require("../middleware/verifyRole");
 
-router.get("/profile", verifyToken, (req, res) => {
-  res.json({
-    message: "Accès autorisé à la route protégée",
-    admin: req.admin,
-  });
+router.post("/secure-route", verifyRole("admin"), (req, res) => {
+  res.json({ message: "Accès admin confirmé !" });
 });
 
 module.exports = router;
