@@ -1,37 +1,62 @@
-// src/middleware/verifyRole.js
-
 const jwt = require("jsonwebtoken");
+const AdminModel = require("../models/Admin");
+const UserModel = require("../models/User");
+
 const SECRET = process.env.JWT_SECRET || "votre_jwt_secret";
 
-module.exports = function verifyRole(expectedRole) {
-  return async function (req, res, next) {
-    const authHeader = req.headers["authorization"];
-    if (!authHeader) return res.status(401).json({ message: "Token manquant" });
+// Middleware pour vérifier l'accès admin
+function isAdmin(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) return res.status(401).json({ message: "Token manquant" });
 
-    const token = authHeader.split(" ")[1];
-    if (!token) return res.status(401).json({ message: "Token mal formaté" });
+  const token = authHeader.split(" ")[1];
+  if (!token) return res.status(401).json({ message: "Token mal formaté" });
 
-    try {
-      const decoded = jwt.verify(token, SECRET);
-      const matricule = decoded.matricule;
+  try {
+    const decoded = jwt.verify(token, SECRET);
+    const matricule = decoded.matricule;
 
-      // Recherche admin
-      const admin = await req.db_admin.registeredAdmins.collection("admins").findOne({ matricule });
-      if (expectedRole === "admin" && admin) {
-        req.user = { ...decoded, role: "admin" };
-        return next();
-      }
+    AdminModel.findOne({ matricule })
+      .then((admin) => {
+        if (!admin) return res.status(403).json({ message: "Accès refusé : admin uniquement" });
+        req.admin = decoded;
+        next();
+      })
+      .catch((err) =>
+        res.status(500).json({ message: "Erreur serveur admin", error: err.message })
+      );
+  } catch {
+    return res.status(403).json({ message: "Token invalide ou expiré" });
+  }
+}
 
-      // Recherche user
-      const user = await req.db.registeredUsers.collection("users").findOne({ matricule });
-      if (expectedRole === "user" && user) {
-        req.user = { ...decoded, role: "user" };
-        return next();
-      }
+// Middleware pour vérifier l'accès user simple
+function isUser(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) return res.status(401).json({ message: "Token manquant" });
 
-      return res.status(403).json({ message: "Accès refusé" });
-    } catch (err) {
-      return res.status(403).json({ message: "Token invalide ou expiré" });
-    }
-  };
+  const token = authHeader.split(" ")[1];
+  if (!token) return res.status(401).json({ message: "Token mal formaté" });
+
+  try {
+    const decoded = jwt.verify(token, SECRET);
+    const matricule = decoded.matricule;
+
+    UserModel.findOne({ matricule })
+      .then((user) => {
+        if (!user) return res.status(403).json({ message: "Accès refusé : utilisateur uniquement" });
+        req.user = decoded;
+        next();
+      })
+      .catch((err) =>
+        res.status(500).json({ message: "Erreur serveur user", error: err.message })
+      );
+  } catch {
+    return res.status(403).json({ message: "Token invalide ou expiré" });
+  }
+}
+
+module.exports = {
+  isAdmin,
+  isUser,
 };

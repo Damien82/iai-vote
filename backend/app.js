@@ -10,7 +10,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require("./src/routes/authRoutes");
 const authRoutes_admin = require("./src/routes/authRoutes_admin");
-const { isAdmin, isUser } = require("./src/middlewares/authMiddleware"); // ✅ Import des middlewares de rôle
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -24,6 +23,8 @@ app.use(cors({
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
+
+
 app.use(express.json());
 
 // Connexion à la base `acces_users`
@@ -59,18 +60,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes Auth
+
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/authAdmin", authRoutes_admin);
-
-// Route pour les ADMIN uniquement
-router.get("/dashboard", verifyRole("admin"), (req, res) => {
-  res.send("Hello admin");
-});
-// Route pour les UTILISATEURS uniquement
-app.get("/vote", verifyRole("user"), (req, res) => {
-  res.json({ message: "Bienvenue sur la page de vote utilisateur", nom: req.user.nom });
-});
 
 // Lancement du serveur
 app.listen(PORT, () => {

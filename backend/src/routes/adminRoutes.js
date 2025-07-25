@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const verifyRole = require("../middleware/verifyRole");
+const verifyToken = require("../middlewares/authMiddleware_admin");
 
-// Route sécurisée accessible uniquement aux admins
-router.post("/dashboard", verifyRole("admin"), (req, res) => {
-  res.json({ message: "Bienvenue sur le tableau de bord admin", user: req.user });
+router.get("/profile", verifyToken, (req, res) => {
+  res.json({
+    message: "Accès autorisé à la route protégée",
+    admin: req.admin,
+  });
 });
+
 module.exports = router;
