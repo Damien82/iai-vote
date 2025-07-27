@@ -1,15 +1,15 @@
 const express = require('express');
-import {
-  getPartis,
+const router = express.Router();
+const upload = require('../middlewares/upload');
+const {
+  getAllPartis,
   createParti,
   updateParti,
   deleteParti,
-} from '../controllers/partiController.js';
-import upload from '../middlewares/upload.js';
+} = require('../controllers/partiController');
 
-const router = express.Router();
-
-router.get('/', getPartis);
+// Routes API
+router.get('/', getAllPartis);
 router.post('/', upload.single('image'), createParti);
 router.put('/:id', upload.single('image'), updateParti);
 router.delete('/:id', deleteParti);
