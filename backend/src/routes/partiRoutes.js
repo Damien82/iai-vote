@@ -1,4 +1,4 @@
-import express from 'express';
+const express = require('express');
 import {
   getPartis,
   createParti,
@@ -14,4 +14,4 @@ router.post('/', upload.single('image'), createParti);
 router.put('/:id', upload.single('image'), updateParti);
 router.delete('/:id', deleteParti);
 
-export default router;
+module.exports = router;
