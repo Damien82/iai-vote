@@ -68,7 +68,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/authAdmin", authRoutes_admin);
 app.use("/api", verifyAdminRoute);
 app.use("/api", verifyUserRoute);
-app.use('/api/partis', require('./routes/partiRoutes'));
+app.use('/api/partis', require('../src/routes/partiRoutes'));
 
 // Lancement du serveur
 app.listen(PORT, () => {
