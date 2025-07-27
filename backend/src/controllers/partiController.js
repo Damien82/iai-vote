@@ -1,41 +1,63 @@
-const Parti = require('../models/Parti');
+const cloudinary = require('../utils/cloudinary');
+const streamifier = require('streamifier');
 
 exports.getAllPartis = async (req, res) => {
-  const partis = await Parti.find();
+  const Parti = require('../models/Parti')(req.db_partis.partis);
+  const partis = await Parti.find().sort({ nom: 1 });
   res.json(partis);
 };
 
-exports.createParti = async (req, res) => {
-  const { nom, proprietaire } = req.body;
-  const imageUrl = req.file?.path;
+exports.addParti = async (req, res) => {
+  try {
+    const Parti = require('../models/Parti')(req.db_partis.partis);
+    const { nom, proprietaire } = req.body;
+    const file = req.file;
 
-  if (!nom || !proprietaire || !imageUrl) {
-    return res.status(400).json({ message: "Tous les champs sont requis" });
+    if (!file) return res.status(400).json({ error: "Image requise" });
+
+    const streamUpload = (req) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream((error, result) => {
+          if (result) resolve(result);
+          else reject(error);
+        });
+        streamifier.createReadStream(file.buffer).pipe(stream);
+      });
+    };
+
+    const result = await streamUpload(req);
+
+    const nouveauParti = new Parti({
+      nom,
+      proprietaire,
+      imageUrl: result.secure_url
+    });
+
+    await nouveauParti.save();
+    res.status(201).json(nouveauParti);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erreur lors de l'ajout" });
   }
-
-  const nouveauParti = new Parti({ nom, proprietaire, imageUrl });
-  await nouveauParti.save();
-  res.status(201).json(nouveauParti);
 };
 
 exports.updateParti = async (req, res) => {
-  const { id } = req.params;
+  const Parti = require('../models/Parti')(req.db_partis.partis);
   const { nom, proprietaire } = req.body;
-  const imageUrl = req.file?.path;
+  const { id } = req.params;
+  const update = { nom, proprietaire };
+  if (req.file) {
+    const result = await cloudinary.uploader.upload_stream().end(req.file.buffer);
+    update.imageUrl = result.secure_url;
+  }
 
-  const parti = await Parti.findById(id);
-  if (!parti) return res.status(404).json({ message: "Parti non trouvé" });
-
-  parti.nom = nom || parti.nom;
-  parti.proprietaire = proprietaire || parti.proprietaire;
-  if (imageUrl) parti.imageUrl = imageUrl;
-
-  await parti.save();
-  res.json(parti);
+  const updated = await Parti.findByIdAndUpdate(id, update, { new: true });
+  res.json(updated);
 };
 
 exports.deleteParti = async (req, res) => {
+  const Parti = require('../models/Parti')(req.db_partis.partis);
   const { id } = req.params;
   await Parti.findByIdAndDelete(id);
-  res.json({ message: "Parti supprimé" });
+  res.json({ message: "Parti supprimé avec succès" });
 };

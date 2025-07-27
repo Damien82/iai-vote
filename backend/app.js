@@ -49,6 +49,11 @@ const registeredAdminsDB = mongoose.createConnection(process.env.DB_URI_REGISTER
 registeredAdminsDB.on("connected", () => console.log("Connexion à registered_Admins OK"));
 registeredAdminsDB.on("error", (err) => console.error("Erreur registered_Admins :", err));
 
+// Connexion à la base `partis`
+const partisDB = mongoose.createConnection(process.env.DB_URI_PARTIS);
+partisDB.on("connected", () => console.log("Connexion à partis OK"));
+partisDB.on("error", (err) => console.error("Erreur partis :", err));
+
 // Injection des connexions dans `req.db`
 app.use((req, res, next) => {
   req.db = {
@@ -58,6 +63,9 @@ app.use((req, res, next) => {
   req.db_admin = {
     accesAdmins: accesAdminsDB,
     registeredAdmins: registeredAdminsDB
+  };
+    req.db_partis = {
+    partis: partisDB
   };
   next();
 });

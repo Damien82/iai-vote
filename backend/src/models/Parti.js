@@ -1,9 +1,15 @@
-const mongoose = require('mongoose');
+module.exports = (db_partis) => {
+  if (db_partis.models.PartisInfos) {
+    return db_partis.models.PartisInfos;
+  }
 
-const PartiSchema = new mongoose.Schema({
-  nom: { type: String, required: true },
-  proprietaire: { type: String, required: true },
-  imageUrl: { type: String, required: true },
-}, { timestamps: true });
+  const mongoose = require('mongoose');
 
-module.exports = mongoose.model("Parti", PartiSchema);
+  const PartiSchema = new mongoose.Schema({
+    nom: { type: String, required: true, trim: true },
+    proprietaire: { type: String, required: true, trim: true },
+    imageUrl: { type: String, required: true },
+  });
+
+  return db_partis.model('PartiInfos', PartiSchema);
+};
