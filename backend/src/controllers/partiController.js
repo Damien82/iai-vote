@@ -7,7 +7,7 @@ exports.getAllPartis = async (req, res) => {
   res.json(partis);
 };
 
-exports.addParti = async (req, res) => {
+exports.createParti = async (req, res) => {
   try {
     const Parti = require('../models/Parti')(req.db_partis.partis);
     const { nom, proprietaire } = req.body;

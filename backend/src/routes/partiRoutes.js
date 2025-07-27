@@ -1,17 +1,17 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const upload = require('../middlewares/upload');
+const upload = require("../middlewares/upload");
 const {
-  getAllPartis,
   createParti,
+  getAllPartis,
   updateParti,
   deleteParti,
-} = require('../controllers/partiController');
+} = require("../controllers/partiController");
 
-// Routes API
-router.get('/', getAllPartis);
-router.post('/', upload.single('image'), createParti);
-router.put('/:id', upload.single('image'), updateParti);
-router.delete('/:id', deleteParti);
+// ✅ Toutes ces fonctions doivent être bien définies
+router.post("/", upload.single("image"), createParti);
+router.get("/", getAllPartis);
+router.put("/:id", upload.single("image"), updateParti);
+router.delete("/:id", deleteParti);
 
 module.exports = router;
