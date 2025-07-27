@@ -10,6 +10,7 @@ import "./assets/fonts/font.css";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import Dashboard from "./pages/Dashboard";
+import { ThemeProvider } from './context/ThemeContext';
 import Enregistrement from "./pages/Enregistrement_users";
 import Connexion from "./pages/Connexion_users.tsx";
 import ConnexionAD from "./pages/connexion_admin.js";
@@ -28,7 +29,7 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
-        <Route path="/Dashboard" element={<PrivateRoute><RequireAdmin><Dashboard /></RequireAdmin></PrivateRoute>} />
+        <Route path="/Dashboard" element={<PrivateRoute><RequireAdmin><ThemeProvider><Dashboard /></ThemeProvider></RequireAdmin></PrivateRoute>} />
         <Route path="/vote" element={<PrivateRoute><RequireUser><Vote /></RequireUser></PrivateRoute>} />
         <Route path="/choixrole" element={<Choixrole />} />
         <Route path="/Connexion" element={<Connexion />} />
