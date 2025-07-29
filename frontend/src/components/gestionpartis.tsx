@@ -19,6 +19,8 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const [newProprietaire, setNewProprietaire] = useState('');
   const [newImage, setNewImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
+
 
   // States pour modification
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -26,6 +28,19 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const [editNom, setEditNom] = useState('');
   const [editProprietaire, setEditProprietaire] = useState('');
   const [editImage, setEditImage] = useState<File | null>(null);
+
+//state suppression
+const [deleteConfirm, setDeleteConfirm] = useState<Parti | null>(null);
+
+  //states pour annuler
+  const handleCancelAdd = () => {
+  setNewNom('');
+  setNewProprietaire('');
+  setNewImage(null);
+  setImageError('');
+  setModalOpen(false);
+};
+
 
   // Fetch data
   const fetchPartis = async () => {
@@ -45,35 +60,56 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   }, []);
 
   // Add a new party
-  const handleAdd = async () => {
-    if (!newNom || !newProprietaire || !newImage) return alert("Tous les champs sont requis");
+const handleAdd = async () => {
+  setImageError('');
 
-    const formData = new FormData();
-    formData.append('nom', newNom);
-    formData.append('proprietaire', newProprietaire);
-    formData.append('image', newImage);
+  if (!newNom || !newProprietaire || !newImage) {
+    setImageError("Tous les champs sont requis");
+    return;
+  }
 
-    setLoading(true);
-    try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        body: formData,
-      });
-      if (res.ok) {
-        setNewNom('');
-        setNewProprietaire('');
-        setNewImage(null);
-        setModalOpen(false);
-        fetchPartis();
-      } else {
-        alert("Erreur lors de l'ajout");
-      }
-    } catch (error) {
-      console.error('Erreur ajout:', error);
-    } finally {
-      setLoading(false);
+  const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+  if (!allowedTypes.includes(newImage.type)) {
+    setImageError("Seules les images JPG, JPEG et PNG sont autorisées.");
+    return;
+  }
+
+  if (newImage.size > 2 * 1024 * 1024) {
+    setImageError("L'image ne doit pas dépasser 2 Mo.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('nom', newNom);
+  formData.append('proprietaire', newProprietaire);
+  formData.append('image', newImage);
+
+  setLoading(true);
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (res.ok) {
+      setNewNom('');
+      setNewProprietaire('');
+      setNewImage(null);
+      setImageError('');
+      setModalOpen(false);
+      fetchPartis();
+    } else {
+      setImageError("Erreur lors de l'ajout");
     }
-  };
+  } catch (error) {
+    console.error('Erreur ajout:', error);
+    setImageError("Erreur de connexion");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   // Ouvre le modal modification et préremplit
   const openEditModal = (parti: Parti) => {
@@ -85,49 +121,74 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   };
 
   // Modification
-  const handleUpdate = async () => {
-    if (!partiToEdit) return;
+ const handleUpdate = async () => {
+  if (!partiToEdit) return;
 
-    if (!editNom || !editProprietaire) {
-      alert('Nom et propriétaire sont obligatoires');
+  setImageError('');
+
+  if (!editNom || !editProprietaire) {
+    setImageError('Nom et propriétaire sont obligatoires');
+    return;
+  }
+
+  if (editImage) {
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+    if (!allowedTypes.includes(editImage.type)) {
+      setImageError("Seules les images JPG, JPEG et PNG sont autorisées.");
       return;
     }
 
-    const formData = new FormData();
-    formData.append('nom', editNom);
-    formData.append('proprietaire', editProprietaire);
-    if (editImage) formData.append('image', editImage);
-
-    setLoading(true);
-    try {
-      const res = await fetch(`${API_URL}/${partiToEdit._id}`, {
-        method: 'PUT',
-        body: formData,
-      });
-      if (res.ok) {
-        setEditModalOpen(false);
-        fetchPartis();
-      } else {
-        alert('Erreur lors de la mise à jour');
-      }
-    } catch (error) {
-      console.error('Erreur mise à jour:', error);
-    } finally {
-      setLoading(false);
+    if (editImage.size > 2 * 1024 * 1024) {
+      setImageError("L'image ne doit pas dépasser 2 Mo.");
+      return;
     }
-  };
+  }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Supprimer ce parti ?')) return;
-    try {
-      const res = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-      });
-      if (res.ok) fetchPartis();
-    } catch (error) {
-      console.error('Erreur suppression:', error);
+  const formData = new FormData();
+  formData.append("nom", editNom);
+  formData.append("proprietaire", editProprietaire);
+  if (editImage) formData.append("image", editImage);
+
+  setLoading(true);
+  try {
+    const res = await fetch(`${API_URL}/${partiToEdit._id}`, {
+      method: "PUT",
+      body: formData,
+    });
+
+    if (res.ok) {
+      setEditModalOpen(false);
+      fetchPartis();
+      setImageError('');
+    } else {
+      const data = await res.json();
+      setImageError(data?.error || "Erreur lors de la mise à jour.");
     }
-  };
+  } catch (error) {
+    console.error("Erreur mise à jour:", error);
+    setImageError("Erreur de connexion");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+  const handleDelete = async () => {
+  if (!deleteConfirm) return;
+
+  try {
+    const res = await fetch(`${API_URL}/${deleteConfirm._id}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      fetchPartis();
+      setDeleteConfirm(null);
+    }
+  } catch (error) {
+    console.error('Erreur suppression:', error);
+  }
+};
 
   const filteredPartis = partis.filter(p =>
     p.nom.toLowerCase().includes(search.toLowerCase()) ||
@@ -185,9 +246,13 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
                   >
                     <FontAwesomeIcon icon={faEdit} /> Modifier
                   </button>
-                  <button onClick={() => handleDelete(parti._id)} className="text-red-500 hover:text-red-700 bg-red-200 py-2 px-3 rounded">
+                  <button
+                    onClick={() => setDeleteConfirm(parti)}
+                    className="text-red-500 hover:text-red-700 bg-red-200 py-2 px-3 rounded"
+                  >
                     <FontAwesomeIcon icon={faTrash} /> Supprimer
                   </button>
+
                 </td>
               </tr>
             ))}
@@ -232,10 +297,14 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
                 className="w-24 h-24 object-cover rounded mb-4"
               />
             )}
+            {imageError && (
+              <p className="text-red-500 text-sm mt-1">{imageError}</p>
+            )}
+
             <div className="flex justify-end gap-3">
-              <button
+              <button 
                 className="px-4 py-2 rounded bg-gray-400 text-white hover:bg-gray-500"
-                onClick={() => setModalOpen(false)}
+                onClick={handleCancelAdd}
               >
                 Annuler
               </button>
@@ -283,6 +352,9 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
                 className="w-24 h-24 object-cover rounded mb-4"
                />
             )}
+            {imageError && (
+              <p className="text-red-500 text-sm mt-1">{imageError}</p>
+            )}
             <div className="flex justify-end gap-3">
               <button
                 className="px-4 py-2 rounded bg-gray-400 text-white hover:bg-gray-500"
@@ -301,6 +373,30 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
           </div>
         </div>
       )}
+      {/* Modal suppression */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className={`p-6 rounded-lg w-full max-w-md ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+                <h2 className="text-xl mb-4 font-bold">Confirmation</h2>
+                <p className="mb-4">Voulez-vous vraiment supprimer le parti <strong>{deleteConfirm.nom}</strong> ?</p>
+              <div className="flex justify-end gap-3">
+                <button
+                  className="px-4 py-2 rounded bg-gray-400 text-white hover:bg-gray-500"
+                  onClick={() => setDeleteConfirm(null)}
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                >
+                  Supprimer
+                </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
