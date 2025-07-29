@@ -20,19 +20,25 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const [newImage, setNewImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Fetch data
- const fetchPartis = async () => {
-  try {
-    const res = await fetch(API_URL);
-    const text = await res.text(); // ← récupère le texte brut
-    console.log('Réponse brute du serveur:', text); // ← affiche dans la console
-    const data = JSON.parse(text); // ← parse ensuite le JSON manuellement
-    setPartis(data);
-  } catch (error) {
-    console.error('Erreur fetch:', error);
-  }
-};
+  // States pour modification
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [partiToEdit, setPartiToEdit] = useState<Parti | null>(null);
+  const [editNom, setEditNom] = useState('');
+  const [editProprietaire, setEditProprietaire] = useState('');
+  const [editImage, setEditImage] = useState<File | null>(null);
 
+  // Fetch data
+  const fetchPartis = async () => {
+    try {
+      const res = await fetch(API_URL);
+      const text = await res.text();
+      console.log('Réponse brute du serveur:', text);
+      const data = JSON.parse(text);
+      setPartis(data);
+    } catch (error) {
+      console.error('Erreur fetch:', error);
+    }
+  };
 
   useEffect(() => {
     fetchPartis();
@@ -64,6 +70,48 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
       }
     } catch (error) {
       console.error('Erreur ajout:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Ouvre le modal modification et préremplit
+  const openEditModal = (parti: Parti) => {
+    setPartiToEdit(parti);
+    setEditNom(parti.nom);
+    setEditProprietaire(parti.proprietaire);
+    setEditImage(null);
+    setEditModalOpen(true);
+  };
+
+  // Modification
+  const handleUpdate = async () => {
+    if (!partiToEdit) return;
+
+    if (!editNom || !editProprietaire) {
+      alert('Nom et propriétaire sont obligatoires');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('nom', editNom);
+    formData.append('proprietaire', editProprietaire);
+    if (editImage) formData.append('image', editImage);
+
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/${partiToEdit._id}`, {
+        method: 'PUT',
+        body: formData,
+      });
+      if (res.ok) {
+        setEditModalOpen(false);
+        fetchPartis();
+      } else {
+        alert('Erreur lors de la mise à jour');
+      }
+    } catch (error) {
+      console.error('Erreur mise à jour:', error);
     } finally {
       setLoading(false);
     }
@@ -131,7 +179,10 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
                 <td className={`px-6 py-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>{parti.nom}</td>
                 <td className={`px-6 py-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>{parti.proprietaire}</td>
                 <td className="px-6 py-4 flex gap-4 text-sm">
-                  <button className="text-blue-500 hover:text-blue-700 bg-blue-200 py-2 px-3 rounded">
+                  <button
+                    onClick={() => openEditModal(parti)}
+                    className="text-blue-500 hover:text-blue-700 bg-blue-200 py-2 px-3 rounded"
+                  >
                     <FontAwesomeIcon icon={faEdit} /> Modifier
                   </button>
                   <button onClick={() => handleDelete(parti._id)} className="text-red-500 hover:text-red-700 bg-red-200 py-2 px-3 rounded">
@@ -149,7 +200,7 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
         </table>
       </div>
 
-      {/* Modal */}
+      {/* Modal ajout */}
       {modalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className={`p-6 rounded-lg w-full max-w-md ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
@@ -174,6 +225,13 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
               onChange={e => setNewImage(e.target.files?.[0] || null)}
               className="mb-4"
             />
+            {newImage && (
+              <img
+                src={URL.createObjectURL(newImage)}
+                alt="Prévisualisation"
+                className="w-24 h-24 object-cover rounded mb-4"
+              />
+            )}
             <div className="flex justify-end gap-3">
               <button
                 className="px-4 py-2 rounded bg-gray-400 text-white hover:bg-gray-500"
@@ -187,6 +245,57 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
                 className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
               >
                 {loading ? 'Ajout...' : 'Ajouter'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal modification */}
+      {editModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className={`p-6 rounded-lg w-full max-w-md ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+            <h2 className="text-xl mb-4 font-bold">Modifier le parti</h2>
+            <input
+              type="text"
+              placeholder="Nom du parti"
+              value={editNom}
+              onChange={e => setEditNom(e.target.value)}
+              className="w-full mb-3 px-4 py-2 rounded border focus:outline-none"
+            />
+            <input
+              type="text"
+              placeholder="Nom du propriétaire"
+              value={editProprietaire}
+              onChange={e => setEditProprietaire(e.target.value)}
+              className="w-full mb-3 px-4 py-2 rounded border focus:outline-none"
+            />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={e => setEditImage(e.target.files?.[0] || null)}
+              className="mb-4"
+            />
+            {editImage && (
+              <img
+                src={URL.createObjectURL(editImage)}
+                alt="Prévisualisation"
+                className="w-24 h-24 object-cover rounded mb-4"
+               />
+            )}
+            <div className="flex justify-end gap-3">
+              <button
+                className="px-4 py-2 rounded bg-gray-400 text-white hover:bg-gray-500"
+                onClick={() => setEditModalOpen(false)}
+              >
+                Annuler
+              </button>
+              <button
+                disabled={loading}
+                onClick={handleUpdate}
+                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+              >
+                {loading ? 'Modification...' : 'Enregistrer'}
               </button>
             </div>
           </div>
