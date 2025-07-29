@@ -5,15 +5,16 @@ const Admin = require("../models/Admins")(req.db_admin.registeredAdmins); // ada
 
 router.get("/me", verifyToken, async (req, res) => {
   try {
-    const matricule = req.admin.matricule; // ici on récupère matricule dans le token
+    const matricule = req.admin.matricule; // <-- utilise req.admin ici
 
-    if (!matricule) return res.status(400).json({ message: "Matricule manquant dans le token" });
+    if (!matricule) {
+      return res.status(400).json({ message: "Matricule manquant dans le token" });
+    }
 
-    // Recherche user en base via matricule
-    
-    const user = await Admin.findOne({ matricule }).select("-password");
-
-    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+    const user = await User.findOne({ matricule }).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
 
     res.json(user);
   } catch (error) {
