@@ -21,15 +21,18 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const [loading, setLoading] = useState(false);
 
   // Fetch data
-  const fetchPartis = async () => {
-    try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-      setPartis(data);
-    } catch (error) {
-      console.error('Erreur fetch:', error);
-    }
-  };
+ const fetchPartis = async () => {
+  try {
+    const res = await fetch(API_URL);
+    const text = await res.text(); // ← récupère le texte brut
+    console.log('Réponse brute du serveur:', text); // ← affiche dans la console
+    const data = JSON.parse(text); // ← parse ensuite le JSON manuellement
+    setPartis(data);
+  } catch (error) {
+    console.error('Erreur fetch:', error);
+  }
+};
+
 
   useEffect(() => {
     fetchPartis();
@@ -111,7 +114,7 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
       {/* Table */}
       <div className={`overflow-x-auto rounded-2xl border shadow-lg ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'}`}>
         <table className="min-w-full">
-          <thead className={darkMode ? 'bg-gray-900' : 'bg-gray-100'}>
+          <thead className={darkMode ? 'bg-gray-400' : 'bg-gray-100'}>
             <tr>
               <th className="px-6 py-3 text-left text-sm font-semibold">Image</th>
               <th className="px-6 py-3 text-left text-sm font-semibold">Nom</th>
@@ -128,10 +131,10 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
                 <td className={`px-6 py-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>{parti.nom}</td>
                 <td className={`px-6 py-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>{parti.proprietaire}</td>
                 <td className="px-6 py-4 flex gap-4 text-sm">
-                  <button className="text-blue-500 hover:text-blue-700">
+                  <button className="text-blue-500 hover:text-blue-700 bg-blue-200 py-2 px-3 rounded">
                     <FontAwesomeIcon icon={faEdit} /> Modifier
                   </button>
-                  <button onClick={() => handleDelete(parti._id)} className="text-red-500 hover:text-red-700">
+                  <button onClick={() => handleDelete(parti._id)} className="text-red-500 hover:text-red-700 bg-red-200 py-2 px-3 rounded">
                     <FontAwesomeIcon icon={faTrash} /> Supprimer
                   </button>
                 </td>
