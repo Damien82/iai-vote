@@ -79,6 +79,10 @@ app.use("/api", verifyAdminRoute);
 app.use("/api", verifyUserRoute);
 app.use('/api/partis', partisRoutes);
 
+// ⛔ Gestion des erreurs Multer
+const errorHandler = require("./src/middlewares/errorHandler");
+app.use(errorHandler);
+
 // Lancement du serveur
 app.listen(PORT, () => {
   console.log(`🚀 Serveur backend lancé sur le port ${PORT}`);

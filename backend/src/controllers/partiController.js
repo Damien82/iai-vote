@@ -30,7 +30,8 @@ exports.createParti = async (req, res) => {
     const nouveauParti = new Parti({
       nom,
       proprietaire,
-      imageUrl: result.secure_url
+      imageUrl: result.secure_url,
+      imagePublicId: result.public_id
     });
 
     await nouveauParti.save();
@@ -44,13 +45,23 @@ exports.createParti = async (req, res) => {
 };
 
 exports.updateParti = async (req, res) => {
-  const Parti = require('../models/Parti')(req.db_partis.partis);
-  const { nom, proprietaire } = req.body;
-  const { id } = req.params;
-  const update = { nom, proprietaire };
+const Parti = require('../models/Parti')(req.db_partis.partis);
+const { nom, proprietaire } = req.body;
+const { id } = req.params;
+
+const parti = await Parti.findById(id);
+if (!parti) return res.status(404).json({ error: "Parti non trouvé" });
+
+const update = { nom, proprietaire };
+
 if (req.file) {
-  // upload sur Cloudinary via streamifier
-  const streamUpload = () => {
+  // Supprimer ancienne image Cloudinary
+  if (parti.imagePublicId) {
+    await cloudinary.uploader.destroy(parti.imagePublicId);
+  }
+
+  // Upload nouvelle image via streamifier (comme pour addParti)
+  const streamUpload = (req) => {
     return new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream((error, result) => {
         if (result) resolve(result);
@@ -59,10 +70,11 @@ if (req.file) {
       streamifier.createReadStream(req.file.buffer).pipe(stream);
     });
   };
-  const result = await streamUpload();
-  update.imageUrl = result.secure_url;
 
-  // supprimer ancienne image Cloudinary si tu as son public_id (optionnel)
+  const result = await streamUpload(req);
+
+  update.imageUrl = result.secure_url;
+  update.imagePublicId = result.public_id;
 }
 
 
@@ -71,8 +83,17 @@ if (req.file) {
 };
 
 exports.deleteParti = async (req, res) => {
-  const Parti = require('../models/Parti')(req.db_partis.partis);
-  const { id } = req.params;
-  await Parti.findByIdAndDelete(id);
-  res.json({ message: "Parti supprimé avec succès" });
+const Parti = require('../models/Parti')(req.db_partis.partis);
+const { id } = req.params;
+
+const parti = await Parti.findById(id);
+if (!parti) return res.status(404).json({ error: "Parti non trouvé" });
+
+if (parti.imagePublicId) {
+  await cloudinary.uploader.destroy(parti.imagePublicId);
+}
+
+await Parti.findByIdAndDelete(id);
+res.json({ message: "Parti supprimé avec succès" });
+
 };
