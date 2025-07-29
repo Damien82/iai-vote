@@ -48,10 +48,23 @@ exports.updateParti = async (req, res) => {
   const { nom, proprietaire } = req.body;
   const { id } = req.params;
   const update = { nom, proprietaire };
-  if (req.file) {
-    const result = await cloudinary.uploader.upload_stream().end(req.file.buffer);
-    update.imageUrl = result.secure_url;
-  }
+if (req.file) {
+  // upload sur Cloudinary via streamifier
+  const streamUpload = () => {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream((error, result) => {
+        if (result) resolve(result);
+        else reject(error);
+      });
+      streamifier.createReadStream(req.file.buffer).pipe(stream);
+    });
+  };
+  const result = await streamUpload();
+  update.imageUrl = result.secure_url;
+
+  // supprimer ancienne image Cloudinary si tu as son public_id (optionnel)
+}
+
 
   const updated = await Parti.findByIdAndUpdate(id, update, { new: true });
   res.json(updated);
