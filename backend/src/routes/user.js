@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const verifyToken = require("../middlewares/authMiddleware_admin");
-const Admin = require("../models/Admins")(req.db_admin.registeredAdmins); // adapte selon ta structure
+const Admin = require("../models/Admins"); // adapte selon ta structure
 
 router.get("/me", verifyToken, async (req, res) => {
   try {
