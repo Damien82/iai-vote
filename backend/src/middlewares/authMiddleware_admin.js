@@ -12,7 +12,8 @@ function verifyToken(req, res, next) {
     const decoded = jwt.verify(token, SECRET);
     req.admin = decoded;
     next();
-  } catch {
+  } catch (err) {
+  console.error("JWT verification failed:", err);
     return res.status(403).json({ message: "Token invalide ou expiré" });
   }
 }
