@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { registerAdmin, loginAdmin, verifyAdmin, } = require("../controllers/authController_admin");
-const { getProfile } = require("../middlewares/authMiddleware_admin");
+const { getProfile } = require("../routes/adminRoutes");
 
 // Route inscription
 router.post("/registerAdmin", registerAdmin);
