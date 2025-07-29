@@ -13,7 +13,7 @@ const authRoutes_admin = require("./src/routes/authRoutes_admin");
 const verifyAdminRoute = require("./src/routes/adminRoutes");
 const verifyUserRoute = require("./src/routes/userRoutes");
 const partisRoutes = require('./src/routes/partiRoutes');
-const getProfile = require("./src/routes/authRoutes");
+const getProfile = require("./src/routes/authRoutes_admin.js");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
