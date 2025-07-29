@@ -20,6 +20,9 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const [newImage, setNewImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [imageError, setImageError] = useState<string | null>(null);
+  const validTextRegex = /^[a-zA-ZÀ-ÿ0-9 \-']*$/;
+  const [nomError, setNomError] = useState('');
+  const [proprietaireError, setProprietaireError] = useState('');
 
 
   // States pour modification
@@ -28,6 +31,9 @@ const PartisPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const [editNom, setEditNom] = useState('');
   const [editProprietaire, setEditProprietaire] = useState('');
   const [editImage, setEditImage] = useState<File | null>(null);
+  const [editNomError, setEditNomError] = useState('');
+  const [editProprietaireError, setEditProprietaireError] = useState('');
+
 
 //state suppression
 const [deleteConfirm, setDeleteConfirm] = useState<Parti | null>(null);
@@ -130,6 +136,12 @@ const handleAdd = async () => {
     setImageError('Nom et propriétaire sont obligatoires');
     return;
   }
+  
+  if (editNomError || editProprietaireError) {
+  alert("Corrigez les erreurs dans le formulaire avant de continuer");
+  return;
+}
+
 
   if (editImage) {
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
@@ -274,16 +286,36 @@ const handleAdd = async () => {
               type="text"
               placeholder="Nom du parti"
               value={newNom}
-              onChange={e => setNewNom(e.target.value)}
+              onChange={e =>  {
+                 const value = e.target.value;
+                if (validTextRegex.test(value)) {
+                   setNewNom(value);
+                   setNomError('');
+                  }else {
+                    setNomError('Caractère non autorisé');
+                  }
+              }}
+              title="Seules les lettres, chiffres, espaces, apostrophes et tirets sont autorisés"
+              required
               className="w-full mb-3 px-4 py-2 rounded border focus:outline-none"
             />
+            {nomError && <p className="text-red-500 text-sm mb-1">{nomError}</p>}
             <input
               type="text"
               placeholder="Nom du propriétaire"
               value={newProprietaire}
-              onChange={e => setNewProprietaire(e.target.value)}
+              onChange={e => {
+                const value = e.target.value;
+                if (validTextRegex.test(value)) {
+                  setNewProprietaire(value);
+                  setProprietaireError('');
+                }else {
+                  setProprietaireError('Caractère non autorisé');
+                }
+              }}
               className="w-full mb-3 px-4 py-2 rounded border focus:outline-none"
             />
+            {proprietaireError && <p className="text-red-500 text-sm mb-1">{proprietaireError}</p>}
             <input
               type="file"
               accept="image/*"
@@ -329,16 +361,34 @@ const handleAdd = async () => {
               type="text"
               placeholder="Nom du parti"
               value={editNom}
-              onChange={e => setEditNom(e.target.value)}
+                onChange={(e) => {
+                 const value = e.target.value;
+                  if (/^[a-zA-ZÀ-ÿ0-9 \-']*$/.test(value)) {
+                    setEditNom(value);
+                    setEditNomError('');
+                  } else {
+                    setEditNomError('Caractère non autorisé');
+                  }
+                }}
               className="w-full mb-3 px-4 py-2 rounded border focus:outline-none"
             />
+            {editNomError && <p className="text-red-500 text-sm mb-1">{editNomError}</p>}
             <input
               type="text"
               placeholder="Nom du propriétaire"
               value={editProprietaire}
-              onChange={e => setEditProprietaire(e.target.value)}
+                onChange={(e) => {
+                const value = e.target.value;
+                  if (/^[a-zA-ZÀ-ÿ0-9 \-']*$/.test(value)) {
+                    setEditProprietaire(value);
+                    setEditProprietaireError('');
+                  } else {
+                    setEditProprietaireError('Caractère non autorisé');
+                  }
+                }}
               className="w-full mb-3 px-4 py-2 rounded border focus:outline-none"
             />
+            {editProprietaireError && <p className="text-red-500 text-sm mb-1">{editProprietaireError}</p>}
             <input
               type="file"
               accept="image/*"
