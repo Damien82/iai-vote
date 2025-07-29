@@ -3,6 +3,7 @@ import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
 import DashboardContent from '../components/DashboardContent';
 import ProfileContent from '../components/profileContent';
+import PartisPage from '../components/gestionpartis';
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -88,6 +89,7 @@ const Dashboard: React.FC = () => {
       >
         {activeTab === 'dashboard' && <DashboardContent darkMode={darkMode} />}
         {activeTab === 'profile' && <ProfileContent darkMode={darkMode} />}
+        {activeTab === 'gestionpartis' && <PartisPage darkMode={darkMode} />}
       </main>
     </div>
   );

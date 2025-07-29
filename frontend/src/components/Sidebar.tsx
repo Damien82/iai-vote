@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartBar, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faChartBar, faUserCircle, faGavel, } from '@fortawesome/free-solid-svg-icons';
 
 interface SidebarProps {
   darkMode: boolean;
@@ -15,7 +15,7 @@ interface SidebarProps {
 const menuItems = [
   { id: 'dashboard', name: 'Dashboard', icon: faChartBar },
   { id: 'profile', name: 'Profil', icon: faUserCircle },
-  { id: 'gestion-partis', name: 'Gestion des partis', icon: faUserCircle },
+  { id: 'gestionpartis', name: 'Gestion des partis', icon: faGavel },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({
