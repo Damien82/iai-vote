@@ -35,10 +35,12 @@ exports.createParti = async (req, res) => {
 
     await nouveauParti.save();
     res.status(201).json(nouveauParti);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Erreur lors de l'ajout" });
-  }
+} catch (err) {
+  console.error("Erreur lors de l'ajout du parti :", err.message);
+  console.error(err); // Pour afficher la stack complète
+  res.status(500).json({ error: "Erreur lors de l'ajout", message: err.message });
+}
+
 };
 
 exports.updateParti = async (req, res) => {
