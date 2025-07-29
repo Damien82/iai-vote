@@ -79,7 +79,6 @@ app.use("/api/authAdmin", authRoutes_admin);
 app.use("/api", verifyAdminRoute);
 app.use("/api", verifyUserRoute);
 app.use('/api/partis', partisRoutes);
-app.use("/api/users", getProfile);
 app.use("/api/users", userRoutes);
 
 // ⛔ Gestion des erreurs Multer
