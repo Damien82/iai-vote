@@ -5,7 +5,7 @@ const User = require("../models/Admins"); // adapte selon ta structure
 
 router.get("/me", verifyToken, async (req, res) => {
   try {
-    const matricule = req.user.matricule; // ici on récupère matricule dans le token
+    const matricule = req.admin.matricule; // ici on récupère matricule dans le token
 
     if (!matricule) return res.status(400).json({ message: "Matricule manquant dans le token" });
 
