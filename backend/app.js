@@ -78,6 +78,7 @@ app.use("/api/authAdmin", authRoutes_admin);
 app.use("/api", verifyAdminRoute);
 app.use("/api", verifyUserRoute);
 app.use('/api/partis', partisRoutes);
+app.use("/api/users", require("./src/routes/authRoutes"));
 
 // ⛔ Gestion des erreurs Multer
 const errorHandler = require("./src/middlewares/errorHandler");
