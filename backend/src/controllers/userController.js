@@ -1,6 +1,6 @@
 // controllers/userController.js
 const jwt = require('jsonwebtoken');
-const User = require('../models/Users'); // modèle user
+const User = require('../models/Admins'); // modèle user
 
 const getProfile = async (req, res) => {
   try {
