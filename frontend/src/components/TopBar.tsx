@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars,
@@ -35,6 +36,14 @@ const Topbar: React.FC<TopbarProps> = ({
   userMenuOpen,
   toggleUserMenu,
 }) => {
+
+    const navigate = useNavigate();
+
+  const handleGoToProfile = () => {
+    navigate('/profil');
+    toggleUserMenu(); // refermer le menu après redirection
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 h-16 z-50 px-6 flex items-center justify-between shadow-md transition-all duration-300 border-b ${
@@ -106,14 +115,7 @@ const Topbar: React.FC<TopbarProps> = ({
                 </p>
               </div>
               <hr className={`${darkMode ? 'border-gray-700' : 'border-gray-200'}`} />
-              <button
-                className={`w-full flex items-center gap-3 px-4 py-2 hover:${
-                  darkMode ? 'bg-gray-700' : 'bg-gray-100'
-                } transition`}
-              >
-                <FontAwesomeIcon icon={faCog} className={darkMode ? 'text-gray-300' : 'text-gray-600'} />
-                <span className={`${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>Paramètres</span>
-              </button>
+
               <button
                 className={`w-full flex items-center gap-3 px-4 py-2 hover:${
                   darkMode ? 'bg-gray-700' : 'bg-gray-100'
