@@ -1,6 +1,6 @@
 module.exports = (db_admin) => {
-  if (db_admin.models.Admin) {
-    return db_admin.models.Admin;
+  if (db_admin.models.Admins) {
+    return db_admin.models.Admins;
   }
 
   const mongoose = require("mongoose");
@@ -13,5 +13,5 @@ module.exports = (db_admin) => {
     motDePasse: { type: String, required: true },
   });
 
-  return db_admin.model("Admin", AdminSchema);
+  return db_admin.model("Admins", AdminSchema);
 };
