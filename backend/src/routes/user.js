@@ -6,9 +6,8 @@ const User = require("../models/Admins"); // ou Users si c'est pas pour les admi
 
 router.get("/me", verifyToken, async (req, res) => {
   try {
-    console.log("req.admin:", req.admin);
-
     const matricule = req.admin?.matricule;
+
     if (!matricule) {
       return res.status(400).json({ message: "Matricule manquant dans le token" });
     }
@@ -21,8 +20,14 @@ router.get("/me", verifyToken, async (req, res) => {
     res.json(admin);
   } catch (error) {
     console.error("Erreur GET /me :", error);
-    res.status(500).json({ message: "Erreur serveur" });
+    
+    // ✅ Temporairement afficher le contenu de req.admin
+    return res.status(500).json({ 
+      message: "Erreur serveur",
+      admin_payload: req.admin || null
+    });
   }
 });
+
 
 module.exports = router;
