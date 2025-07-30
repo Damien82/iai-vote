@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProfileContent from "./ProfileContent";
 
 interface UserData {
+  matricule: string;
   nom: string;
   prenom: string;
   classe: string;

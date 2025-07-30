@@ -6,6 +6,7 @@ import ProfileContent from '../components/ProfileContent';
 import PartisPage from '../components/gestionpartis';
 
 interface UserData {
+  matricule: string;
   nom: string;
   prenom: string;
   classe: string;
@@ -57,6 +58,7 @@ const Dashboard: React.FC = () => {
       .then(data => {
         // Adapter en fonction de la structure renvoyée par ton API
         setUserData({
+          matricule: data.matricule,
           nom: data.nom,
           prenom: data.prenom,
           classe: data.classe,
