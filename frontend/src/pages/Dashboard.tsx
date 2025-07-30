@@ -89,13 +89,26 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-      <Topbar
-        darkMode={darkMode}
-        toggleSidebar={toggleSidebar}
-        toggleDarkMode={toggleDarkMode}
-        userMenuOpen={userMenuOpen}
-        toggleUserMenu={toggleUserMenu}
-      />
+     {userData ? (
+  <Topbar
+    userDatas={userData}
+    toggleSidebar={toggleSidebar}
+    toggleDarkMode={toggleDarkMode}
+    userMenuOpen={userMenuOpen}
+    toggleUserMenu={toggleUserMenu}
+    darkMode={darkMode}
+  />
+) : (
+  <Topbar
+    userDatas={{ nom: 'Chargement', prenom: '', matricule: '...' }}
+    toggleSidebar={toggleSidebar}
+    toggleDarkMode={toggleDarkMode}
+    userMenuOpen={userMenuOpen}
+    toggleUserMenu={toggleUserMenu}
+    darkMode={darkMode}
+  />
+)}
+
 
       <Sidebar
         darkMode={darkMode}
