@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const verifyToken = require("../middlewares/authMiddleware_admin"); // ou _user selon le cas
-const User = require("../models/Admins"); // ou Users si c'est pas pour les admins
+const Admin = require("../models/Admins"); // ou Users si c'est pas pour les admins
 
 router.get("/me", verifyToken, async (req, res) => {
   try {
