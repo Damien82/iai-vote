@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const verifyToken = require("../middlewares/authMiddleware_admin");
 const connectDB = require("../config/db_admin");
-const { refConnection } = connectDB(); // 👈 appelle la fonction pour avoir les connexions
+const { mainConnection } = connectDB(); // 👈 appelle la fonction pour avoir les connexions
 const getAdminModel = require("../models/Admins");
-const Admin = getAdminModel(refConnection); // 👈 passe la connexion correcte
+const Admin = getAdminModel(mainConnection); // 👈 passe la connexion correcte
 
 
 router.get("/me", verifyToken, async (req, res) => {
