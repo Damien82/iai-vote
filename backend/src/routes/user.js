@@ -9,6 +9,7 @@ const Admin = getAdminModel(refConnection); // 👈 passe la connexion correcte
 
 router.get("/me", verifyToken, async (req, res) => {
   try {
+    console.log("Matricule dans token:", matricule);
     const matricule = req.admin?.matricule;
     console.log("Matricule dans token :", matricule);
 
