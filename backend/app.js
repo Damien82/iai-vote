@@ -82,7 +82,7 @@ app.use("/api", verifyAdminRoute);
 app.use("/api", verifyUserRoute);
 app.use('/api/partis', partisRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/users", userlisteRoutes)
+app.use("/api/listeusers", userlisteRoutes)
 
 // ⛔ Gestion des erreurs Multer
 const errorHandler = require("./src/middlewares/errorHandler");
