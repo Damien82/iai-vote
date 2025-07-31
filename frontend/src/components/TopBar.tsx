@@ -1,6 +1,7 @@
-import React from 'react';
-import { useAuth } from '../context/AuthContext';
-const { logout } = useAuth();
+
+import React, { useState } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; // Import du contexte Auth
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars,
@@ -37,6 +38,16 @@ const Topbar: React.FC<TopbarProps> = ({
   toggleUserMenu,
 }) => {
 
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { logout } = useAuth(); // récupération de la fonction logout
+
+    // Nouvelle fonction pour gérer la déconnexion
+    const handleLogout = () => {
+    logout();                  // Supprime token et met à jour contexte
+    localStorage.removeItem("user"); // Supprime les infos utilisateur
+    navigate("/ConnexionAD");    // Redirige vers page connexion
+  };
 
 
   return (
@@ -112,7 +123,7 @@ const Topbar: React.FC<TopbarProps> = ({
               <hr className={`${darkMode ? 'border-gray-700' : 'border-gray-200'}`} />
 
               <button
-               onClick={logout}
+              onClick={handleLogout} 
                 className={`w-full flex items-center gap-3 px-4 py-2 hover:${
                   darkMode ? 'bg-gray-700' : 'bg-gray-100'
                 } transition`}
