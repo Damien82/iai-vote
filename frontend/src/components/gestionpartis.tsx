@@ -245,7 +245,7 @@ const handleAdd = async () => {
           </thead>
           <tbody>
             {filteredPartis.map(parti => (
-              <tr key={parti._id} className="hover:bg-gray-600 dark: hover:bg-gray-900">
+              <tr key={parti._id} className="hover:bg-gray-600 dark: hover:bg-gray-100">
                 <td className="px-6 py-4">
                   <img src={parti.imageUrl} alt={parti.nom} className="w-12 h-12 object-cover rounded-full" />
                 </td>
