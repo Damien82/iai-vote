@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/TopBar';
 import DashboardContent from '../components/DashboardContent';
+import Userspage from '../components/gestionutilisateurs';
 import ProfileContent from '../components/ProfileContent';
 import PartisPage from '../components/gestionpartis';
 
@@ -146,6 +147,8 @@ const Dashboard: React.FC = () => {
         )}
 
         {activeTab === 'gestionpartis' && <PartisPage darkMode={darkMode} />}
+
+        {activeTab === 'gestionsutilisateurs' && <Userspage darkMode={darkMode} />}
       </main>
     </div>
   );
