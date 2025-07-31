@@ -47,7 +47,39 @@ const getAllUtilisateurs = async (req, res) => {
   }
 };
 
+/**
+ * @desc Supprimer un utilisateur dans les deux bases
+ * @route DELETE /api/users/:id
+ */
+const deleteUtilisateur = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 1. Supprimer dans la base principale (mainConnection)
+    const user = await User.findByIdAndDelete(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur introuvable dans la base principale" });
+    }
+
+    // 2. Supprimer dans la base de référence (refConnection) via le matricule
+    const deletedRef = await EtudiantRef.findOneAndDelete({ matricule: user.matricule });
+
+    if (!deletedRef) {
+      return res.status(404).json({
+        message: "Utilisateur supprimé dans main, mais non trouvé dans la base de référence",
+      });
+    }
+
+    res.status(200).json({ message: "Utilisateur supprimé dans les deux bases" });
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'utilisateur :", error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
 module.exports = {
   ajouterUtilisateur,
   getAllUtilisateurs,
+  deleteUtilisateur, // <-- nouvelle fonction
 };
