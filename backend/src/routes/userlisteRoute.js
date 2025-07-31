@@ -1,4 +1,4 @@
-import express from "express";
+const express = require("express");
 import { ajouterUser, afficherUsers } from "../controllers/simpleuserController.js";
 
 const router = express.Router();
