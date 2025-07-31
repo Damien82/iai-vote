@@ -73,6 +73,7 @@ app.use((req, res, next) => {
   next();
 });
 
+connectDB();
 
 // Routes
 app.use("/api/auth", authRoutes);
