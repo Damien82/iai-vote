@@ -1,5 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+const { logout } = useAuth();
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars,
@@ -8,7 +9,6 @@ import {
   faUser,
   faChevronDown,
   faSignOutAlt,
-  faCog,
 } from '@fortawesome/free-solid-svg-icons';
 
 
@@ -37,12 +37,7 @@ const Topbar: React.FC<TopbarProps> = ({
   toggleUserMenu,
 }) => {
 
-    const navigate = useNavigate();
 
-  const handleGoToProfile = () => {
-    navigate('/profil');
-    toggleUserMenu(); // refermer le menu après redirection
-  };
 
   return (
     <header
@@ -117,6 +112,7 @@ const Topbar: React.FC<TopbarProps> = ({
               <hr className={`${darkMode ? 'border-gray-700' : 'border-gray-200'}`} />
 
               <button
+               onClick={logout}
                 className={`w-full flex items-center gap-3 px-4 py-2 hover:${
                   darkMode ? 'bg-gray-700' : 'bg-gray-100'
                 } transition`}
