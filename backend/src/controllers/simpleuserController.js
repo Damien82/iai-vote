@@ -1,6 +1,6 @@
 const connectDB = require("../config/db");
 const createEtudiantModel = require("../models/EtudiantReference"); // modèle pour refConnection
-const createUserModel = require("../models/users"); // modèle pour mainConnection
+const createUserModel = require("../models/Users"); // modèle pour mainConnection
 
 const { refConnection, mainConnection } = connectDB();
 
