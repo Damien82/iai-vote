@@ -233,19 +233,19 @@ const handleAdd = async () => {
       </div>
 
       {/* Table */}
-      <div className={`overflow-x-auto rounded-2xl border shadow-lg ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'}`}>
+      <div className={`overflow-x-auto rounded-2xl border shadow-lg ${darkMode ? 'border-gray-900 bg-gray-800' : ' bg-white'}`}>
         <table className="min-w-full">
           <thead className={darkMode ? 'bg-gray-400' : 'bg-gray-100'}>
             <tr>
-              <th className="px-6 py-3 text-left text-sm font-semibold">Image</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold">Nom</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold">Propriétaire</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold">Actions</th>
+              <th className="px-6 py-3 text-left text-sm font-bold">Image</th>
+              <th className="px-6 py-3 text-left text-sm font-bold">Nom</th>
+              <th className="px-6 py-3 text-left text-sm font-bold">Propriétaire</th>
+              <th className="px-6 py-3 text-left text-sm font-bold">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredPartis.map(parti => (
-              <tr key={parti._id} className="hover:bg-gray-100 dark:hover:bg-gray-700">
+              <tr key={parti._id} className="hover:bg-gray-600 dark: hover:bg-gray-900">
                 <td className="px-6 py-4">
                   <img src={parti.imageUrl} alt={parti.nom} className="w-12 h-12 object-cover rounded-full" />
                 </td>

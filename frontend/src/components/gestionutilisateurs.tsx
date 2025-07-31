@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface User {
@@ -7,16 +7,16 @@ interface User {
   nom: string;
   prenom: string;
   matricule: string;
+  classe: string;
 }
 
-const API_URL = 'https://iai-vote.onrender.com/api/users'; // adapte selon ton endpoint réel
+const API_URL = 'https://iai-vote.onrender.com/api/listeusers';
 
 const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [newUser, setNewUser] = useState({ nom: '', prenom: '', matricule: '' });
-  const [editUser, setEditUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<User | null>(null);
 
@@ -44,6 +44,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
         body: JSON.stringify(newUser),
       });
       if (res.ok) {
+        alert("Ajout réussie");
         setModalOpen(false);
         setNewUser({ nom: '', prenom: '', matricule: '' });
         fetchUsers();
@@ -53,48 +54,35 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
     }
   };
 
-  const handleEdit = async () => {
-    if (!editUser) return;
-    setLoading(true);
-    try {
-      const res = await fetch(`${API_URL}/${editUser._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editUser),
-      });
-      if (res.ok) {
-        setEditUser(null);
-        fetchUsers();
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+const handleDelete = async (id: string) => {
+  const res = await fetch(`https://iai-vote.onrender.com/api/listeusers/${id}`, {
+    method: "DELETE",
+  });
+  const data = await res.json();
 
-  const handleDelete = async () => {
-    if (!deleteConfirm) return;
-    try {
-      const res = await fetch(`${API_URL}/${deleteConfirm._id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setDeleteConfirm(null);
-        fetchUsers();
-      }
-    } catch (err) {
-      console.error('Erreur suppression', err);
-    }
-  };
+  if (res.ok) {
+    alert("Suppression réussie");
+    fetchUsers(); // recharger la liste
+  } else {
+    alert("Erreur : " + data.message);
+  }
+};
+
 
   const filteredUsers = users.filter(user =>
     `${user.nom} ${user.prenom} ${user.matricule}`.toLowerCase().includes(search.toLowerCase())
   );
 
+  const inputClass = `w-full px-3 py-2 border rounded ${darkMode ? 'bg-gray-800 text-white border-gray-600' : 'bg-white text-black'}`;
+  const tableClass = `${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`;
+
   return (
-    <div className="p-4 space-y-6">
+    <div className={`p-4 space-y-6 ${darkMode ? 'bg-gray-900 text-white' : ' text-black'}`}>
       <div className="flex justify-between items-center">
         <input
           type="text"
           placeholder="Rechercher..."
-          className="border px-4 py-2 rounded w-1/2"
+          className={`border px-4 py-2 rounded w-1/2 ${darkMode ? 'bg-gray-800 text-white border-gray-600' : ''}`}
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
@@ -106,41 +94,37 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
         </button>
       </div>
 
-      <div className="overflow-x-auto border rounded-lg shadow-lg">
-        <table className="min-w-full">
-          <thead className="bg-gray-100">
+      <div className={`overflow-x-auto border rounded-lg shadow-lg ${darkMode ? 'border-gray-700' : ''}`}>
+        <table className={`min-w-full ${tableClass}`}>
+          <thead className={darkMode ? 'bg-gray-500 text-black' : 'bg-gray-100'}>
             <tr>
+              <th className="px-6 py-3 text-left">Matricule</th>
               <th className="px-6 py-3 text-left">Nom</th>
               <th className="px-6 py-3 text-left">Prénom</th>
-              <th className="px-6 py-3 text-left">Matricule</th>
+              <th className="px-6 py-3 text-left">Classe</th>
               <th className="px-6 py-3 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredUsers.map(user => (
-              <tr key={user._id} className="hover:bg-gray-50">
+              <tr key={user._id} className={`${darkMode ? ' bg-gray-800 hover:bg-gray-600' : 'hover:bg-gray-400'}`}>
+                <td className="px-6 py-4">{user.matricule}</td>
                 <td className="px-6 py-4">{user.nom}</td>
                 <td className="px-6 py-4">{user.prenom}</td>
-                <td className="px-6 py-4">{user.matricule}</td>
+                <td className="px-6 py-4">{user.classe}</td>
                 <td className="px-6 py-4 space-x-2">
                   <button
-                    onClick={() => setEditUser(user)}
-                    className="text-blue-500 hover:underline"
-                  >
-                    <FontAwesomeIcon icon={faEdit} />
-                  </button>
-                  <button
                     onClick={() => setDeleteConfirm(user)}
-                    className="text-red-500 hover:underline"
+                    className="text-red-500 hover:text-red-700 bg-red-200 py-2 px-3 rounded"
                   >
-                    <FontAwesomeIcon icon={faTrash} />
+                    <FontAwesomeIcon icon={faTrash} /> Supprimer
                   </button>
                 </td>
               </tr>
             ))}
             {filteredUsers.length === 0 && (
               <tr>
-                <td colSpan={4} className="text-center py-4 text-gray-400">
+                <td colSpan={5} className="text-center py-4 text-gray-400">
                   Aucun utilisateur trouvé.
                 </td>
               </tr>
@@ -151,27 +135,29 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
 
       {/* Modal Ajout */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
-          <div className="bg-white p-6 rounded shadow-lg space-y-4">
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className={`p-6 rounded shadow-lg space-y-4 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
             <h2 className="text-lg font-bold">Ajouter un utilisateur</h2>
+
+            <input
+              placeholder="Matricule"
+              className={inputClass}
+              value={newUser.matricule}
+              onChange={e => setNewUser({ ...newUser, matricule: e.target.value })}
+            />
             <input
               placeholder="Nom"
-              className="w-full px-3 py-2 border rounded"
+              className={inputClass}
               value={newUser.nom}
               onChange={e => setNewUser({ ...newUser, nom: e.target.value })}
             />
             <input
               placeholder="Prénom"
-              className="w-full px-3 py-2 border rounded"
+              className={inputClass}
               value={newUser.prenom}
               onChange={e => setNewUser({ ...newUser, prenom: e.target.value })}
             />
-            <input
-              placeholder="Matricule"
-              className="w-full px-3 py-2 border rounded"
-              value={newUser.matricule}
-              onChange={e => setNewUser({ ...newUser, matricule: e.target.value })}
-            />
+
             <div className="flex justify-end gap-2">
               <button onClick={() => setModalOpen(false)} className="px-4 py-2 bg-gray-400 text-white rounded">Annuler</button>
               <button onClick={handleAdd} className="px-4 py-2 bg-blue-600 text-white rounded">{loading ? 'Ajout...' : 'Ajouter'}</button>
@@ -180,46 +166,19 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
         </div>
       )}
 
-      {/* Modal Édition */}
-      {editUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
-          <div className="bg-white p-6 rounded shadow-lg space-y-4">
-            <h2 className="text-lg font-bold">Modifier utilisateur</h2>
-            <input
-              placeholder="Nom"
-              className="w-full px-3 py-2 border rounded"
-              value={editUser.nom}
-              onChange={e => setEditUser({ ...editUser, nom: e.target.value })}
-            />
-            <input
-              placeholder="Prénom"
-              className="w-full px-3 py-2 border rounded"
-              value={editUser.prenom}
-              onChange={e => setEditUser({ ...editUser, prenom: e.target.value })}
-            />
-            <input
-              placeholder="Matricule"
-              className="w-full px-3 py-2 border rounded"
-              value={editUser.matricule}
-              onChange={e => setEditUser({ ...editUser, matricule: e.target.value })}
-            />
-            <div className="flex justify-end gap-2">
-              <button onClick={() => setEditUser(null)} className="px-4 py-2 bg-gray-400 text-white rounded">Annuler</button>
-              <button onClick={handleEdit} className="px-4 py-2 bg-blue-600 text-white rounded">{loading ? 'Sauvegarde...' : 'Enregistrer'}</button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Modal Suppression */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
-          <div className="bg-white p-6 rounded shadow-lg">
+          <div className={`p-6 rounded shadow-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
             <h2 className="text-lg font-bold mb-4">Confirmer la suppression</h2>
             <p>Voulez-vous vraiment supprimer <strong>{deleteConfirm.nom} {deleteConfirm.prenom}</strong> ?</p>
             <div className="mt-4 flex justify-end gap-3">
               <button onClick={() => setDeleteConfirm(null)} className="bg-gray-400 text-white px-4 py-2 rounded">Annuler</button>
-              <button onClick={handleDelete} className="bg-red-600 text-white px-4 py-2 rounded">Supprimer</button>
+              <button onClick={() => { if (deleteConfirm) handleDelete(deleteConfirm._id); setDeleteConfirm(null);}}
+                    className="bg-red-600 text-white px-4 py-2 rounded"
+                >Supprimer
+                </button>
+
             </div>
           </div>
         </div>
