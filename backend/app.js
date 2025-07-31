@@ -14,6 +14,7 @@ const verifyAdminRoute = require("./src/routes/adminRoutes");
 const verifyUserRoute = require("./src/routes/userRoutes");
 const partisRoutes = require('./src/routes/partiRoutes');
 const userRoutes = require("./src/routes/user");
+const userlisteRoutes = require( "./src/routes/userlisteRoute");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -80,6 +81,7 @@ app.use("/api", verifyAdminRoute);
 app.use("/api", verifyUserRoute);
 app.use('/api/partis', partisRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/users", userlisteRoutes)
 
 // ⛔ Gestion des erreurs Multer
 const errorHandler = require("./src/middlewares/errorHandler");
