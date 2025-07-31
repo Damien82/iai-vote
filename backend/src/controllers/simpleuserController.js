@@ -1,24 +1,53 @@
-import UserAjout from "../models/EtudiantReference.js";
-import UserAffichage from "../models/Users.js";
+const connectDB = require("../config/db");
+const createEtudiantModel = require("../models/EtudiantReference"); // modèle pour refConnection
+const createUserModel = require("../models/users"); // modèle pour mainConnection
 
-// Ajouter un utilisateur
-export const ajouterUser = async (req, res) => {
+const { refConnection, mainConnection } = connectDB();
+
+// Initialiser les modèles à partir des connexions
+const EtudiantRef = createEtudiantModel(refConnection);
+const User = createUserModel(mainConnection);
+
+/**
+ * @desc Ajouter un utilisateur dans la base refConnection (base de référence)
+ * @route POST /api/users
+ */
+const ajouterUtilisateur = async (req, res) => {
   try {
-    const { nom, prenom, matricule } = req.body;
-    const newUser = new UserAjout({ nom, prenom, matricule });
-    await newUser.save();
-    res.status(201).json({ message: "Utilisateur ajouté avec succès." });
+    const { matricule, nom, prenom } = req.body;
+
+    // Vérification si déjà enregistré dans la base ref
+    const existing = await EtudiantRef.findOne({ matricule });
+    if (existing) {
+      return res.status(400).json({ message: "Cet utilisateur existe déjà dans la base de référence" });
+    }
+
+    // Création de l'étudiant dans la base ref
+    const newEtudiant = new EtudiantRef({ matricule, nom, prenom });
+    await newEtudiant.save();
+
+    res.status(201).json({ message: "Étudiant ajouté dans la base de référence", etudiant: newEtudiant });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Erreur lors de l'ajout dans la base de référence:", error);
+    res.status(500).json({ message: "Erreur serveur" });
   }
 };
 
-// Obtenir tous les utilisateurs
-export const afficherUsers = async (req, res) => {
+/**
+ * @desc Afficher tous les utilisateurs depuis la base principale (mainConnection)
+ * @route GET /api/users
+ */
+const getAllUtilisateurs = async (req, res) => {
   try {
-    const users = await UserAffichage.find();
-    res.status(200).json(users);
+    const utilisateurs = await User.find();
+    res.status(200).json(utilisateurs);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Erreur lors de la récupération des utilisateurs:", error);
+    res.status(500).json({ message: "Erreur serveur" });
   }
+};
+
+module.exports = {
+  ajouterUtilisateur,
+  getAllUtilisateurs,
 };

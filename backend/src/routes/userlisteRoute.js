@@ -1,9 +1,15 @@
 const express = require("express");
-import { ajouterUser, afficherUsers } from "../controllers/simpleuserController.js";
-
 const router = express.Router();
 
-router.post("/", ajouterUser);   // POST /api/users
-router.get("/", afficherUsers);   // GET /api/users
+const {
+  ajouterUtilisateur,
+  getAllUtilisateurs,
+} = require("../controllers/simpleuserController");
 
-export default router;
+// Route POST : Ajouter un utilisateur dans la base ref (base de référence)
+router.post("/", ajouterUtilisateur);
+
+// Route GET : Afficher tous les utilisateurs depuis la base main (base principale)
+router.get("/", getAllUtilisateurs);
+
+module.exports = router;

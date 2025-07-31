@@ -6,6 +6,7 @@ console.log("DB_URI_ACCES_ADMINS =", process.env.DB_URI_ACCES_ADMINS);
 console.log("DB_URI_REGISTERED_ADMINS =", process.env.DB_URI_REGISTERED_ADMINS);
 
 const express = require("express");
+const connectDB = require("./src/config/db");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require("./src/routes/authRoutes");
@@ -15,7 +16,6 @@ const verifyUserRoute = require("./src/routes/userRoutes");
 const partisRoutes = require('./src/routes/partiRoutes');
 const userRoutes = require("./src/routes/user");
 const userlisteRoutes = require( "./src/routes/userlisteRoute");
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
