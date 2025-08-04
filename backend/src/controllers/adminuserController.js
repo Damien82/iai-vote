@@ -39,8 +39,8 @@ const ajouterAdmin = async (req, res) => {
  */
 const getAllAdmins = async (req, res) => {
   try {
-    const Admin = await Admins.find().select("-motDePasse");
-    res.status(200).json(utilisateurs);
+    const admin = await Admins.find().select("-motDePasse");
+    res.status(200).json(admin);
   } catch (error) {
     console.error("Erreur lors de la récupération des utilisateurs:", error);
     res.status(500).json({ message: "Erreur serveur" });
