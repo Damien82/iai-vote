@@ -20,6 +20,12 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const [loading, setLoading] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<User | null>(null);
 
+  const validTextRegex = /^[a-zA-ZÀ-ÿ0-9 \-']*$/;
+
+  const [nomError, setNomError] = useState('');
+  const [prenomError, setPrenomError] = useState('');
+  const [matriculeError, setMatriculeError] = useState('');
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -35,7 +41,16 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   };
 
   const handleAdd = async () => {
-    if (!newUser.nom || !newUser.prenom || !newUser.matricule) return;
+    if (!newUser.nom || !newUser.prenom || !newUser.matricule) {
+      alert("Tous les champs sont requis.");
+      return;
+    }
+
+    if (nomError || prenomError || matriculeError) {
+      alert("Corrigez les erreurs dans le formulaire.");
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await fetch(API_URL, {
@@ -44,7 +59,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
         body: JSON.stringify(newUser),
       });
       if (res.ok) {
-        alert("Ajout réussie");
+        alert("Ajout réussi");
         setModalOpen(false);
         setNewUser({ nom: '', prenom: '', matricule: '' });
         fetchUsers();
@@ -54,20 +69,19 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
     }
   };
 
-const handleDelete = async (id: string) => {
-  const res = await fetch(`https://iai-vote.onrender.com/api/listeadmin/${id}`, {
-    method: "DELETE",
-  });
-  const data = await res.json();
+  const handleDelete = async (id: string) => {
+    const res = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
 
-  if (res.ok) {
-    alert("Suppression réussie");
-    fetchUsers(); // recharger la liste
-  } else {
-    alert("Erreur : " + data.message);
-  }
-};
-
+    if (res.ok) {
+      alert("Suppression réussie");
+      fetchUsers();
+    } else {
+      alert("Erreur : " + data.message);
+    }
+  };
 
   const filteredUsers = users.filter(user =>
     `${user.nom} ${user.prenom} ${user.matricule}`.toLowerCase().includes(search.toLowerCase())
@@ -137,30 +151,61 @@ const handleDelete = async (id: string) => {
       {modalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className={`p-6 rounded shadow-lg space-y-4 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
-            <h2 className="text-lg font-bold">Ajouter un utilisateur</h2>
+            <h2 className="text-lg font-bold">Ajouter un admin</h2>
 
             <input
               placeholder="Matricule"
               className={inputClass}
               value={newUser.matricule}
-              onChange={e => setNewUser({ ...newUser, matricule: e.target.value })}
+              onChange={e => {
+                const value = e.target.value;
+                if (validTextRegex.test(value)) {
+                  setNewUser({ ...newUser, matricule: value });
+                  setMatriculeError('');
+                } else {
+                  setMatriculeError("Caractère non autorisé");
+                }
+              }}
             />
+            {matriculeError && <p className="text-red-500 text-sm">{matriculeError}</p>}
+
             <input
               placeholder="Nom"
               className={inputClass}
               value={newUser.nom}
-              onChange={e => setNewUser({ ...newUser, nom: e.target.value })}
+              onChange={e => {
+                const value = e.target.value;
+                if (validTextRegex.test(value)) {
+                  setNewUser({ ...newUser, nom: value });
+                  setNomError('');
+                } else {
+                  setNomError("Caractère non autorisé");
+                }
+              }}
             />
+            {nomError && <p className="text-red-500 text-sm">{nomError}</p>}
+
             <input
               placeholder="Prénom"
               className={inputClass}
               value={newUser.prenom}
-              onChange={e => setNewUser({ ...newUser, prenom: e.target.value })}
+              onChange={e => {
+                const value = e.target.value;
+                if (validTextRegex.test(value)) {
+                  setNewUser({ ...newUser, prenom: value });
+                  setPrenomError('');
+                } else {
+                  setPrenomError("Caractère non autorisé");
+                }
+              }}
             />
+            {prenomError && <p className="text-red-500 text-sm">{prenomError}</p>}
 
             <div className="flex justify-end gap-2">
               <button onClick={() => setModalOpen(false)} className="px-4 py-2 bg-gray-400 text-white rounded">Annuler</button>
-              <button onClick={handleAdd} className="px-4 py-2 bg-blue-600 text-white rounded">{loading ? 'Ajout...' : 'Ajouter'}</button>
+              <button onClick={handleAdd} className="px-4 py-2 bg-blue-600 text-white rounded">
+                {loading ? 'Ajout...' : 'Ajouter'}
+              </button>
             </div>
           </div>
         </div>
@@ -174,11 +219,12 @@ const handleDelete = async (id: string) => {
             <p>Voulez-vous vraiment supprimer <strong>{deleteConfirm.nom} {deleteConfirm.prenom}</strong> ?</p>
             <div className="mt-4 flex justify-end gap-3">
               <button onClick={() => setDeleteConfirm(null)} className="bg-gray-400 text-white px-4 py-2 rounded">Annuler</button>
-              <button onClick={() => { if (deleteConfirm) handleDelete(deleteConfirm._id); setDeleteConfirm(null);}}
-                    className="bg-red-600 text-white px-4 py-2 rounded"
-                >Supprimer
-                </button>
-
+              <button
+                onClick={() => { if (deleteConfirm) handleDelete(deleteConfirm._id); setDeleteConfirm(null); }}
+                className="bg-red-600 text-white px-4 py-2 rounded"
+              >
+                Supprimer
+              </button>
             </div>
           </div>
         </div>
