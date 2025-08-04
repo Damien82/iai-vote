@@ -39,7 +39,7 @@ const ajouterUtilisateur = async (req, res) => {
  */
 const getAllUtilisateurs = async (req, res) => {
   try {
-    const utilisateurs = await User.find();
+    const utilisateurs = await User.find().select("-motdepasse");
     res.status(200).json(utilisateurs);
   } catch (error) {
     console.error("Erreur lors de la récupération des utilisateurs:", error);
