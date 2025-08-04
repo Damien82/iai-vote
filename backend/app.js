@@ -7,6 +7,7 @@ console.log("DB_URI_REGISTERED_ADMINS =", process.env.DB_URI_REGISTERED_ADMINS);
 
 const express = require("express");
 const connectDB = require("./src/config/db");
+const connectDB2 = require("./src/config/db_admin");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require("./src/routes/authRoutes");
@@ -75,6 +76,8 @@ app.use((req, res, next) => {
 });
 
 connectDB();
+connectDB2();
+
 
 // Routes
 app.use("/api/auth", authRoutes);
