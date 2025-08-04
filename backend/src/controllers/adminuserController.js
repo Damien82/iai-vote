@@ -2,7 +2,7 @@ const connectDB2 = require("../config/db_admin");
 const createAdminModel = require("../models/AdminReference"); // modèle pour refConnection
 const createUserModel = require("../models/Admins"); // modèle pour mainConnection
 
-const { refConnection, mainConnection } = connectDB();
+const { refConnection, mainConnection } = connectDB2();
 
 // Initialiser les modèles à partir des connexions
 const AdminRef = createAdminModel(refConnection);
