@@ -18,6 +18,7 @@ const partisRoutes = require('./src/routes/partiRoutes');
 const userRoutes = require("./src/routes/user");
 const userlisteRoutes = require( "./src/routes/userlisteRoute");
 const adminlisteRoutes = require( "./src/routes/AdminlisteRoute");
+const usersRoutes2 = require('./src/routes/userlisteRoute'); // le bon chemin selon ton projet
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -88,6 +89,7 @@ app.use('/api/partis', partisRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/listeusers", userlisteRoutes)
 app.use("/api/listeadmin", adminlisteRoutes)
+app.use('/api/users', usersRoutes2);
 
 // ⛔ Gestion des erreurs Multer
 const errorHandler = require("./src/middlewares/errorHandler");

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const User = require('../models/Users');
 
 const {
   ajouterUtilisateur,
@@ -15,6 +16,17 @@ router.get("/", getAllUtilisateurs);
 
 // Route GET : supprimer tous un utilisateur
 router.delete("/:id", deleteUtilisateur);
+
+// Route pour compter les utilisateurs
+router.get('/count', async (req, res) => {
+  try {
+    const count = await User.countDocuments();
+    res.status(200).json({ count });
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+});
+
 
 
 module.exports = router;
