@@ -78,8 +78,21 @@ const deleteAdmins = async (req, res) => {
   }
 };
 
+// Utilisation de la connexion principale
+
+const getAdminCount = async (req, res) => {
+  try {
+    const count = await Admins.countDocuments();
+    res.json({ count });
+  } catch (error) {
+    console.error('Erreur lors du comptage des administrateurs :', error);
+    res.status(500).json({ error: "Erreur lors du comptage des administrateurs." });
+  }
+};
+
 module.exports = {
   ajouterAdmin,
   getAllAdmins,
+  getAdminCount,
   deleteAdmins, // <-- nouvelle fonction
 };
