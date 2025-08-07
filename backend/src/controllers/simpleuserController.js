@@ -1,8 +1,6 @@
 const connectDB = require("../config/db");
 const createEtudiantModel = require("../models/EtudiantReference"); // modèle pour refConnection
 const createUserModel = require("../models/Users"); // modèle pour mainConnection
-const { mainConnection } = require('../config/db'); // ou l'endroit où tu initialises mainConnection
-const User2 = createUserModel(mainConnection);
 
 const { refConnection, mainConnection } = connectDB();
 
@@ -84,7 +82,7 @@ const deleteUtilisateur = async (req, res) => {
 
 const getUserCount = async (req, res) => {
   try {
-    const count = await User2.countDocuments();
+    const count = await User.countDocuments();
     res.json({ count });
   } catch (error) {
     console.error('Erreur lors du comptage des utilisateurs :', error);
