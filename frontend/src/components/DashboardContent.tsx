@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as echarts from 'echarts';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartBar } from '@fortawesome/free-solid-svg-icons';
@@ -7,14 +7,46 @@ interface DashboardContentProps {
   darkMode: boolean;
 }
 
-const stats = [
-  { title: 'Total Utilisateurs', value: '2,847', color: 'from-blue-500 to-blue-600' },
-  { title: 'Total Administrateurs', value: '12', color: 'from-purple-500 to-purple-600' },
-  { title: 'Total Votes', value: '15,923', color: 'from-green-500 to-green-600' },
-];
-
 const DashboardContent: React.FC<DashboardContentProps> = ({ darkMode }) => {
   const chartRef = useRef<HTMLDivElement>(null);
+  const [userCount, setUserCount] = useState<number>(0);
+  const [adminCount, setAdminCount] = useState<number>(0);
+
+  useEffect(() => {
+    // Récupération du nombre d'utilisateurs
+    const fetchUserCount = async () => {
+      try {
+        const res = await fetch('https://iai-vote.onrender.com/api/users/count');
+        const data = await res.json();
+        setUserCount(data.count);
+      } catch (err) {
+        console.error("Erreur lors de la récupération du nombre d'utilisateurs :", err);
+      }
+    };
+
+    fetchUserCount();
+  }, []);
+
+  useEffect(() => {
+    // Récupération du nombre d'utilisateurs
+    const fetchAdminCount = async () => {
+      try {
+        const res = await fetch('https://iai-vote.onrender.com/api/admins/count');
+        const data = await res.json();
+        setAdminCount(data.count);
+      } catch (err) {
+        console.error("Erreur lors de la récupération du nombre d'administrateurs :", err);
+      }
+    };
+
+    fetchAdminCount();
+  }, []);
+
+  const stats = [
+    { title: 'Total Utilisateurs', value: `${userCount} utilisateur${userCount > 1 ? 's' : ''}`, color: 'from-blue-500 to-blue-600' },
+    { title: 'Total Administrateurs', value: `${adminCount} administrateur${adminCount > 1 ? 's' : ''}`, color: 'from-purple-500 to-purple-600' },
+    { title: 'Total Votes', value: '15,923', color: 'from-green-500 to-green-600' },
+  ];
 
   useEffect(() => {
     if (!chartRef.current) return;
@@ -34,42 +66,22 @@ const DashboardContent: React.FC<DashboardContentProps> = ({ darkMode }) => {
       },
       tooltip: {
         trigger: 'axis',
-        axisPointer: {
-          type: 'shadow',
-        },
+        axisPointer: { type: 'shadow' },
         backgroundColor: darkMode ? '#374151' : '#ffffff',
         borderColor: darkMode ? '#6b7280' : '#e5e7eb',
-        textStyle: {
-          color: darkMode ? '#ffffff' : '#1f2937',
-        },
+        textStyle: { color: darkMode ? '#ffffff' : '#1f2937' },
       },
       xAxis: {
         type: 'category',
         data: ['RDPC', 'SDF', 'PCRN'],
-        axisLine: {
-          lineStyle: {
-            color: darkMode ? '#6b7280' : '#d1d5db',
-          },
-        },
-        axisLabel: {
-          color: darkMode ? '#d1d5db' : '#6b7280',
-        },
+        axisLine: { lineStyle: { color: darkMode ? '#6b7280' : '#d1d5db' } },
+        axisLabel: { color: darkMode ? '#d1d5db' : '#6b7280' },
       },
       yAxis: {
         type: 'value',
-        axisLine: {
-          lineStyle: {
-            color: darkMode ? '#6b7280' : '#d1d5db',
-          },
-        },
-        axisLabel: {
-          color: darkMode ? '#d1d5db' : '#6b7280',
-        },
-        splitLine: {
-          lineStyle: {
-            color: darkMode ? '#374151' : '#f3f4f6',
-          },
-        },
+        axisLine: { lineStyle: { color: darkMode ? '#6b7280' : '#d1d5db' } },
+        axisLabel: { color: darkMode ? '#d1d5db' : '#6b7280' },
+        splitLine: { lineStyle: { color: darkMode ? '#374151' : '#f3f4f6' } },
       },
       series: [
         {
@@ -114,7 +126,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({ darkMode }) => {
       </div>
 
       {/* Statistiques */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-6">
         {stats.map((stat, idx) => (
           <div
             key={idx}

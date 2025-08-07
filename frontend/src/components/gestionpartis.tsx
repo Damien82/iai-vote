@@ -216,7 +216,7 @@ const handleAdd = async () => {
           placeholder="Rechercher..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className={`px-4 py-2 rounded-lg border w-full sm:w-1/2 focus:outline-none ${
+          className={`px-4 py-2 rounded-lg border w-full sm:w-1/2 focus:outline-blue ${
             darkMode
               ? 'bg-gray-800 text-white border-gray-600'
               : 'bg-white text-gray-800 border-gray-300'

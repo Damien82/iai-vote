@@ -104,17 +104,17 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
 
   return (
     <div className={`p-4 space-y-6 ${darkMode ? 'bg-gray-900 text-white' : ' text-black'}`}>
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <input
           type="text"
           placeholder="Rechercher..."
-          className={`border px-4 py-2 rounded w-1/2 ${darkMode ? 'bg-gray-800 text-white border-gray-600' : ''}`}
+          className={`px-4 py-2 rounded-lg border w-full sm:w-1/2 focus:outline-blue ${darkMode ? 'bg-gray-800 text-white border-gray-600' : ''}`}
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
         <button
           onClick={() => setModalOpen(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
         >
           <FontAwesomeIcon icon={faPlus} /> Ajouter un utilisateur
         </button>
