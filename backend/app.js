@@ -90,6 +90,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/listeusers", userlisteRoutes)
 app.use("/api/listeadmin", adminlisteRoutes)
 app.use('/api/users', usersRoutes2);
+app.use('/api/admins', adminlisteRoutes);
 
 // ⛔ Gestion des erreurs Multer
 const errorHandler = require("./src/middlewares/errorHandler");
