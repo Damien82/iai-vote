@@ -6,7 +6,7 @@ import Userspage from '../components/gestionutilisateurs';
 import Adminspage from '../components/gestionadmins';
 import ProfileContent from '../components/ProfileContent';
 import PartisPage from '../components/gestionpartis';
-import situation from '../components/situation_site';
+import Situation from '../components/situation_site';
 
 interface UserData {
   matricule: string;
@@ -155,7 +155,7 @@ const Dashboard: React.FC = () => {
         {activeTab === 'gestionsadmins' && <Adminspage darkMode={darkMode} />}
 
         
-        {/*activeTab === 'gestionsite' && <situation darkMode={darkMode} />*/}
+        {activeTab === 'gestionsite' && <Situation darkMode={darkMode} />}
       </main>
     </div>
   );
