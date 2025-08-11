@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {loginSuperAdmin, verifySuperAdmin, } = require("../controllers/authController_superadmin");
+const {loginSuperAdmin, verifySuperAdmin } = require("../controllers/authController_superadmin");
 const { getProfile } = require("../controllers/userController");
 
 

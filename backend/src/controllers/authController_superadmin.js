@@ -3,11 +3,11 @@ const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = process.env.JWT_SECRET || "tonSecretJwtIci";
 
-
-// === ROUTE: POST /api/auth/login ===
+// === ROUTE: POST /api/auth/loginSuperAdmin ===
 exports.loginSuperAdmin = async (req, res) => {
   const { matricule, motDePasse } = req.body;
 
+  // déplacer ici pour avoir accès à req.db_superadmin
   const Admin = require("../models/SuperAdmin")(req.db_superadmin.registeredSuperAdmins);
 
   try {
@@ -34,11 +34,12 @@ exports.loginSuperAdmin = async (req, res) => {
   }
 };
 
-//== ROUTE:POST /api/verifyAdmin ====
-exports.verifysuperAdmin = async (req, res) => {
+// === ROUTE: POST /api/auth/verify-superadmin ===
+exports.verifySuperAdmin = async (req, res) => {
   const { matricule } = req.body;
   if (!matricule) return res.status(400).json({ message: "Matricule requis" });
 
+  // déplacer ici aussi
   const Admin = require("../models/SuperAdmin")(req.db_superadmin.registeredSuperAdmins);
 
   try {
@@ -54,4 +55,3 @@ exports.verifysuperAdmin = async (req, res) => {
     return res.status(500).json({ message: "Erreur serveur" });
   }
 };
-
