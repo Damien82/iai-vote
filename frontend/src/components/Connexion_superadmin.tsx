@@ -18,7 +18,7 @@ const SuperLoginForm: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch("https://iai-vote.onrender.com/api/authAdmin/loginSuperAdmin", {
+      const response = await fetch("https://iai-vote.onrender.com/api/admins/loginSuperadmin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ matricule, motDePasse: password }),
@@ -37,7 +37,7 @@ const SuperLoginForm: React.FC = () => {
         matricule: data.matricule,
       });
 
-      navigate("/");
+      navigate("/Dashboard");
     } catch (err) {
       setError("Erreur serveur, réessayez plus tard.");
     }

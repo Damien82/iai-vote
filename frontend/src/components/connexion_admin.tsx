@@ -37,7 +37,7 @@ const LoginForm: React.FC = () => {
         matricule: data.matricule,
       });
 
-      navigate("/");
+      navigate("/SimpleDashboard");
     } catch (err) {
       setError("Erreur serveur, réessayez plus tard.");
     }

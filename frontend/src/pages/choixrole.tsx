@@ -41,6 +41,7 @@ const choixrole: React.FC = () => {
                 Étudiant
             </div>
         </div>
+
         <div
           onClick={() => handleRoleSelect("Administrateur")}
           className="w-[200px] h-[200px] bg-blue-400 rounded-xl shadow-md flex items-center justify-center text-xl font-semibold text-black cursor-pointer hover:scale-105 transition-transform duration-300"
@@ -57,7 +58,7 @@ const choixrole: React.FC = () => {
         >
             <div className='flex flex-col'>
                 <FontAwesomeIcon icon={faUserShield} className="text-4xl mb-4 text-black" />
-                Super Administrateur
+                <div className="text-center">Super Administrateur</div>
             </div>
         </div>
       </div>
