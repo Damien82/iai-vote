@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
-const AdminModel = require("../models/Admin");
+const AdminModel = require("../models/Admins");
 const SuperAdminModel = require("../models/SuperAdmin");
-const UserModel = require("../models/User");
+const UserModel = require("../models/Users");
 
 const SECRET = process.env.JWT_SECRET || "votre_jwt_secret";
 

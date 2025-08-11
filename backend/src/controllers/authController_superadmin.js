@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "tonSecretJwtIci";
 exports.loginSuperAdmin = async (req, res) => {
   const { matricule, motDePasse } = req.body;
 
-  const Admin = require("../models/SuperAdmins")(req.db_superadmin.registeredSuperAdmins);
+  const Admin = require("../models/SuperAdmin")(req.db_superadmin.registeredSuperAdmins);
 
   try {
     const admin = await Admin.findOne({ matricule });
@@ -39,7 +39,7 @@ exports.verifysuperAdmin = async (req, res) => {
   const { matricule } = req.body;
   if (!matricule) return res.status(400).json({ message: "Matricule requis" });
 
-  const Admin = require("../models/SuperAdmins")(req.db_superadmin.registeredSuperAdmins);
+  const Admin = require("../models/SuperAdmin")(req.db_superadmin.registeredSuperAdmins);
 
   try {
     const admin = await Admin.findOne({ matricule });

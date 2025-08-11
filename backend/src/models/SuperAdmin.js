@@ -5,7 +5,7 @@ module.exports = (db_superadmin) => {
 
   const mongoose = require("mongoose");
 
-  const superAdminSchema = new mongoose.Schema({
+  const AdminSchema = new mongoose.Schema({
     matricule: { type: String, required: true, unique: true },
     nom: { type: String, required: true },
     prenom: { type: String, required: true },
@@ -13,5 +13,5 @@ module.exports = (db_superadmin) => {
     motDePasse: { type: String, required: true },
   });
 
-  return db_admin.model("Admins", superAdminSchema);
+  return db_admin.model("Admins", AdminSchema);
 };
