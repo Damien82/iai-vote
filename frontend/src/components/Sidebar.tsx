@@ -1,3 +1,4 @@
+import logo from "../images/logo_iai.jpg"
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartBar, faUserCircle, faGavel,faUserGear,faUserShield } from '@fortawesome/free-solid-svg-icons';
@@ -47,8 +48,11 @@ const Sidebar: React.FC<SidebarProps> = ({
               className={`font-bold text-lg ${
                 darkMode ? 'text-white' : 'text-gray-900'
               } transition-opacity duration-300`}
-            >
-              IAI-vote
+            >     
+              <div className="flex gap-3">
+                <div> <img src={logo} alt="logo" className='w-[35px] rounded hover:scale-110 transition-transform'/> </div>
+                <div>IAI-vote</div>
+              </div>
             </span>
           )}
         </div>

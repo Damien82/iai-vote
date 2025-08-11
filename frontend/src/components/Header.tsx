@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVoteYea, faUser, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import Button from "./ui/buttons/logout"; // J'utilise ton bouton standard ici
 import { useAuth } from "../context/AuthContext"; // Import du contexte Auth
+import logo from "../images/logo_iai.jpg"
 
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -34,10 +35,7 @@ const Header: React.FC = () => {
           className="flex items-center space-x-2 cursor-pointer"
           onClick={() => handleNavigation("/")}
         >
-          <FontAwesomeIcon
-            icon={faVoteYea}
-            className="text-[#4A90E2] text-2xl hover:scale-110 transition-transform"
-          />
+          <img src={logo} alt="logo" className='w-[40px] rounded hover:scale-110 transition-transform'/>
           <span className="text-xl font-semibold text-gray-800">VoteIAI</span>
         </div>
 

@@ -4,7 +4,6 @@ import {
   faLock,
   faShieldAlt,
   faUserShield,
-  faVoteYea,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFacebookF,
@@ -12,6 +11,7 @@ import {
   faLinkedinIn,
 } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
+import logo from "../images/logo_iai.jpg"
 
 const Footer: React.FC = () => (
   <footer className="bg-gray-900 text-white py-16 mt-20">
@@ -20,10 +20,7 @@ const Footer: React.FC = () => (
         {/* Logo + description */}
         <div className="md:w-full">
           <Link to="/" className="flex items-center space-x-2 mb-6 cursor-pointer">
-           <FontAwesomeIcon
-             icon={faVoteYea}
-             className="text-[#4A90E2] text-2xl hover:scale-110 transition-transform"
-            />
+            <img src={logo} alt="logo" className='w-[40px] rounded hover:scale-110 transition-transform'/>
             <span className="text-xl font-semibold">VoteIAI</span>
           </Link>
           <p className="text-gray-400">
