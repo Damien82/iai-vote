@@ -4,6 +4,7 @@ console.log("DB_URI_ACCES_USERS =", process.env.DB_URI_ACCES_USERS);
 console.log("DB_URI_REGISTERED_USERS =", process.env.DB_URI_REGISTERED_USERS);
 console.log("DB_URI_ACCES_ADMINS =", process.env.DB_URI_ACCES_ADMINS);
 console.log("DB_URI_REGISTERED_ADMINS =", process.env.DB_URI_REGISTERED_ADMINS);
+console.log("DB_URI_REGISTERED_SUPERADMINS =", process.env.DB_URI_REGISTERED_SUPERADMINS);
 
 const express = require("express");
 const connectDB = require("./src/config/db");
@@ -18,7 +19,8 @@ const partisRoutes = require('./src/routes/partiRoutes');
 const userRoutes = require("./src/routes/user");
 const userlisteRoutes = require( "./src/routes/userlisteRoute");
 const adminlisteRoutes = require( "./src/routes/AdminlisteRoute");
-const usersRoutes2 = require('./src/routes/userlisteRoute'); // le bon chemin selon ton projet
+const usersRoutes2 = require('./src/routes/userlisteRoute'); 
+const superAdminRoutes2 = require('./src/routes/authRoutes_superadmin'); 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -55,6 +57,11 @@ const registeredAdminsDB = mongoose.createConnection(process.env.DB_URI_REGISTER
 registeredAdminsDB.on("connected", () => console.log("Connexion à registered_Admins OK"));
 registeredAdminsDB.on("error", (err) => console.error("Erreur registered_Admins :", err));
 
+// Connexion à la base `registered_superadmins`
+const registeredSuperAdminsDB = mongoose.createConnection(process.env.DB_URI_REGISTERED_SUPERADMINS);
+registeredSuperAdminsDB.on("connected", () => console.log("Connexion à registered_SuperAdmins OK"));
+registeredSuperAdminsDB.on("error", (err) => console.error("Erreur registered_SuperAdmins :", err));
+
 // Connexion à la base `partis`
 const partisDB = mongoose.createConnection(process.env.DB_URI_PARTIS);
 partisDB.on("connected", () => console.log("Connexion à partis OK"));
@@ -69,6 +76,9 @@ app.use((req, res, next) => {
   req.db_admin = {
     accesAdmins: accesAdminsDB,
     registeredAdmins: registeredAdminsDB
+  };
+  req.db_superadmin = {
+    registeredSuperAdmins: registeredSuperAdminsDB
   };
     req.db_partis = {
     partis: partisDB
@@ -91,6 +101,7 @@ app.use("/api/listeusers", userlisteRoutes)
 app.use("/api/listeadmin", adminlisteRoutes)
 app.use('/api/users', usersRoutes2);
 app.use('/api/admins', adminlisteRoutes);
+app.use('/api/admins', superAdminRoutes2);
 
 // ⛔ Gestion des erreurs Multer
 const errorHandler = require("./src/middlewares/errorHandler");
