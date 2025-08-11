@@ -15,6 +15,9 @@ const choixrole: React.FC = () => {
       case "Administrateur":
         navigate("/ConnexionAD"); 
         break;
+      case "SuperAdministrateur":
+        navigate("/ConnexionSAD"); 
+        break;
       default:
         break;
     }
@@ -45,6 +48,16 @@ const choixrole: React.FC = () => {
             <div className='flex flex-col'>
                 <FontAwesomeIcon icon={faUserShield} className="text-4xl mb-4 text-black" />
                 Administrateur
+            </div>
+        </div>
+
+        <div
+          onClick={() => handleRoleSelect("SuperAdministrateur")}
+          className="w-[200px] h-[200px] bg-blue-400 rounded-xl shadow-md flex items-center justify-center text-xl font-semibold text-black cursor-pointer hover:scale-105 transition-transform duration-300"
+        >
+            <div className='flex flex-col'>
+                <FontAwesomeIcon icon={faUserShield} className="text-4xl mb-4 text-black" />
+                Super Administrateur
             </div>
         </div>
       </div>

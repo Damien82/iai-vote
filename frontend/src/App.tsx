@@ -17,6 +17,7 @@ import ConnexionAD from "./pages/connexion_admin.js";
 import EnregistrementAD from "./pages/Enregistrement_admin.js";
 import Progression from "./pages/progression.tsx";
 import Choixrole from "./pages/choixrole.tsx";
+import ConnexionSAD from "./pages/connexion_superadmin.tsx"
 import { Analytics } from "@vercel/analytics/react"; // ✅
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import '../src/index.css';
@@ -39,6 +40,7 @@ const App: React.FC = () => {
         <Route path="/Enregistrement" element={<Enregistrement />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/unauthorizedAD" element={<UnauthorizedAD />} />
+        <Route path="/ConnexionSAD" element={<ConnexionSAD />} />
       </Routes>
 
       {/* ✅ Ajoute ici le composant Analytics */}
