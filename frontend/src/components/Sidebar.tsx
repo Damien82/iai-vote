@@ -1,7 +1,7 @@
 import logo from "../images/logo_iai.jpg"
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartBar, faUserCircle, faGavel,faUserGear,faUserShield } from '@fortawesome/free-solid-svg-icons';
+import { faChartBar, faUserCircle, faGavel,faUserGear,faUserShield, faPowerOff } from '@fortawesome/free-solid-svg-icons';
 
 interface SidebarProps {
   darkMode: boolean;
@@ -19,6 +19,7 @@ const menuItems = [
   { id: 'gestionpartis', name: 'Gestion des partis', icon: faGavel },
   { id: 'gestionsutilisateurs', name: 'Gestion des utilisateurs', icon: faUserGear },
   { id: 'gestionsadmins', name: 'Gestion des administrateurs', icon: faUserShield },
+  { id: 'gestionsite', name: 'Arrêt | Demarrage', icon: faPowerOff },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({
