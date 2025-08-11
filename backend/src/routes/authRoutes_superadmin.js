@@ -7,6 +7,7 @@ const { getProfile } = require("../controllers/userController");
 // ✅ Route de connexion
 router.post("/loginSuperAdmin", loginSuperAdmin);
 
+
 // nouvelle route de vérification
 router.post("/verify-superadmin", verifySuperAdmin);
 
