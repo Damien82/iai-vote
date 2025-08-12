@@ -97,3 +97,39 @@ exports.verifyAdmin = async (req, res) => {
   }
 };
 
+// === ROUTE: POST /api/auth/change-password ===
+exports.changePassword = async (req, res) => {
+  const { matricule, ancienMotDePasse, nouveauMotDePasse } = req.body;
+
+  if (!matricule || !ancienMotDePasse || !nouveauMotDePasse) {
+    return res.status(400).json({ message: "Tous les champs sont obligatoires." });
+  }
+
+  const Admin = require("../models/Admins")(req.db_admin.registeredAdmins);
+
+  try {
+    // On récupère l'admin
+    const admin = await Admin.findOne({ matricule });
+    if (!admin) {
+      return res.status(404).json({ message: "Administrateur introuvable." });
+    }
+
+    // Vérification ancien mot de passe
+    const isMatch = await bcrypt.compare(ancienMotDePasse, admin.motDePasse);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Ancien mot de passe incorrect." });
+    }
+
+    // Hash du nouveau mot de passe
+    const hashedPassword = await bcrypt.hash(nouveauMotDePasse, 10);
+    admin.motDePasse = hashedPassword;
+
+    await admin.save();
+
+    res.status(200).json({ message: "Mot de passe changé avec succès." });
+  } catch (err) {
+    console.error("Erreur lors du changement de mot de passe :", err);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+};
+
