@@ -12,63 +12,49 @@ const respondServerError = (res, err, context = "") => {
 exports.loginSuperAdmin = async (req, res) => {
   const { matricule, motDePasse } = req.body;
 
-  // logs d'entrée
   console.log("loginSuperAdmin called", { matricule: matricule ? "[RECEIVED]" : "[MISSING]" });
 
   if (!matricule || !motDePasse) {
-    return res.status(400).json({ error: "Matricule et motDePasse sont requis" });
+    return res.status(400).json({ error: "Matricule et mot de passe sont requis" });
   }
 
   try {
-    // validation de la connexion existante
     if (!req.db_superadmin) {
       console.error("req.db_superadmin undefined");
-      return res.status(500).json({ error: "Connexion superadmin introuvable (req.db_superadmin)" });
+      return res.status(500).json({ error: "Connexion superadmin introuvable" });
     }
 
-    // sécurité : vérifier la propriété attendue
     const registeredCollection = req.db_superadmin.registeredSuperAdmins || req.db_superadmin;
     if (!registeredCollection) {
       console.error("registeredSuperAdmins introuvable sur req.db_superadmin :", Object.keys(req.db_superadmin));
-      return res.status(500).json({ error: "Collection superadmin introuvable sur la connexion" });
+      return res.status(500).json({ error: "Collection superadmin introuvable" });
     }
 
-    // importer le modèle via la connexion (le modèle doit exporter une fonction)
     let SuperAdmin;
     try {
       const createSuperAdmin = require("../models/SuperAdmin");
       if (typeof createSuperAdmin !== "function") {
-        console.error("models/SuperAdmin n'exporte pas une fonction. export:", typeof createSuperAdmin);
+        console.error("models/SuperAdmin n'exporte pas une fonction");
         return res.status(500).json({ error: "Erreur modèle SuperAdmin mal configuré" });
       }
       SuperAdmin = createSuperAdmin(registeredCollection);
     } catch (errModel) {
-      console.error("Erreur lors du require(models/SuperAdmin) :", errModel);
       return respondServerError(res, errModel, "load model");
     }
 
-    // find
+    // On cherche l'admin
     const admin = await SuperAdmin.findOne({ matricule }).lean();
-    if (!admin) {
-      console.log("SuperAdmin non trouvé pour matricule:", matricule);
-      return res.status(404).json({ error: "SuperAdmin non trouvé" });
-    }
 
-    if (!admin.motDePasse) {
-      console.error("Admin trouvé mais motDePasse manquant pour:", matricule);
-      return res.status(500).json({ error: "Mot de passe administrateur manquant (donnée corrompue)" });
-    }
-
-    const isMatch = await bcrypt.compare(motDePasse, admin.motDePasse);
-    if (!isMatch) {
-      console.log("Mot de passe incorrect pour:", matricule);
-      return res.status(401).json({ error: "Mot de passe incorrect" });
+    // On combine la vérification matricule + mot de passe ici
+    if (!admin || !(await bcrypt.compare(motDePasse, admin.motDePasse || ""))) {
+      return res.status(401).json({ error: "Matricule ou mot de passe incorrect" });
     }
 
     const payload = { matricule: admin.matricule, nom: admin.nom, prenom: admin.prenom };
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
 
-    res.status(200).json({ message: "Connexion réussie", token });
+    return res.status(200).json({ message: "Connexion réussie", token });
+
   } catch (err) {
     return respondServerError(res, err, "loginSuperAdmin");
   }
