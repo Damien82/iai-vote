@@ -1,7 +1,7 @@
 import logo from "../images/logo_iai.jpg"
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartBar, faUserCircle, faGavel,faUserGear,faUserShield, faPowerOff } from '@fortawesome/free-solid-svg-icons';
+import { faChartBar, faUserCircle, faGavel,faUserGear,faUserShield } from '@fortawesome/free-solid-svg-icons';
 
 interface SidebarProps {
   darkMode: boolean;
