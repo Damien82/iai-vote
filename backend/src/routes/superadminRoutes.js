@@ -8,7 +8,7 @@ router.post("/verify-superadmin", async (req, res) => {
   if (!matricule) return res.status(400).json({ message: "Matricule requis" });
 
   try {
-    const admin = await req.db_admin.registeredSuperAdmins
+    const admin = await req.db_superadmin.registeredSuperAdmins
       .collection("admins")
       .findOne({ matricule });
 
