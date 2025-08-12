@@ -8,14 +8,36 @@ const LoginForm: React.FC = () => {
   const [matricule, setMatricule] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [matriculeError, setMatriculeError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  const matriculeRegex = /^[a-zA-Z0-9]*$/;
+
+  const handleMatriculeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    if (matriculeRegex.test(value)) {
+      setMatricule(value);
+      setMatriculeError(null);
+    } else {
+      const filtered = value.replace(/[^a-zA-Z0-9]/g, "");
+      setMatricule(filtered);
+      setMatriculeError("Seuls les caractères alphanumériques sont autorisés.");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setMatriculeError(null);
+
+    if (!matricule) {
+      setMatriculeError("Le matricule est requis.");
+      return;
+    }
 
     try {
       const response = await fetch("https://iai-vote.onrender.com/api/auth/login", {
@@ -47,7 +69,7 @@ const LoginForm: React.FC = () => {
     <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white rounded shadow relative">
       <h2 className="text-2xl mb-6 text-center font-bold">Connexion</h2>
 
-      <label className="block mb-4 relative">
+      <label className="block mb-5 relative">
         <FontAwesomeIcon
           icon={faEnvelope}
           className="absolute left-3 top-[18px] text-gray-400"
@@ -56,11 +78,12 @@ const LoginForm: React.FC = () => {
           type="text"
           placeholder="Matricule"
           value={matricule}
-          onChange={(e) => setMatricule(e.target.value)}
+          onChange={handleMatriculeChange}
           required
-          className="mb-4 w-full p-3 pl-10 border rounded"
+          className={`mb-1 w-full p-3 pl-10 border rounded ${matriculeError ? "border-red-600" : ""}`}
         />
       </label>
+      {matriculeError && <p className="mb-4 text-red-600 font-semibold">{matriculeError}</p>}
 
       <label className="block mb-4 relative">
         <FontAwesomeIcon

@@ -16,16 +16,47 @@ const RegisterPage: React.FC = () => {
   const [prenom, setPrenom] = useState("");
   const [classe, setClasse] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // 👈
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+
+  // Regex autorisés pour chaque champ
+  const matriculeRegex = /^[a-zA-Z0-9]*$/;
+  const nameRegex = /^[a-zA-Z\s'-]*$/; // lettres, espaces, apostrophes, traits d’union
+  const classeRegex = /^[a-zA-Z0-9\s-]*$/; // lettres, chiffres, espaces, traits d’union
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setter: React.Dispatch<React.SetStateAction<string>>,
+    regex: RegExp,
+    fieldName: string,
+    errorMsg: string
+  ) => {
+    const value = e.target.value;
+    if (regex.test(value)) {
+      setter(value);
+      setErrors((prev) => ({ ...prev, [fieldName]: null }));
+    } else {
+      // Supprime tous les caractères non autorisés
+      const filtered = value.replace(new RegExp(`[^${regex.source.replace(/^\^|\$$/g, "")}]`, "g"), "");
+      setter(filtered);
+      setErrors((prev) => ({ ...prev, [fieldName]: errorMsg }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
+
+    if (Object.values(errors).some((e) => e !== null)) {
+      setError("Veuillez corriger les erreurs dans le formulaire.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await fetch("https://iai-vote.onrender.com/api/auth/register", {
@@ -63,11 +94,24 @@ const RegisterPage: React.FC = () => {
             type="text"
             placeholder="Matricule"
             value={matricule}
-            onChange={(e) => setMatricule(e.target.value)}
+            onChange={(e) =>
+              handleInputChange(
+                e,
+                setMatricule,
+                matriculeRegex,
+                "matricule",
+                "Seuls les caractères alphanumériques sont autorisés."
+              )
+            }
             required
-            className="w-full pl-10 pr-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={`w-full pl-10 pr-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+              errors.matricule ? "border-red-600" : ""
+            }`}
           />
         </label>
+        {errors.matricule && (
+          <p className="mb-4 text-red-600 font-semibold">{errors.matricule}</p>
+        )}
 
         <label className="block mb-4 relative">
           <FontAwesomeIcon icon={faUser} className="absolute left-3 top-[18px] text-gray-400" />
@@ -75,11 +119,24 @@ const RegisterPage: React.FC = () => {
             type="text"
             placeholder="Nom"
             value={nom}
-            onChange={(e) => setNom(e.target.value)}
+            onChange={(e) =>
+              handleInputChange(
+                e,
+                setNom,
+                nameRegex,
+                "nom",
+                "Seules les lettres, espaces, apostrophes et traits d’union sont autorisés."
+              )
+            }
             required
-            className="w-full pl-10 pr-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={`w-full pl-10 pr-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+              errors.nom ? "border-red-600" : ""
+            }`}
           />
         </label>
+        {errors.nom && (
+          <p className="mb-4 text-red-600 font-semibold">{errors.nom}</p>
+        )}
 
         <label className="block mb-4 relative">
           <FontAwesomeIcon icon={faUser} className="absolute left-3 top-[18px] text-gray-400" />
@@ -87,11 +144,24 @@ const RegisterPage: React.FC = () => {
             type="text"
             placeholder="Prénom"
             value={prenom}
-            onChange={(e) => setPrenom(e.target.value)}
+            onChange={(e) =>
+              handleInputChange(
+                e,
+                setPrenom,
+                nameRegex,
+                "prenom",
+                "Seules les lettres, espaces, apostrophes et traits d’union sont autorisés."
+              )
+            }
             required
-            className="w-full pl-10 pr-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={`w-full pl-10 pr-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+              errors.prenom ? "border-red-600" : ""
+            }`}
           />
         </label>
+        {errors.prenom && (
+          <p className="mb-4 text-red-600 font-semibold">{errors.prenom}</p>
+        )}
 
         <label className="block mb-4 relative">
           <FontAwesomeIcon icon={faUserGraduate} className="absolute left-3 top-[18px] text-gray-400" />
@@ -99,16 +169,29 @@ const RegisterPage: React.FC = () => {
             type="text"
             placeholder="Classe"
             value={classe}
-            onChange={(e) => setClasse(e.target.value)}
+            onChange={(e) =>
+              handleInputChange(
+                e,
+                setClasse,
+                classeRegex,
+                "classe",
+                "Seules les lettres, chiffres, espaces et traits d’union sont autorisés."
+              )
+            }
             required
-            className="w-full pl-10 pr-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={`w-full pl-10 pr-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+              errors.classe ? "border-red-600" : ""
+            }`}
           />
         </label>
+        {errors.classe && (
+          <p className="mb-4 text-red-600 font-semibold">{errors.classe}</p>
+        )}
 
         <label className="block mb-4 relative">
           <FontAwesomeIcon icon={faLock} className="absolute left-3 top-[18px] text-gray-400" />
           <input
-            type={showPassword ? "text" : "password"} // 👈 type dynamique
+            type={showPassword ? "text" : "password"} // type dynamique
             placeholder="Mot de passe"
             value={motDePasse}
             onChange={(e) => setMotDePasse(e.target.value)}

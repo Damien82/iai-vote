@@ -2,16 +2,16 @@ import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loader from "./Loader"; // ✅ Assure-toi que ce fichier existe
 
-interface RequireAdminProps {
+interface RequireSuperAdminProps {
   children: ReactNode;
 }
 
-const RequireSimpleAdmin = ({ children }: RequireAdminProps) => {
+const RequireSuperAdmin = ({ children }: RequireSuperAdminProps) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true); // ✅ état de chargement
 
   useEffect(() => {
-    const checkAdminAccess = async () => {
+    const checkSuperAdminAccess = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
         navigate("/unauthorized");
@@ -48,7 +48,7 @@ const RequireSimpleAdmin = ({ children }: RequireAdminProps) => {
       }
     };
 
-    checkAdminAccess();
+    checkSuperAdminAccess();
   }, [navigate]);
 
   if (loading) return <Loader />; // ✅ Affichage du loader pendant la vérif
@@ -56,4 +56,4 @@ const RequireSimpleAdmin = ({ children }: RequireAdminProps) => {
   return <>{children}</>;
 };
 
-export default RequireSimpleAdmin;
+export default RequireSuperAdmin;
