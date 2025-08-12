@@ -98,34 +98,34 @@ exports.verifyAdmin = async (req, res) => {
 };
 
 exports.changePassword = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { ancienMotDePasse, nouveauMotDePasse } = req.body;
+  const matricule = req.user.matricule; // récupéré via le middleware
+  const { ancienMotDePasse, nouveauMotDePasse } = req.body;
 
-    // Validation simple
-    if (!ancienMotDePasse || !nouveauMotDePasse) {
-      return res.status(400).json({ message: "Tous les champs sont obligatoires." });
+  if (!ancienMotDePasse || !nouveauMotDePasse) {
+    return res.status(400).json({ message: "Tous les champs sont obligatoires." });
+  }
+
+  const Admin = require("../models/Admins")(req.db_admin.registeredAdmins);
+
+  try {
+    const admin = await Admin.findOne({ matricule });
+    if (!admin) {
+      return res.status(404).json({ message: "Administrateur introuvable." });
     }
 
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé." });
-
-    // Vérification ancien mot de passe
-    const isMatch = await bcrypt.compare(ancienMotDePasse, user.password);
+    const isMatch = await bcrypt.compare(ancienMotDePasse, admin.motDePasse);
     if (!isMatch) {
       return res.status(401).json({ message: "Ancien mot de passe incorrect." });
     }
 
-    // Hash du nouveau mot de passe
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(nouveauMotDePasse, salt);
+    const hashedPassword = await bcrypt.hash(nouveauMotDePasse, 10);
+    admin.motDePasse = hashedPassword;
 
-    await user.save();
+    await admin.save();
 
-    res.status(200).json({ message: "Mot de passe modifié avec succès." });
+    res.status(200).json({ message: "Mot de passe changé avec succès." });
   } catch (err) {
-    console.error(err);
+    console.error("Erreur lors du changement de mot de passe :", err);
     res.status(500).json({ message: "Erreur serveur." });
   }
-};
-
+};  

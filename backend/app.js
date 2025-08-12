@@ -16,6 +16,10 @@ const authRoutes_admin = require("./src/routes/authRoutes_admin");
 const verifyAdminRoute = require("./src/routes/adminRoutes");
 const verifyUserRoute = require("./src/routes/userRoutes");
 const partisRoutes = require('./src/routes/partiRoutes');
+
+const authMiddleware = require('./src/middlewares/authMiddleware');
+const { changePassword } = require('./src/controllers/authController_superadmin');
+
 const userRoutes = require("./src/routes/user");
 const userlisteRoutes = require( "./src/routes/userlisteRoute");
 const adminlisteRoutes = require( "./src/routes/AdminlisteRoute");
@@ -102,6 +106,9 @@ app.use("/api/listeadmin", adminlisteRoutes)
 app.use('/api/users', usersRoutes2);
 app.use('/api/admins', adminlisteRoutes);
 app.use('/api/admins', superAdminRoutes2);
+
+
+router.post('/api/changepassword', authMiddleware, changePassword);
 
 // ⛔ Gestion des erreurs Multer
 const errorHandler = require("./src/middlewares/errorHandler");
