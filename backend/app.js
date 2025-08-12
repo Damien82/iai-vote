@@ -108,7 +108,7 @@ app.use('/api/admins', adminlisteRoutes);
 app.use('/api/admins', superAdminRoutes2);
 
 
-router.post('/api/changepassword', authMiddleware, changePassword);
+app.post('/api/changepassword', authMiddleware, changePassword);
 
 // ⛔ Gestion des erreurs Multer
 const errorHandler = require("./src/middlewares/errorHandler");
