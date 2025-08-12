@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { registerAdmin, loginAdmin, verifyAdmin, changePassword } = require("../controllers/authController_admin");
+const { registerAdmin, loginAdmin, verifyAdmin } = require("../controllers/authController_admin");
 const { getProfile } = require("../controllers/userController");
-const authMiddleware = require('../middlewares/authMiddleware_supadmin');
 
 // Route inscription
 router.post("/registerAdmin", registerAdmin);
@@ -14,7 +13,7 @@ router.post("/loginAdmin", loginAdmin);
 router.post("/verify-admin", verifyAdmin);
 
 // nouvelle route pour changer le mot de passe
-router.post("/changepassword",changePassword,authMiddleware)
+router.post("/changepassword",changePassword)
 
 //route profile
 router.get("/me", getProfile);
