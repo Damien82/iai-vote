@@ -12,6 +12,7 @@ console.log('authMiddleware appelé, token:', req.headers.authorization);
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
+    console.log('token décodé:', decoded);
     req.matricule = decoded.matricule; // on récupère matricule dans le token
     next();
   } catch (err) {
