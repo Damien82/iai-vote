@@ -98,14 +98,14 @@ exports.verifyAdmin = async (req, res) => {
 };
 
 exports.changePassword = async (req, res) => {
-  const matricule = req.user.matricule; // récupéré via le middleware
   const { ancienMotDePasse, nouveauMotDePasse } = req.body;
+  const matricule = req.matricule;  // récupéré du token via middleware
 
-  if (!ancienMotDePasse || !nouveauMotDePasse) {
-    return res.status(400).json({ message: "Tous les champs sont obligatoires." });
+  if (!matricule || !ancienMotDePasse || !nouveauMotDePasse) {
+    return res.status(400).json({ message: 'Tous les champs sont obligatoires.' });
   }
 
-  const Admin = require("../models/Admins")(req.db_admin.registeredAdmins);
+  const Admin = require('../models/Admins')(req.db_admin.registeredAdmins);
 
   try {
     const admin = await Admin.findOne({ matricule });
@@ -125,7 +125,8 @@ exports.changePassword = async (req, res) => {
 
     res.status(200).json({ message: "Mot de passe changé avec succès." });
   } catch (err) {
-    console.error("Erreur lors du changement de mot de passe :", err);
-    res.status(500).json({ message: "Erreur serveur." });
+    console.error('Erreur lors du changement de mot de passe :', err);
+    res.status(500).json({ message: 'Erreur serveur.' });
   }
-};  
+};
+
