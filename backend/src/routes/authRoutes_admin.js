@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { registerAdmin, loginAdmin, verifyAdmin } = require("../controllers/authController_admin");
+const { registerAdmin, loginAdmin, verifyAdmin, changePassword } = require("../controllers/authController_admin");
 const { getProfile } = require("../controllers/userController");
 
 // Route inscription
