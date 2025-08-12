@@ -99,7 +99,10 @@ exports.verifyAdmin = async (req, res) => {
 
 // === ROUTE: POST /api/auth/change-password ===
 exports.changePassword = async (req, res) => {
-  const { matricule, ancienMotDePasse, nouveauMotDePasse } = req.body;
+    console.log('req.user:', req.user); // Voir ce qu'on a ici
+
+  const matricule = req.user?.matricule;
+  const { ancienMotDePasse, nouveauMotDePasse } = req.body;
 
   if (!matricule || !ancienMotDePasse || !nouveauMotDePasse) {
     return res.status(400).json({ message: "Tous les champs sont obligatoires." });
