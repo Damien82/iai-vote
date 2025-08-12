@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import RequireAdmin from "./components/RequireAdmin";
+import RequireSuperAdmin from './components/RequireSuperAdmin.tsx';
 import RequireUser from "./components/RequireUser";
 import Unauthorized from "./pages/Unauthorized.tsx";
 import UnauthorizedAD from "./pages/Unauthorized-admin.tsx";
@@ -31,7 +32,7 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
-        <Route path="/Dashboard" element={<PrivateRoute><RequireAdmin><ThemeProvider><Dashboard /></ThemeProvider></RequireAdmin></PrivateRoute>} />
+        <Route path="/Dashboard" element={<PrivateRoute><RequireSuperAdmin><ThemeProvider><Dashboard /></ThemeProvider></RequireSuperAdmin></PrivateRoute>} />
         <Route path="/SimpleDashboard" element={<PrivateRoute><RequireAdmin><ThemeProvider><SimpleDashboard /></ThemeProvider></RequireAdmin></PrivateRoute>} />
         <Route path="/vote" element={<PrivateRoute><RequireUser><Vote /></RequireUser></PrivateRoute>} />
         <Route path="/choixrole" element={<Choixrole />} />

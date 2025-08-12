@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../components/simplesidebar';
 import Topbar from '../components/TopBar';
 import DashboardContent from '../components/DashboardContent';
-import Userspage from '../components/gestionutilisateurs';
-import Adminspage from '../components/gestionadmins';
+import Userspage from '../components/simplegestionutilisateurs';
+import Adminspage from '../components/simplegestionadmins';
 import ProfileContent from '../components/ProfileContent';
-import PartisPage from '../components/gestionpartis';
-import Situation from '../components/situation_site';
+import PartisPage from '../components/simplegestionpartis';
 
 interface UserData {
   matricule: string;
@@ -154,8 +153,6 @@ const Dashboard: React.FC = () => {
 
         {activeTab === 'gestionsadmins' && <Adminspage darkMode={darkMode} />}
 
-        
-        {activeTab === 'gestionsite' && <Situation darkMode={darkMode} />}
       </main>
     </div>
   );

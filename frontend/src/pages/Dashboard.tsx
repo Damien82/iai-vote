@@ -4,7 +4,7 @@ import Topbar from '../components/TopBar';
 import DashboardContent from '../components/DashboardContent';
 import Userspage from '../components/gestionutilisateurs';
 import Adminspage from '../components/gestionadmins';
-import ProfileContent from '../components/ProfileContent';
+import ProfileContent from '../components/SuperProfileContent';
 import PartisPage from '../components/gestionpartis';
 import Situation from '../components/situation_site';
 
@@ -46,7 +46,7 @@ const Dashboard: React.FC = () => {
       return;
     }
 
-    fetch('https://iai-vote.onrender.com/api/users/me', {
+    fetch('https://iai-vote.onrender.com/api/superadmin/me', {
       headers: {
         'Authorization': `Bearer ${token}`,
       },

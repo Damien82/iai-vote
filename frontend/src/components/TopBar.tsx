@@ -45,7 +45,7 @@ const Topbar: React.FC<TopbarProps> = ({
     const handleLogout = () => {
     logout();                  // Supprime token et met à jour contexte
     localStorage.removeItem("user"); // Supprime les infos utilisateur
-    navigate("/ConnexionAD");    // Redirige vers page connexion
+    navigate("/Choixrole");    // Redirige vers page du choix du role
   };
 
 
