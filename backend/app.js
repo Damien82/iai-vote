@@ -18,6 +18,7 @@ const verifySuperAdminRoute = require("./src/routes/superadminRoutes");
 const verifyUserRoute = require("./src/routes/userRoutes");
 const partisRoutes = require('./src/routes/partiRoutes');
 const userRoutes = require("./src/routes/user");
+const adminRoutes = require("./src/routes/superadmin");
 const userlisteRoutes = require( "./src/routes/userlisteRoute");
 const adminlisteRoutes = require( "./src/routes/AdminlisteRoute");
 const usersRoutes2 = require('./src/routes/userlisteRoute'); 
@@ -99,6 +100,7 @@ app.use("/api", verifySuperAdminRoute);
 app.use("/api", verifyUserRoute);
 app.use('/api/partis', partisRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/superadmin", adminRoutes);
 app.use("/api/listeusers", userlisteRoutes)
 app.use("/api/listeadmin", adminlisteRoutes)
 app.use('/api/users', usersRoutes2);
