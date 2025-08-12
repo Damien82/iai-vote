@@ -97,3 +97,35 @@ exports.verifyAdmin = async (req, res) => {
   }
 };
 
+exports.changePassword = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { ancienMotDePasse, nouveauMotDePasse } = req.body;
+
+    // Validation simple
+    if (!ancienMotDePasse || !nouveauMotDePasse) {
+      return res.status(400).json({ message: "Tous les champs sont obligatoires." });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé." });
+
+    // Vérification ancien mot de passe
+    const isMatch = await bcrypt.compare(ancienMotDePasse, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Ancien mot de passe incorrect." });
+    }
+
+    // Hash du nouveau mot de passe
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(nouveauMotDePasse, salt);
+
+    await user.save();
+
+    res.status(200).json({ message: "Mot de passe modifié avec succès." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+};
+
