@@ -13,5 +13,5 @@ module.exports = (db_superadmin) => {
     motDePasse: { type: String, required: true },
   });
 
-  return db_admin.model("Admins", AdminSchema);
+  return db_superadmin.model("Admins", AdminSchema);
 };
