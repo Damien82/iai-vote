@@ -7,30 +7,31 @@ const JWT_SECRET = process.env.JWT_SECRET || "tonSecretJwtIci";
 exports.loginSuperAdmin = async (req, res) => {
   const { matricule, motDePasse } = req.body;
 
-  // déplacer ici pour avoir accès à req.db_superadmin
-  const Admin = require("../models/SuperAdmin")(req.db_superadmin.registeredSuperAdmins);
-
   try {
-    const admin = await Admin.findOne({ matricule });
+    // Import dynamique lié à la connexion superadmin
+    const SuperAdmin = require("../models/SuperAdmin")(req.db_superadmin.registeredSuperAdmins);
+
+    const admin = await SuperAdmin.findOne({ matricule });
+
     if (!admin) {
-      return res.status(401).json({ message: "Matricule ou mot de passe incorrect." });
+      return res.status(404).json({ error: "SuperAdmin non trouvé" });
     }
 
     const isMatch = await bcrypt.compare(motDePasse, admin.motDePasse);
     if (!isMatch) {
-      return res.status(401).json({ message: "Matricule ou mot de passe incorrect." });
+      return res.status(401).json({ error: "Mot de passe incorrect" });
     }
 
     const token = jwt.sign(
-      { matricule: admin.matricule, nom: admin.nom, prenom: admin.prenom },
-      JWT_SECRET,
-      { expiresIn: "7d" }
+      { matricule: admin.matricule, role: "superadmin" },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
     );
 
     res.status(200).json({ message: "Connexion réussie", token });
   } catch (err) {
-    console.error("Erreur serveur lors du login :", err);
-    res.status(500).json({ message: "Erreur serveur" });
+    console.error("Erreur login superadmin :", err);
+    res.status(500).json({ error: "Erreur serveur" });
   }
 };
 

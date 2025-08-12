@@ -46,7 +46,7 @@ function isSuperAdmin(req, res, next) {
 
     SuperAdminModel.findOne({ matricule })
       .then((admin) => {
-        if (!admin) return res.status(403).json({ message: "Accès refusé : admin uniquement" });
+        if (!admin) return res.status(403).json({ message: "Accès refusé : Super admin uniquement" });
         req.admin = decoded;
         next();
       })
