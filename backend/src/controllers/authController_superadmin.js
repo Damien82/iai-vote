@@ -3,11 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = process.env.JWT_SECRET || "tonSecretJwtIci";
 
-// Utilitaire pour renvoyer erreur et logger plus proprement
-const respondServerError = (res, err, context = "") => {
-  console.error("SERVER ERROR", context, err);
-  return res.status(500).json({ error: "Erreur serveur", details: err?.message || String(err) });
-};
+
 
 exports.loginSuperAdmin = async (req, res) => {
   const { matricule, motDePasse } = req.body;
