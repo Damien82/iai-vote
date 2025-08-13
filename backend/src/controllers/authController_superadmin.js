@@ -92,7 +92,7 @@ exports.changePasswordsup = async (req, res) => {
     return res.status(400).json({ message: 'Tous les champs sont obligatoires.' });
   }
 
-  const Admin = require('../models/SuperAdmin')(req.db_admin.registeredSuperAdmins);
+  const Admin = require('../models/SuperAdmin')(req.db_superadmin.registeredSuperAdmins);
 
   try {
     const admin = await Admin.findOne({ matricule });
