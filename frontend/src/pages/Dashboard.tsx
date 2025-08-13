@@ -46,7 +46,7 @@ const Dashboard: React.FC = () => {
       return;
     }
 
-    fetch('https://iai-vote.onrender.com/api/superadmin/me', {
+    fetch('https://iai-vote.onrender.com/api/superadmins/me', {
       headers: {
         'Authorization': `Bearer ${token}`,
       },

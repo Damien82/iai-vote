@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
@@ -24,16 +24,19 @@ const SuperProfileContent: React.FC<ProfileContentProps> = ({ darkMode, userData
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
+  const [matricule, setMatricule] = useState<string | null>(null);
 
-  // Contrôle dynamique en live
+  // Récupérer le matricule depuis userData
+  useEffect(() => {
+    setMatricule(userData.matricule);
+  }, [userData]);
+
   const handleAncienPasswordChange = (value: string) => {
     setAncienMotDePasse(value);
-    // Tu peux ajouter ici une validation si tu veux
   };
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
-
     if (confirmPassword && value !== confirmPassword) {
       setError("Les mots de passe ne correspondent pas.");
     } else {
@@ -43,7 +46,6 @@ const SuperProfileContent: React.FC<ProfileContentProps> = ({ darkMode, userData
 
   const handleConfirmPasswordChange = (value: string) => {
     setConfirmPassword(value);
-
     if (password !== value) {
       setError("Les mots de passe ne correspondent pas.");
     } else {
@@ -51,9 +53,10 @@ const SuperProfileContent: React.FC<ProfileContentProps> = ({ darkMode, userData
     }
   };
 
-  // Soumission du changement de mot de passe (fonction à adapter selon backend)
-  const handleSubmit = (e: React.FormEvent) => {
+  // Soumission du changement de mot de passe avec appel API
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!ancienMotDePasse) {
       setError("Veuillez entrer l'ancien mot de passe.");
       return;
@@ -66,13 +69,44 @@ const SuperProfileContent: React.FC<ProfileContentProps> = ({ darkMode, userData
       setError("Les mots de passe ne correspondent pas.");
       return;
     }
+    if (!matricule) {
+      setError("Matricule introuvable.");
+      return;
+    }
+
     setError('');
-    // Ici appeler l'API pour changer le mot de passe, puis fermer modal
-    alert("Mot de passe changé avec succès !");
-    setAncienMotDePasse('');
-    setPassword('');
-    setConfirmPassword('');
-    setIsModalOpen(false);
+
+    try {
+      const token = localStorage.getItem('token');
+
+      const response = await fetch('https://iai-vote.onrender.com/api/changepasswordsup', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          ancienMotDePasse,
+          nouveauMotDePasse: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Erreur lors du changement de mot de passe");
+      } else {
+        alert(data.message || "Mot de passe modifié avec succès !");
+        setIsModalOpen(false);
+        setAncienMotDePasse('');
+        setPassword('');
+        setConfirmPassword('');
+        setError('');
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Erreur serveur, veuillez réessayer plus tard");
+    }
   };
 
   return (
@@ -157,7 +191,6 @@ const SuperProfileContent: React.FC<ProfileContentProps> = ({ darkMode, userData
               </span>
             </div>
 
-            {/* Bouton pour ouvrir modal */}
             <div className="mt-4 text-center">
               <button
                 onClick={() => setIsModalOpen(true)}
@@ -174,22 +207,20 @@ const SuperProfileContent: React.FC<ProfileContentProps> = ({ darkMode, userData
       {isModalOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-          onClick={() => setIsModalOpen(false)} // Fermer si on clique en dehors
+          onClick={() => setIsModalOpen(false)}
         >
           <div
             className={`bg-white rounded-lg p-6 max-w-md w-full relative ${
               darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'
             }`}
-            onClick={e => e.stopPropagation()} // Empêche la fermeture quand on clique dans la modale
+            onClick={e => e.stopPropagation()}
           >
             <h2 className="text-xl font-bold mb-4 text-center">Changer le mot de passe</h2>
 
             <form onSubmit={handleSubmit}>
               {/* Ancien mot de passe */}
               <div className="mb-4 relative">
-                <label htmlFor="ancienMotDePasse" className="block mb-1 font-semibold">
-                  Ancien mot de passe
-                </label>
+                <label htmlFor="ancienMotDePasse" className="block mb-1 font-semibold">Ancien mot de passe</label>
                 <input
                   id="ancienMotDePasse"
                   type={showAncienPassword ? 'text' : 'password'}
@@ -202,7 +233,6 @@ const SuperProfileContent: React.FC<ProfileContentProps> = ({ darkMode, userData
                   type="button"
                   onClick={() => setShowAncienPassword(!showAncienPassword)}
                   className="absolute right-2 top-8 text-gray-500 focus:outline-none"
-                  aria-label={showAncienPassword ? "Cacher mot de passe" : "Afficher mot de passe"}
                 >
                   <FontAwesomeIcon icon={showAncienPassword ? faEyeSlash : faEye} />
                 </button>
@@ -210,9 +240,7 @@ const SuperProfileContent: React.FC<ProfileContentProps> = ({ darkMode, userData
 
               {/* Nouveau mot de passe */}
               <div className="mb-4 relative">
-                <label htmlFor="password" className="block mb-1 font-semibold">
-                  Nouveau mot de passe
-                </label>
+                <label htmlFor="password" className="block mb-1 font-semibold">Nouveau mot de passe</label>
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -224,7 +252,6 @@ const SuperProfileContent: React.FC<ProfileContentProps> = ({ darkMode, userData
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-2 top-8 text-gray-500 focus:outline-none"
-                  aria-label={showPassword ? "Cacher mot de passe" : "Afficher mot de passe"}
                 >
                   <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
                 </button>
@@ -232,9 +259,7 @@ const SuperProfileContent: React.FC<ProfileContentProps> = ({ darkMode, userData
 
               {/* Confirmation mot de passe */}
               <div className="mb-4 relative">
-                <label htmlFor="confirmPassword" className="block mb-1 font-semibold">
-                  Confirmer le mot de passe
-                </label>
+                <label htmlFor="confirmPassword" className="block mb-1 font-semibold">Confirmer le mot de passe</label>
                 <input
                   id="confirmPassword"
                   type={showConfirmPassword ? 'text' : 'password'}
@@ -246,30 +271,23 @@ const SuperProfileContent: React.FC<ProfileContentProps> = ({ darkMode, userData
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-2 top-8 text-gray-500 focus:outline-none"
-                  aria-label={showConfirmPassword ? "Cacher mot de passe" : "Afficher mot de passe"}
                 >
                   <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
                 </button>
               </div>
 
-              {error && (
-                <p className="mb-4 text-red-600 font-semibold text-center">{error}</p>
-              )}
+              {error && <p className="mb-4 text-red-600 font-semibold text-center">{error}</p>}
 
               <div className="flex justify-end space-x-2">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
-                >
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">
                   Annuler
                 </button>
                 <button
-                    type="submit"
-                    className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                    disabled={!ancienMotDePasse || !password || !confirmPassword || password !== confirmPassword}
+                  type="submit"
+                  className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  disabled={!ancienMotDePasse || !password || !confirmPassword || password !== confirmPassword}
                 >
-                    Valider
+                  Valider
                 </button>
               </div>
             </form>
