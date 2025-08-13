@@ -109,7 +109,7 @@ app.use('/api/admins', adminlisteRoutes);
 app.use('/api/superadmins', superAdminRoutes2);
 
 app.put('/api/changepassword', authMiddleware, changePassword);
-app.put('/api/changepassword2', authMiddleware, changePasswordsup);
+app.put('/api/changepasswordsup', authMiddleware, changePasswordsup);
 
 // ⛔ Gestion des erreurs Multer
 const errorHandler = require("./src/middlewares/errorHandler");
