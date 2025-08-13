@@ -84,7 +84,7 @@ exports.verifySuperAdmin = async (req, res) => {
   }
 };
 
-exports.changePassword2 = async (req, res) => {
+exports.changePasswordsup = async (req, res) => {
   const { ancienMotDePasse, nouveauMotDePasse } = req.body;
   const matricule = req.matricule;  // récupéré du token via middleware
 
