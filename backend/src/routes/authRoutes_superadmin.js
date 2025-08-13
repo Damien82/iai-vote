@@ -15,6 +15,6 @@ router.post("/verify-superadmin", verifySuperAdmin);
 router.get("/me", getProfile);
 
 // nouvelle route pour changer le mot de passe
-router.post("/changepassword",changePassword2)
+router.post("/changepassword2",changePassword2)
 
 module.exports = router;
