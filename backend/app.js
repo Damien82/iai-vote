@@ -105,7 +105,7 @@ app.use("/api/listeusers", userlisteRoutes)
 app.use("/api/listeadmin", adminlisteRoutes)
 app.use('/api/users', usersRoutes2);
 app.use('/api/admins', adminlisteRoutes);
-app.use('/api/admins', superAdminRoutes2);
+app.use('/api/superadmins', superAdminRoutes2);
 
 
 app.put('/api/changepassword', authMiddleware, changePassword);
