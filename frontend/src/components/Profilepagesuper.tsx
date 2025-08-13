@@ -9,7 +9,7 @@ interface UserData {
   role: string;
 }
 
-const ProfilePage = () => {
+const ProfilePageSuper = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const ProfilePage = () => {
     })
     
       .then(async (res) => {
-        if (!res.ok) throw new Error("Erreur lors du chargement du profil");
+        if (!res.ok) throw new Error("Erreur lors du chargement du profile");
         const data = await res.json();
           console.log("Profil reçu :", data); 
         setUserData(data);
@@ -42,4 +42,4 @@ const ProfilePage = () => {
 
 };
 
-export default ProfilePage;
+export default ProfilePageSuper;
