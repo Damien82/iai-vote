@@ -43,7 +43,7 @@ const SuperLoginForm: React.FC = () => {
     }
 
     try {
-      const response = await fetch("https://iai-vote.onrender.com/api/admins/loginSuperadmin", {
+      const response = await fetch("https://iai-vote.onrender.com/api/superadmins/loginSuperadmin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ matricule, motDePasse: password }),

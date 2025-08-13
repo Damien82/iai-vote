@@ -27,7 +27,7 @@ const RequireSuperAdmin = ({ children }: RequireSuperAdminProps) => {
       }
 
       try {
-        const response = await fetch("https://iai-vote.onrender.com/api/admins/verify-superadmin", {
+        const response = await fetch("https://iai-vote.onrender.com/api/superadmins/verify-superadmin", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

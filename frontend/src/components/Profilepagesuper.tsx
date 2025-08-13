@@ -17,7 +17,7 @@ const ProfilePage = () => {
     console.log("Token récupéré :", token);
     if (!token) return;
 
-    fetch("https://iai-vote.onrender.com/api/superadmin/me", {
+    fetch("https://iai-vote.onrender.com/api/superadmins/me", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
