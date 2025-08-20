@@ -1,5 +1,4 @@
 const mainConnection = require("../config/db_status"); // ton fichier de connexion
-const { mainConnection } = connectDB();
 const System = require("../models/SystemState")(mainConnection);
 
 const getSystemState = async (req, res) => {
