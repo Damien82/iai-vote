@@ -17,6 +17,8 @@ const verifyAdminRoute = require("./src/routes/adminRoutes");
 const verifyUserRoute = require("./src/routes/userRoutes");
 const partisRoutes = require('./src/routes/partiRoutes');
 
+const systemRoutes = require("./src/routes/systemRoutes");
+
 const authMiddleware = require("./src/middlewares/authMiddleware_supadmin");
 const { changePassword } = require("./src/controllers/authController_admin");
 const { changePasswordsup } = require("./src/controllers/authController_superadmin");
@@ -110,6 +112,11 @@ app.use('/api/superadmins', superAdminRoutes2);
 
 app.put('/api/changepassword', authMiddleware, changePassword);
 app.put('/api/changepasswordsup', authMiddleware, changePasswordsup);
+
+app.use("/api/system", (req, res, next) => {
+  req.db_status = mainConnection; // tu attaches ta connexion mongo
+  next();
+}, systemRoutes);
 
 // ⛔ Gestion des erreurs Multer
 const errorHandler = require("./src/middlewares/errorHandler");
