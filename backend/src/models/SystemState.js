@@ -1,10 +1,6 @@
-module.exports = (connection) => {
-  if (!connection) {
-    throw new Error("Connexion à la base manquante !");
-  }
-
-  if (connection.models.status) {
-    return connection.models.status;
+module.exports = (db_status) => {
+  if (db_status.models.status) {
+    return db_status.models.status;
   }
 
   const mongoose = require("mongoose");
@@ -13,5 +9,6 @@ module.exports = (connection) => {
     isActive: { type: Boolean, default: false },
   });
 
-  return connection.model("status", SystemSchema);
+  return db_status.model("Admins", SystemSchema);
 };
+
