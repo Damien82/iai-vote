@@ -9,6 +9,6 @@ module.exports = (db_status) => {
     isActive: { type: Boolean, default: false },
   });
 
-  return db_status.model("Admins", SystemSchema);
+  return db_status.model("status", SystemSchema);
 };
 
