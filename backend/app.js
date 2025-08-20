@@ -74,6 +74,11 @@ const partisDB = mongoose.createConnection(process.env.DB_URI_PARTIS);
 partisDB.on("connected", () => console.log("Connexion à partis OK"));
 partisDB.on("error", (err) => console.error("Erreur partis :", err));
 
+// Connexion à la base `pagestatus`
+const pagestatus = mongoose.createConnection(process.env.DB_URI_PAGESTATUS);
+pagestatus.on("connected", () => console.log("Connexion à partis OK"));
+pagestatus.on("error", (err) => console.error("Erreur partis :", err));
+
 // Injection des connexions dans `req.db`
 app.use((req, res, next) => {
   req.db = {
@@ -89,6 +94,9 @@ app.use((req, res, next) => {
   };
     req.db_partis = {
     partis: partisDB
+  };
+    req.db_status = {
+    pagestatus: pagestatus
   };
   next();
 });
