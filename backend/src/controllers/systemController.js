@@ -1,38 +1,38 @@
 // controllers/systemController.js
-const SystemStateModel = require("../models/SystemState");
 
-exports.getSystemState = async (req, res) => {
+const getSystemState = async (req, res) => {
   try {
-    const SystemState = SystemStateModel(req.status); // tu passes ta connexion
-    let state = await SystemState.findOne();
+    const SystemState = require("../models/SystemState")(req.db_main); 
+    // ⚠️ à adapter : req.db_main doit être ta connexion principale
 
-    if (!state) {
-      state = await SystemState.create({ isActive: false });
+    let systemState = await SystemState.findOne();
+    if (!systemState) {
+      systemState = await SystemState.create({ isActive: false });
     }
 
-    res.json(state);
-  } catch (err) {
-    console.error("Erreur getSystemState:", err);
+    res.json(systemState);
+  } catch (error) {
+    console.error("Erreur getSystemState:", error);
     res.status(500).json({ error: "Erreur serveur" });
   }
 };
 
-exports.toggleSystemState = async (req, res) => {
-  try {
-    const SystemState = SystemStateModel(req.db_status);
-    let state = await SystemState.findOne();
 
-    if (!state) {
-      state = await SystemState.create({ isActive: false });
+const toggleSystemState = async (req, res) => {
+  try {
+    let system = await System.findOne();
+    if (!system) {
+      system = await System.create({ isActive: false });
     }
 
-    state.isActive = req.body.isActive;
-    state.updatedAt = Date.now();
-    await state.save();
+    system.isActive = !system.isActive;
+    await system.save();
 
-    res.json({ success: true, state });
-  } catch (err) {
-    console.error("Erreur toggleSystemState:", err);
+    res.json({ isActive: system.isActive });
+  } catch (error) {
+    console.error("Erreur toggleSystemState:", error.message);
     res.status(500).json({ error: "Erreur serveur" });
   }
 };
+
+module.exports = { getSystemState, toggleSystemState };
