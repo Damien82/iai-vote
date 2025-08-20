@@ -1,22 +1,17 @@
-// controllers/systemController.js
+const System = require("../models/SystemState");
 
 const getSystemState = async (req, res) => {
   try {
-    const SystemState = require("../models/SystemState")(req.db_main); 
-    // ⚠️ à adapter : req.db_main doit être ta connexion principale
-
-    let systemState = await SystemState.findOne();
-    if (!systemState) {
-      systemState = await SystemState.create({ isActive: false });
+    let system = await System.findOne();
+    if (!system) {
+      system = await System.create({ isActive: false });
     }
-
-    res.json(systemState);
+    res.json(system);
   } catch (error) {
-    console.error("Erreur getSystemState:", error);
+    console.error("Erreur getSystemState:", error.message);
     res.status(500).json({ error: "Erreur serveur" });
   }
 };
-
 
 const toggleSystemState = async (req, res) => {
   try {

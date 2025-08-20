@@ -113,10 +113,7 @@ app.use('/api/superadmins', superAdminRoutes2);
 app.put('/api/changepassword', authMiddleware, changePassword);
 app.put('/api/changepasswordsup', authMiddleware, changePasswordsup);
 
-app.use("/api/system", (req, res, next) => {
-  req.db_status = mainConnection; // tu attaches ta connexion mongo
-  next();
-}, systemRoutes);
+app.use("/api/system", systemRoutes);
 
 // ⛔ Gestion des erreurs Multer
 const errorHandler = require("./src/middlewares/errorHandler");

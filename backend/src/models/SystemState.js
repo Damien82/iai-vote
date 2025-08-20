@@ -1,7 +1,7 @@
 // models/SystemState.js
 module.exports = (db_status) => {
-  if (db.models.status) {
-    return db.models.status;
+  if (db_status.models.status) {
+    return db_status.models.status;
   }
 
   const mongoose = require("mongoose");
