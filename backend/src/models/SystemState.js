@@ -1,6 +1,8 @@
 module.exports = (db_status) => {
-  if (db_status.models.status) {
-    return db_status.models.status;
+  const connection = db_status.mainConnection; // <-- utiliser la vraie connexion
+
+  if (connection.models.status) {
+    return connection.models.status;
   }
 
   const mongoose = require("mongoose");
@@ -9,5 +11,5 @@ module.exports = (db_status) => {
     isActive: { type: Boolean, default: false },
   });
 
-  return db_status.model("status", SystemSchema);
+  return connection.model("status", SystemSchema);
 };
