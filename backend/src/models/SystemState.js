@@ -1,5 +1,7 @@
-module.exports = (db_status) => {
-  const connection = db_status.mainConnection; // <-- utiliser la vraie connexion
+module.exports = (connection) => {
+  if (!connection) {
+    throw new Error("Connexion à la base manquante !");
+  }
 
   if (connection.models.status) {
     return connection.models.status;
