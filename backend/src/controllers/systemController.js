@@ -1,5 +1,5 @@
 const mainConnection = require("../config/db_status"); // ton fichier de connexion
-const System = require("../models/SystemState")(mainConnection);
+const System = require("../models/SystemState")(mainConnection.mainConnection);
 
 const getSystemState = async (req, res) => {
   try {
