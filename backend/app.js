@@ -16,7 +16,6 @@ const authRoutes_admin = require("./src/routes/authRoutes_admin");
 const verifyAdminRoute = require("./src/routes/adminRoutes");
 const verifyUserRoute = require("./src/routes/userRoutes");
 const partisRoutes = require('./src/routes/partiRoutes');
-const db_status = require("./src/config/db_status");
 
 const systemRoutes = require("./src/routes/systemRoutes");
 
@@ -76,7 +75,7 @@ partisDB.on("connected", () => console.log("Connexion à partis OK"));
 partisDB.on("error", (err) => console.error("Erreur partis :", err));
 
 // Connexion à la base `pagestatus`
-const db_status = mongoose.createConnection(process.env.MONGO_URI_STATUS, {
+const db_status = mongoose.createConnection(process.env.DB_URI_PAGESTATUS, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
