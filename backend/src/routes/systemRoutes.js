@@ -1,9 +1,9 @@
-// routes/systemRoutes.js
 const express = require("express");
 const router = express.Router();
-const { getSystemState, toggleSystemState } = require("../controllers/systemController");
+const systemController = require("../controllers/systemController");
 
-router.get("/getsystemstate", getSystemState);          // Récupérer l’état
-router.put("/togglesystemstate", toggleSystemState);       // Modifier l’état
+// Routes
+router.get("/", systemController.getSystemState);
+router.put("/", systemController.updateSystemState);
 
 module.exports = router;

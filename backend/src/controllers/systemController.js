@@ -1,34 +1,34 @@
-const mainConnection = require("../config/db_status"); // ton fichier de connexion
-const System = require("../models/SystemState")(mainConnection.mainConnection);
+const System = require("../models/SystemState");
 
-const getSystemState = async (req, res) => {
+// GET system state
+exports.getSystemState = async (req, res) => {
   try {
-    let system = await System.findOne();
-    if (!system) {
-      system = await System.create({ isActive: false });
-    }
-    res.json(system);
+    const SystemModel = System(req.db_status); // <--- Connexion injectée
+    const state = await SystemModel.findOne();
+    res.json(state || { isActive: false });
   } catch (error) {
-    console.error("Erreur getSystemState:", error.message);
-    res.status(500).json({ error: "Erreur serveur" });
+    console.error("Erreur getSystemState:", error);
+    res.status(500).json({ message: "Erreur serveur" });
   }
 };
 
-const toggleSystemState = async (req, res) => {
+// UPDATE system state
+exports.updateSystemState = async (req, res) => {
   try {
-    let system = await System.findOne();
-    if (!system) {
-      system = await System.create({ isActive: false });
+    const { isActive } = req.body;
+    const SystemModel = System(req.db_status);
+
+    let state = await SystemModel.findOne();
+    if (!state) {
+      state = new SystemModel({ isActive });
+    } else {
+      state.isActive = isActive;
     }
 
-    system.isActive = !system.isActive;
-    await system.save();
-
-    res.json({ isActive: system.isActive });
+    await state.save();
+    res.json(state);
   } catch (error) {
-    console.error("Erreur toggleSystemState:", error.message);
-    res.status(500).json({ error: "Erreur serveur" });
+    console.error("Erreur updateSystemState:", error);
+    res.status(500).json({ message: "Erreur serveur" });
   }
 };
-
-module.exports = { getSystemState, toggleSystemState };
