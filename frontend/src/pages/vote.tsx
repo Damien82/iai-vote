@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Button from "../components/ui/buttons/button";
@@ -10,6 +10,24 @@ import { useNavigate } from "react-router-dom";
 
 const VotePage: React.FC = () => {
   const navigate = useNavigate();
+
+  const [allowed, setAllowed] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("https://iai-vote.onrender.com/api/system/getsystemstate")
+      .then((res) => res.json())
+      .then((data) => {
+        setAllowed(data.isActive);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Chargement...</p>;
+
+  if (!allowed) {
+    return <p className="text-red-500 text-center mt-[350px]">La page n’est pas encore activée 🚫</p>;
+  }
 
   return (
     <div className="min-h-screen bg-white pt-16">
