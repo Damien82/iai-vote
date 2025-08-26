@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import Button from "../components/ui/buttons/button";
 import VoteCard from "../components/VoteCard";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faArrowLeft,} from '@fortawesome/free-solid-svg-icons';
 import { faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { parties } from "../data/parties";
 import { useNavigate } from "react-router-dom";
@@ -23,10 +24,22 @@ const VotePage: React.FC = () => {
       });
   }, []);
 
-  if (loading) return <p>Chargement...</p>;
+  if (loading) return <div className="flex justify-center items-center h-screen">
+                        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                        <p className="ml-5 font-bold">Chargement en cours...</p>
+                      </div>;
 
   if (!allowed) {
-    return <p className="text-red-500 text-center mt-[350px]">La page n’est pas encore activée 🚫</p>;
+    return <div>
+                  <p className="text-red-500 text-center mt-[350px]">La page n’est pas encore activée 🚫</p>
+                <div className="flex justify-center items-center"><Button
+                        onClick={() => navigate("/")}
+                        className="!rounded-button whitespace-nowrap bg-blue-500 text-gray-900 mt-[50px] hover:bg-blue-600 transform hover:scale-105 hover:shadow-lg active:scale-95"
+                      >
+                        <FontAwesomeIcon icon={faArrowLeft} className="ml-2 animate-bounce-left" />
+                        Retourner a la page d'acceuil
+                  </Button></div>
+            </div>;
   }
 
   return (

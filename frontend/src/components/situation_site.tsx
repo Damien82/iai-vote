@@ -8,7 +8,7 @@ const SituationSite: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
 
   // Charger l'état actuel depuis le backend
   useEffect(() => {
-    fetch("https://iai-vote.onrender.com/api/system/getsystemstate")
+    fetch("https://iai-vote.onrender.com/api/system/getSystemState")
       .then((res) => res.json())
       .then((data) => {
         setIsSystemActive(data.isActive);
@@ -22,8 +22,8 @@ const SituationSite: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
 
   // Fonction pour changer l'état (démarrer ou arrêter)
   const updateSystemState = (newState: boolean) => {
-    fetch("https://iai-vote.onrender.com/api/system/togglesystemstate", {
-      method: "POST",
+    fetch("https://iai-vote.onrender.com/api/system/updateSystemState", {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ isActive: newState }),
     })
