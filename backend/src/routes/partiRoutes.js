@@ -9,7 +9,7 @@ const {
   voteForParty,
 } = require("../controllers/partiController");
 
-const auth = require('../middlewares/authMiddleware_admin');
+const auth = require('../middlewares/authMiddleware_forvote');
 
 
 // ✅ Toutes ces fonctions doivent être bien définies
