@@ -16,6 +16,8 @@ const authRoutes_admin = require("./src/routes/authRoutes_admin");
 const verifyAdminRoute = require("./src/routes/adminRoutes");
 const verifyUserRoute = require("./src/routes/userRoutes");
 const partisRoutes = require('./src/routes/partiRoutes');
+const partisRoutesData = require('./src/routes/partiRoutedata');
+
 
 const systemRoutes = require("./src/routes/systemRoutes");
 
@@ -114,6 +116,7 @@ app.use("/api/authAdmin", authRoutes_admin);
 app.use("/api", verifyAdminRoute);
 app.use("/api", verifyUserRoute);
 app.use('/api/partis', partisRoutes);
+app.use('/api/partissecond', partisRoutesData);
 app.use("/api/users", userRoutes);
 app.use("/api/listeusers", userlisteRoutes)
 app.use("/api/listeadmin", adminlisteRoutes)
