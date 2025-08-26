@@ -7,5 +7,5 @@ const SystemSchema = new mongoose.Schema({
 
 // Fonction qui retourne le modèle avec la bonne connexion
 module.exports =
-  mainConnection.models.SystemState ||
+  mainConnection.models.status ||
   mainConnection.model("status", SystemSchema);
