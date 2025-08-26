@@ -9,7 +9,7 @@ console.log("DB_URI_REGISTERED_SUPERADMINS =", process.env.DB_URI_REGISTERED_SUP
 const express = require("express");
 const connectDB = require("./src/config/db");
 const connectDB2 = require("./src/config/db_admin");
-const connectDB3 = require("./src/config/db_status");
+const mainConnection = require("./src/config/db_status");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require("./src/routes/authRoutes");
@@ -107,7 +107,7 @@ app.use((req, res, next) => {
 
 connectDB();
 connectDB2();
-connectDB3();
+mainConnection();
 
 
 // Routes
