@@ -50,8 +50,9 @@ exports.voteForParty = async (req, res) => {
     const { partyId } = req.body;
 
     // Récupération des infos du votant depuis le token
-    const { matricule, nom, prenom, classe } = req.user; // token décodé dans un middleware auth
+    const { matricule, nom, prenom, classe } = req.user; // token décodé dans le middleware
 
+    // Récupération des modèles
     const Voter = require('../models/voter')(req.db_voters.voters);
     const Parti = require('../models/Parti')(req.db_partis.partis);
 
@@ -61,21 +62,26 @@ exports.voteForParty = async (req, res) => {
       return res.status(403).json({ message: "Vous avez déjà voté !" });
     }
 
-    // Enregistrer le vote dans la base vérification
+    // Enregistrer le vote dans la base de vérification
     await Voter.create({ matricule, nom, prenom, classe, partyVoted: partyId });
 
-    // Incrémenter le vote du parti
+    // Récupérer le parti
     const party = await Parti.findById(partyId);
     if (!party) return res.status(404).json({ message: "Parti non trouvé" });
-    party.votes += 1;
+
+    // Incrémenter le vote du parti en utilisant un champ 'votes' dans le schéma
+    // Si tu n'as pas ce champ, ajoute-le dans PartiSchema :
+    // votes: { type: Number, default: 0 }
+    party.votes = (party.votes || 0) + 1;
     await party.save();
 
-    res.json({ message: `Vote enregistré pour ${party.name}`, votes: party.votes });
+    res.json({ message: `Vote enregistré pour ${party.nom}`, votes: party.votes });
   } catch (error) {
     console.error("Erreur voteForParty:", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
+
 
 
 exports.updateParti = async (req, res) => {
