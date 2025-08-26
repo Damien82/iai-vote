@@ -1,9 +1,8 @@
-const System = require("../models/SystemState");
+const SystemModel = require("../models/SystemState");
 
-// GET system state
+// === GET: récupérer l'état du système ===
 exports.getSystemState = async (req, res) => {
   try {
-    const SystemModel = System(req.db_status); // <--- Connexion injectée
     const state = await SystemModel.findOne();
     res.json(state || { isActive: false });
   } catch (error) {
@@ -12,13 +11,12 @@ exports.getSystemState = async (req, res) => {
   }
 };
 
-// UPDATE system state
-exports.updateSystemState = async (req, res) => {
+// === POST: mettre à jour l'état du système ===
+exports.setSystemState = async (req, res) => {
   try {
     const { isActive } = req.body;
-    const SystemModel = System(req.db_status);
-
     let state = await SystemModel.findOne();
+
     if (!state) {
       state = new SystemModel({ isActive });
     } else {
@@ -28,7 +26,7 @@ exports.updateSystemState = async (req, res) => {
     await state.save();
     res.json(state);
   } catch (error) {
-    console.error("Erreur updateSystemState:", error);
+    console.error("Erreur setSystemState:", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
