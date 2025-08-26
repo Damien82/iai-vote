@@ -1,32 +1,34 @@
-const SystemModel = require("../models/SystemState");
+const System = require("../models/SystemState"); // ton modèle mongoose
 
-// === GET: récupérer l'état du système ===
+// Récupérer l'état du système
 exports.getSystemState = async (req, res) => {
   try {
-    const state = await SystemModel.findOne();
-    res.json(state || { isActive: false });
+    const state = await System.findOne();
+    if (!state) {
+      const newState = await System.create({ isActive: false });
+      return res.json(newState);
+    }
+    res.json(state);
   } catch (error) {
     console.error("Erreur getSystemState:", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
 
-// === POST: mettre à jour l'état du système ===
-exports.setSystemState = async (req, res) => {
+// Mettre à jour l'état du système
+exports.updateSystemState = async (req, res) => {
   try {
     const { isActive } = req.body;
-    let state = await SystemModel.findOne();
-
+    let state = await System.findOne();
     if (!state) {
-      state = new SystemModel({ isActive });
+      state = await System.create({ isActive: isActive || false });
     } else {
       state.isActive = isActive;
+      await state.save();
     }
-
-    await state.save();
     res.json(state);
   } catch (error) {
-    console.error("Erreur setSystemState:", error);
+    console.error("Erreur updateSystemState:", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
