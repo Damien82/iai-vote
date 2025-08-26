@@ -1,9 +1,8 @@
-
-// routes/partisRoutes.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const partisController = require("../controllers/partiesdata");
+const partiesController = require("../controllers/partiesController"); // <--- bien vérifier le chemin
 
-router.get('/getPartis', partisController.getPartis);
+// Route pour récupérer tous les partis
+router.get("/getAllPartis", partiesController.getAllPartis);
 
 module.exports = router;
