@@ -1,16 +1,25 @@
-const getPartisData = require('../data/partiesdata');
+// controllers/partiesController.js
+const cloudinaryBaseUrl = "https://res.cloudinary.com/djzsrj98x/image/upload/"; // remplacer par ton nom cloud
 
-exports.getPartis = async (req, res) => {
+// Fonction pour récupérer tous les partis
+exports.getAllPartis = async (req, res) => {
   try {
-    const db_partis = req.db_partis; // connexion injectée depuis app.js
-    if (!db_partis) {
-      return res.status(500).json({ message: "Connexion à la base manquante" });
-    }
+    // On récupère le modèle Parti avec la connexion correcte
+    const Parti = require('../models/Parti')(req.db_partis.partis);
 
-    const data = await getPartisData(db_partis);
-    res.json(data);
-  } catch (err) {
-    console.error("Erreur getPartis:", err);
+    // On récupère tous les partis
+    const partisFromDb = await Parti.find().sort({ nom: 1 });
+
+    // On transforme les données pour le frontend
+    const partis = partisFromDb.map((p) => ({
+      name: p.nom,
+      image: p.imageUrl || `${cloudinaryBaseUrl}${p.imagePublicId}`, // priorité à imageUrl sinon on génère depuis publicId
+      votes: p.votes || 0, // si tu as un champ votes, sinon 0 par défaut
+    }));
+
+    res.json(partis);
+  } catch (error) {
+    console.error("Erreur récupération partis:", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
