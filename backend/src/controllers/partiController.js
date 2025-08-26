@@ -44,6 +44,40 @@ exports.createParti = async (req, res) => {
 
 };
 
+
+exports.voteForParty = async (req, res) => {
+  try {
+    const { partyId } = req.body;
+
+    // Récupération des infos du votant depuis le token
+    const { matricule, nom, prenom, classe } = req.user; // token décodé dans un middleware auth
+
+    const Voter = require('../models/voter')(req.db_voters.voters);
+    const Parti = require('../models/Parti')(req.db_partis.partis);
+
+    // Vérifier si l'utilisateur a déjà voté
+    const alreadyVoted = await Voter.findOne({ matricule });
+    if (alreadyVoted) {
+      return res.status(403).json({ message: "Vous avez déjà voté !" });
+    }
+
+    // Enregistrer le vote dans la base vérification
+    await Voter.create({ matricule, nom, prenom, classe, partyVoted: partyId });
+
+    // Incrémenter le vote du parti
+    const party = await Parti.findById(partyId);
+    if (!party) return res.status(404).json({ message: "Parti non trouvé" });
+    party.votes += 1;
+    await party.save();
+
+    res.json({ message: `Vote enregistré pour ${party.name}`, votes: party.votes });
+  } catch (error) {
+    console.error("Erreur voteForParty:", error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
+
 exports.updateParti = async (req, res) => {
 const Parti = require('../models/Parti')(req.db_partis.partis);
 const { nom, proprietaire } = req.body;

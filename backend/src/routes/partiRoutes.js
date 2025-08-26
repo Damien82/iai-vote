@@ -6,11 +6,16 @@ const {
   getAllPartis,
   updateParti,
   deleteParti,
+  voteForParty,
 } = require("../controllers/partiController");
+
+const auth = require('../middlewares/authMiddleware_admin');
+
 
 // ✅ Toutes ces fonctions doivent être bien définies
 router.post("/", upload.single("image"), createParti);
 router.get("/", getAllPartis);
+router.post('/vote', auth,voteForParty);
 router.put("/:id", upload.single("image"), updateParti);
 router.delete("/:id", deleteParti);
 

@@ -5,6 +5,7 @@ const PartiSchema = new mongoose.Schema({
   proprietaire: { type: String, required: true, trim: true },
   imageUrl: { type: String, required: true },
   imagePublicId: { type: String, required: true },
+  votes: { type: Number, default: 0 },
 });
 
 // Cette fonction vérifie si le modèle existe déjà dans la connexion personnalisée
