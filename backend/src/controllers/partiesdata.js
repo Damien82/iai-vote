@@ -1,4 +1,4 @@
-const getPartisData = require('../data/partisData');
+const getPartisData = require('../data/partiesdata');
 
 exports.getPartis = async (req, res) => {
   try {
