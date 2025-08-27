@@ -45,39 +45,37 @@ exports.createParti = async (req, res) => {
 };
 
 
-// controllers/partiController.js
+const Parti = require("../models/Parti");
+const Voter = require("../models/Voter");
+
 exports.voteForParty = async (req, res) => {
+  const { partyName } = req.body; // On récupère le nom du parti
+  const { matricule, nom, prenom, classe } = req.user; // Récupéré via authMiddleware
+
   try {
-    const { partyName } = req.body;
-
-    // Infos du votant depuis le token (auth middleware)
-    const { matricule, nom, prenom, classe } = req.user;
-
-    const Voter = require('../models/voter')(req.db_voters); // base "voters"
-    const Parti = require('../models/Parti')(req.db_partis); // base "partis"
-
-    // Vérifier si l'utilisateur a déjà voté
-    const alreadyVoted = await Voter.findOne({ matricule });
-    if (alreadyVoted) {
-      return res.status(403).json({ message: "Vous avez déjà voté !" });
+    // Vérifier si le votant a déjà voté
+    const existingVote = await Voter.findOne({ matricule });
+    if (existingVote) {
+      return res.status(400).json({ message: "Vous avez déjà voté !" });
     }
 
-    // Enregistrer ce votant (sans le parti choisi)
-    await Voter.create({ matricule, nom, prenom, classe });
-
-    // Vérifier que le parti existe
-    const party = await Parti.findById(partyName);
-    if (!party) {
-      return res.status(404).json({ message: "Parti non trouvé" });
+    // Vérifier si le parti existe
+    const parti = await Parti.findOne({ nom: partyName });
+    if (!parti) {
+      return res.status(404).json({ message: "Parti introuvable" });
     }
 
-    // Incrémenter le compteur de votes
-    party.votes = (party.votes || 0) + 1;
-    await party.save();
+    // Enregistrer le votant dans la base de "voters"
+    const newVoter = new Voter({ matricule, nom, prenom, classe });
+    await newVoter.save();
 
-    res.json({ message: "Vote enregistré avec succès ✅" });
+    // Incrémenter le compteur du parti
+    parti.voteCount = (parti.voteCount || 0) + 1;
+    await parti.save();
+
+    res.status(200).json({ message: "Vote enregistré avec succès ✅" });
   } catch (error) {
-    console.error("Erreur voteForParty:", error);
+    console.error("Erreur lors du vote :", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
