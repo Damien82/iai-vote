@@ -77,7 +77,7 @@ partisDB.on("connected", () => console.log("Connexion à partis OK"));
 partisDB.on("error", (err) => console.error("Erreur partis :", err));
 
 //connexion à la base voter
-const votersConnection = mongoose.createConnection(process.env.MONGO_URI_VOTERS, {
+const votersConnection = mongoose.createConnection(process.env.DB_URI_VOTERS, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
