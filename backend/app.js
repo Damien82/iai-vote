@@ -81,7 +81,7 @@ const votersConnection = mongoose.createConnection(process.env.MONGO_URI_VOTERS,
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-votersConnection.on("connected", () => console.log("Connexion à partis OK"));
+votersConnection.on("connected", () => console.log("Connexion à voter OK"));
 votersConnection.on("error", (err) => console.error("Erreur partis :", err));
 
 // Connexion à la base `pagestatus`
