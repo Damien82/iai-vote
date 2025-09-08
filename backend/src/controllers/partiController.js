@@ -46,7 +46,7 @@ exports.createParti = async (req, res) => {
 
 
 const Parti = require("../models/Parti");
-const Voter = require("../models/Voter");
+const Voter = require("../models/voter");
 
 exports.voteForParty = async (req, res) => {
   const { partyName } = req.body; // On récupère le nom du parti
