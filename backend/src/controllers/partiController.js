@@ -47,7 +47,7 @@ exports.createParti = async (req, res) => {
 
 exports.voteForParty = async (req, res) => {
   try {
-    const { partyId } = req.body;
+    const { partyName } = req.body;
 
     // Infos utilisateur depuis le token
     const { matricule, nom, prenom, classe } = req.user;
@@ -66,7 +66,7 @@ exports.voteForParty = async (req, res) => {
     await Voter.create({ matricule, nom, prenom, classe });
 
     // Trouver le parti et incrémenter
-    const party = await Parti.findById(partyId);
+    const party = await Parti.findOne({ nom: partyName });
     if (!party) return res.status(404).json({ message: "Parti non trouvé" });
 
     party.votes = (party.votes || 0) + 1;
