@@ -17,8 +17,6 @@ const verifyAdminRoute = require("./src/routes/adminRoutes");
 const verifyUserRoute = require("./src/routes/userRoutes");
 const partisRoutes = require('./src/routes/partiRoutes');
 const partisRoutesData = require('./src/routes/partiRoutedata');
-
-
 const systemRoutes = require("./src/routes/systemRoutes");
 
 const authMiddleware = require("./src/middlewares/authMiddleware_supadmin");
@@ -82,15 +80,15 @@ const votersConnection = mongoose.createConnection(process.env.DB_URI_VOTERS, {
   useUnifiedTopology: true,
 });
 votersConnection.on("connected", () => console.log("Connexion à voter OK"));
-votersConnection.on("error", (err) => console.error("Erreur partis :", err));
+votersConnection.on("error", (err) => console.error("Erreur voter :", err));
 
 // Connexion à la base `pagestatus`
 const db_status = mongoose.createConnection(process.env.DB_URI_PAGESTATUS, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-db_status.on("connected", () => console.log("Connexion à partis OK"));
-db_status.on("error", (err) => console.error("Erreur partis :", err));
+db_status.on("connected", () => console.log("Connexion à partistatus OK"));
+db_status.on("error", (err) => console.error("Erreur partistatus :", err));
 
 // Injection des connexions dans `req.db`
 app.use((req, res, next) => {
@@ -111,8 +109,8 @@ app.use((req, res, next) => {
     req.db_status = {
     pagestatus: db_status
   };
-  req.db_voters = {
-    voter: votersConnection
+  req.db_voter = {
+    voters: votersConnection
   };
   next();
 });

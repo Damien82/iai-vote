@@ -1,14 +1,21 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+
 dotenv.config();
 
 const connectDB = () => {
-  const db_voters = mongoose.createConnection(process.env.DB_URI_VOTERS);
 
-  db_voters.on("connected", () => console.log("✅ Connexion base votants établie"));
-  db_voters.on("error", (err) => console.error("❌ Erreur base votants:", err));
+  const votersConnection = mongoose.createConnection(process.env.DB_URI_VOTERS);
 
-  return { db_voters };
+  votersConnection.on("connected", () => {
+    console.log("Connexion base principale établie");
+  });
+
+  votersConnection.on("error", (err) => {
+    console.error("Erreur connexion base principale :", err);
+  });
+
+  return {votersConnection };
 };
 
-module.exports = connectDB();
+module.exports = connectDB;
