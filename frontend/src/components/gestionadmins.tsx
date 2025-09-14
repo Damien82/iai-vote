@@ -96,7 +96,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
         <input
           type="text"
           placeholder="Rechercher..."
-          className={`px-4 py-2 rounded-lg border w-full sm:w-1/2 focus:outline-blue ${darkMode ? 'bg-gray-800 text-white border-gray-600' : ''}`}
+          className={`px-4 py-2 rounded-lg border border-gray-600 w-full sm:w-1/2 focus:outline-blue ${darkMode ? 'bg-gray-800 text-white border-gray-600' : ''}`}
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
@@ -108,7 +108,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
         </button>
       </div>
 
-      <div className={`overflow-x-auto border rounded-lg shadow-lg ${darkMode ? 'border-gray-700' : ''}`}>
+      <div className={`overflow-x-auto border border-gray-300 rounded-lg shadow-lg ${darkMode ? 'border-gray-700' : ''}`}>
         <table className={`min-w-full ${tableClass}`}>
           <thead className={darkMode ? 'bg-gray-500 text-black' : 'bg-gray-100'}>
             <tr>

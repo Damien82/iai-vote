@@ -216,7 +216,7 @@ const handleAdd = async () => {
           placeholder="Rechercher..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className={`px-4 py-2 rounded-lg border w-full sm:w-1/2 focus:outline-blue ${
+          className={`px-4 py-2 rounded-lg border border-gray-600 w-full sm:w-1/2 focus:outline-blue ${
             darkMode
               ? 'bg-gray-800 text-white border-gray-600'
               : 'bg-white text-gray-800 border-gray-300'
@@ -233,7 +233,7 @@ const handleAdd = async () => {
       </div>
 
       {/* Table */}
-      <div className={`overflow-x-auto rounded-2xl border shadow-lg ${darkMode ? 'border-gray-900 bg-gray-800' : ' bg-white'}`}>
+      <div className={`overflow-x-auto rounded-2xl border border-gray-300 shadow-lg ${darkMode ? 'border-gray-900 bg-gray-800' : ' bg-white'}`}>
         <table className="min-w-full">
           <thead className={darkMode ? 'bg-gray-400' : 'bg-gray-100'}>
             <tr>

@@ -12,6 +12,7 @@ const API_URL = 'https://iai-vote.onrender.com/api/listeusers';
 
 const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
@@ -21,23 +22,48 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const fetchUsers = async () => {
     try {
       const res = await fetch(API_URL);
-      const data = await res.json();
+      const data: User[] = await res.json();
       setUsers(data);
+      setFilteredUsers(data);
     } catch (err) {
       console.error('Erreur lors du chargement des utilisateurs', err);
     }
   };
 
+  // Filtrer les non votants
+  const showNonVoters = async () => {
+    try {
+      const res = await fetch('https://iai-vote.onrender.com/api/voters/voters-matricules');
+      const votedMatricules: string[] = await res.json();
+      const nonVoters = users.filter(user => !votedMatricules.includes(user.matricule));
+      setFilteredUsers(nonVoters);
+    } catch (err) {
+      console.error('Erreur récupération non votants :', err);
+    }
+  };
 
+  // Filtrer les votants
+  const showVoters = async () => {
+    try {
+      const res = await fetch('https://iai-vote.onrender.com/api/voters/voters-matricules');
+      const votedMatricules: string[] = await res.json();
+      const voters = users.filter(user => votedMatricules.includes(user.matricule));
+      setFilteredUsers(voters);
+    } catch (err) {
+      console.error('Erreur récupération votants :', err);
+    }
+  };
 
-  const filteredUsers = users.filter(user =>
+  const resetTable = () => setFilteredUsers(users);
+
+  const displayedUsers = filteredUsers.filter(user =>
     `${user.nom} ${user.prenom} ${user.matricule}`.toLowerCase().includes(search.toLowerCase())
   );
 
   const tableClass = `${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`;
 
   return (
-    <div className={`p-4 space-y-6 ${darkMode ? 'bg-gray-900 text-white' : ' text-black'}`}>
+    <div className={`p-4 space-y-6 ${darkMode ? 'bg-gray-900 text-white' : 'text-black'}`}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <input
           type="text"
@@ -46,6 +72,27 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          onClick={showNonVoters}
+          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+        >
+          Non votants
+        </button>
+        <button
+          onClick={showVoters}
+          className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+        >
+          Votants
+        </button>
+        <button
+          onClick={resetTable}
+          className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
+        >
+          Réinitialiser
+        </button>
       </div>
 
       <div className={`overflow-x-auto border rounded-lg shadow-lg ${darkMode ? 'border-gray-700' : ''}`}>
@@ -59,17 +106,17 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.map(user => (
-              <tr key={user._id} className={`${darkMode ? ' bg-gray-800 hover:bg-gray-600' : 'hover:bg-gray-400'}`}>
+            {displayedUsers.map(user => (
+              <tr key={user._id} className={`${darkMode ? 'bg-gray-800 hover:bg-gray-600' : 'hover:bg-gray-400'}`}>
                 <td className="px-6 py-4">{user.matricule}</td>
                 <td className="px-6 py-4">{user.nom}</td>
                 <td className="px-6 py-4">{user.prenom}</td>
                 <td className="px-6 py-4">{user.classe}</td>
               </tr>
             ))}
-            {filteredUsers.length === 0 && (
+            {displayedUsers.length === 0 && (
               <tr>
-                <td colSpan={5} className="text-center py-4 text-gray-400">
+                <td colSpan={4} className="text-center py-4 text-gray-400">
                   Aucun utilisateur trouvé.
                 </td>
               </tr>
@@ -77,7 +124,6 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
           </tbody>
         </table>
       </div>
-
     </div>
   );
 };

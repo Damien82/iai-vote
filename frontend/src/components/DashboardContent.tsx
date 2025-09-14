@@ -7,49 +7,70 @@ interface DashboardContentProps {
   darkMode: boolean;
 }
 
+interface Party {
+  nom: string;
+  votes: number;
+}
+
 const DashboardContent: React.FC<DashboardContentProps> = ({ darkMode }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [userCount, setUserCount] = useState<number>(0);
   const [adminCount, setAdminCount] = useState<number>(0);
+  const [totalVotes, setTotalVotes] = useState<number>(0);
+  const [parties, setParties] = useState<Party[]>([]);
 
+  // --- Récupération des counts ---
   useEffect(() => {
-    // Récupération du nombre d'utilisateurs
     const fetchUserCount = async () => {
       try {
         const res = await fetch('https://iai-vote.onrender.com/api/users/count');
         const data = await res.json();
         setUserCount(data.count);
       } catch (err) {
-        console.error("Erreur lors de la récupération du nombre d'utilisateurs :", err);
+        console.error(err);
       }
     };
-
-    fetchUserCount();
-  }, []);
-
-  useEffect(() => {
-    // Récupération du nombre d'utilisateurs
     const fetchAdminCount = async () => {
       try {
         const res = await fetch('https://iai-vote.onrender.com/api/admins/count');
         const data = await res.json();
         setAdminCount(data.count);
       } catch (err) {
-        console.error("Erreur lors de la récupération du nombre d'administrateurs :", err);
+        console.error(err);
+      }
+    };
+    const fetchTotalVotes = async () => {
+      try {
+        const res = await fetch('https://iai-vote.onrender.com/api/admins/countvote');
+        const data = await res.json();
+        setTotalVotes(data.totalVotes);
+      } catch (err) {
+        console.error(err);
       }
     };
 
+    fetchUserCount();
     fetchAdminCount();
+    fetchTotalVotes();
   }, []);
 
-  const stats = [
-    { title: 'Total Utilisateurs', value: `${userCount} utilisateur${userCount > 1 ? 's' : ''}`, color: 'from-blue-500 to-blue-600' },
-    { title: 'Total Administrateurs', value: `${adminCount} administrateur${adminCount > 1 ? 's' : ''}`, color: 'from-purple-500 to-purple-600' },
-    { title: 'Total Votes', value: '15,923', color: 'from-green-500 to-green-600' },
-  ];
-
+  // --- Récupération des partis pour le graphique ---
   useEffect(() => {
-    if (!chartRef.current) return;
+    const fetchParties = async () => {
+      try {
+        const res = await fetch('https://iai-vote.onrender.com/api/partis'); // ton API
+        const data = await res.json();
+        setParties(data);
+      } catch (err) {
+        console.error("Erreur récupération partis :", err);
+      }
+    };
+    fetchParties();
+  }, []);
+
+  // --- Initialisation graphique ---
+  useEffect(() => {
+    if (!chartRef.current || parties.length === 0) return;
 
     const myChart = echarts.init(chartRef.current);
 
@@ -73,7 +94,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({ darkMode }) => {
       },
       xAxis: {
         type: 'category',
-        data: ['RDPC', 'SDF', 'PCRN'],
+        data: parties.map(p => p.nom),
         axisLine: { lineStyle: { color: darkMode ? '#6b7280' : '#d1d5db' } },
         axisLabel: { color: darkMode ? '#d1d5db' : '#6b7280' },
       },
@@ -87,11 +108,11 @@ const DashboardContent: React.FC<DashboardContentProps> = ({ darkMode }) => {
         {
           name: 'Votes',
           type: 'bar',
-          data: [40, 30, 30],
+          data: parties.map(p => p.votes),
           itemStyle: {
             color: function (params: any) {
-              const colors = ['#3b82f6', '#10b981', '#8b5cf6'];
-              return colors[params.dataIndex];
+              const colors = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444'];
+              return colors[params.dataIndex % colors.length];
             },
             borderRadius: [6, 6, 0, 0],
           },
@@ -102,16 +123,19 @@ const DashboardContent: React.FC<DashboardContentProps> = ({ darkMode }) => {
 
     myChart.setOption(option);
 
-    const handleResize = () => {
-      myChart.resize();
-    };
-
+    const handleResize = () => myChart.resize();
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
       myChart.dispose();
     };
-  }, [darkMode]);
+  }, [darkMode, parties]);
+
+  const stats = [
+    { title: 'Total Utilisateurs', value: `${userCount} utilisateur${userCount > 1 ? 's' : ''}`, color: 'from-blue-500 to-blue-600' },
+    { title: 'Total Administrateurs', value: `${adminCount} administrateur${adminCount > 1 ? 's' : ''}`, color: 'from-purple-500 to-purple-600' },
+    { title: 'Total Votes', value: `${totalVotes} vote${totalVotes > 1 ? 's' : ''}`, color: 'from-green-500 to-green-600' },
+  ];
 
   return (
     <div className="space-y-8">
@@ -126,7 +150,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({ darkMode }) => {
       </div>
 
       {/* Statistiques */}
-      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-3 2xl:grid-cols-3 gap-6">
         {stats.map((stat, idx) => (
           <div
             key={idx}
@@ -143,7 +167,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({ darkMode }) => {
         ))}
       </div>
 
-      {/* Nouveau Graphique ECharts en barres */}
+      {/* Graphique dynamique */}
       <div className={`p-8 rounded-2xl ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border shadow-lg`}>
         <div ref={chartRef} style={{ width: '100%', height: 400 }} />
       </div>

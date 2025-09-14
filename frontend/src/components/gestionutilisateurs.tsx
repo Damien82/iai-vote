@@ -16,14 +16,12 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
-  const [newUser, setNewUser] = useState({ nom: '', prenom: '', matricule: '' });
+  const [newUser, setNewUser] = useState({ nom: '', prenom: '', matricule: '', classe: '' });
   const [loading, setLoading] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<User | null>(null);
+  const [filteredUser, setFilteredUser] = useState<User[]>([]);
 
-  // Regex de validation
   const validTextRegex = /^[a-zA-ZÀ-ÿ0-9 \-']*$/;
-
-  // États d'erreur
   const [nomError, setNomError] = useState('');
   const [prenomError, setPrenomError] = useState('');
   const [matriculeError, setMatriculeError] = useState('');
@@ -35,15 +33,58 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const fetchUsers = async () => {
     try {
       const res = await fetch(API_URL);
-      const data = await res.json();
+      const data: User[] = await res.json();
       setUsers(data);
+      setFilteredUser(data);
     } catch (err) {
       console.error('Erreur lors du chargement des utilisateurs', err);
     }
   };
 
+  const showNonVoters = async () => {
+    try {
+      // Récupérer les utilisateurs les plus récents
+      const resUsers = await fetch(API_URL);
+      const allUsers: User[] = await resUsers.json();
+
+      // Récupérer les matricules des votants
+      const resVoters = await fetch("https://iai-vote.onrender.com/api/voters/voters-matricules");
+      const votedMatricules: string[] = await resVoters.json();
+
+      // Filtrer ceux qui n'ont pas voté
+      const nonVoters = allUsers.filter(user => !votedMatricules.includes(user.matricule));
+      setFilteredUser(nonVoters);
+    } catch (err) {
+      console.error("Erreur récupération non votants :", err);
+    }
+  };
+
+
+    const showVoters = async () => {
+    try {
+      const resVoters = await fetch("https://iai-vote.onrender.com/api/voters/voters-matricules");
+      const votedMatricules: string[] = await resVoters.json();
+
+      const voters = users.filter(user => votedMatricules.includes(user.matricule));
+      setFilteredUser(voters);
+    } catch (err) {
+      console.error("Erreur récupération votants :", err);
+    }
+  };
+
+
+  const resetTable = async () => {
+    try {
+      const resUsers = await fetch(API_URL);
+      const allUsers: User[] = await resUsers.json();
+      setFilteredUser(allUsers);
+    } catch (err) {
+      console.error("Erreur réinitialisation table :", err);
+    }
+  };
+
   const handleAdd = async () => {
-    if (!newUser.nom || !newUser.prenom || !newUser.matricule) {
+    if (!newUser.nom || !newUser.prenom || !newUser.matricule || !newUser.classe) {
       alert("Tous les champs sont requis");
       return;
     }
@@ -63,7 +104,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
       if (res.ok) {
         alert("Ajout réussi");
         setModalOpen(false);
-        setNewUser({ nom: '', prenom: '', matricule: '' });
+        setNewUser({ nom: '', prenom: '', matricule: '', classe: '' });
         fetchUsers();
       } else {
         alert("Erreur lors de l'ajout");
@@ -78,14 +119,12 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`${API_URL}/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
       const data = await res.json();
 
       if (res.ok) {
         alert("Suppression réussie");
-        fetchUsers(); // recharger la liste
+        fetchUsers();
       } else {
         alert("Erreur : " + data.message);
       }
@@ -95,7 +134,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
     }
   };
 
-  const filteredUsers = users.filter(user =>
+  const filteredUsers = filteredUser.filter(user =>
     `${user.nom} ${user.prenom} ${user.matricule}`.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -103,24 +142,48 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const tableClass = `${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`;
 
   return (
-    <div className={`p-4 space-y-6 ${darkMode ? 'bg-gray-900 text-white' : ' text-black'}`}>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className={`p-4 space-y-6 ${darkMode ? 'bg-gray-900 text-white' : 'text-black'}`}>
+      <div className="flex flex-col sm:items-center sm:justify-between gap-4">
         <input
           type="text"
           placeholder="Rechercher..."
-          className={`px-4 py-2 rounded-lg border w-full sm:w-1/2 focus:outline-blue ${darkMode ? 'bg-gray-800 text-white border-gray-600' : ''}`}
+          className={`px-4 py-2 rounded-lg border border-gray-600 w-full sm:w-1/2 focus:outline-blue ${darkMode ? 'bg-gray-800 text-white border-gray-600' : ''}`}
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
-        <button
-          onClick={() => setModalOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-        >
-          <FontAwesomeIcon icon={faPlus} /> Ajouter un utilisateur
-        </button>
+
+        <div className='flex flex-row gap-6 items-center justify-center'>
+          <button
+            onClick={() => setModalOpen(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            <FontAwesomeIcon icon={faPlus} /> Ajouter un utilisateur
+          </button>
+
+          <button
+            onClick={showNonVoters}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            Liste des non votants
+          </button>
+
+           <button
+            onClick={showVoters}
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            Liste des votants
+          </button>
+
+          <button
+            onClick={resetTable}
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            Tables utilisateurs
+          </button>
+        </div>
       </div>
 
-      <div className={`overflow-x-auto border rounded-lg shadow-lg ${darkMode ? 'border-gray-700' : ''}`}>
+      <div className={`overflow-x-auto border border-gray-300 rounded-lg shadow-lg ${darkMode ? 'border-gray-700' : ''}`}>
         <table className={`min-w-full ${tableClass}`}>
           <thead className={darkMode ? 'bg-gray-500 text-black' : 'bg-gray-100'}>
             <tr>
@@ -133,7 +196,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
           </thead>
           <tbody>
             {filteredUsers.map(user => (
-              <tr key={user._id} className={`${darkMode ? ' bg-gray-800 hover:bg-gray-600' : 'hover:bg-gray-400'}`}>
+              <tr key={user._id} className={`${darkMode ? 'bg-gray-800 hover:bg-gray-600' : 'hover:bg-gray-400'}`}>
                 <td className="px-6 py-4">{user.matricule}</td>
                 <td className="px-6 py-4">{user.nom}</td>
                 <td className="px-6 py-4">{user.prenom}</td>
@@ -212,6 +275,13 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
               }}
             />
             {prenomError && <p className="text-red-500 text-sm mb-1">{prenomError}</p>}
+
+            <input
+              placeholder="Classe"
+              className={inputClass}
+              value={newUser.classe}
+              onChange={e => setNewUser({ ...newUser, classe: e.target.value })}
+            />
 
             <div className="flex justify-end gap-2">
               <button onClick={() => setModalOpen(false)} className="px-4 py-2 bg-gray-400 text-white rounded">Annuler</button>
