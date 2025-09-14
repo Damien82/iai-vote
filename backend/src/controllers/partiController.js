@@ -53,7 +53,7 @@ exports.voteForParty = async (req, res) => {
     const { matricule, nom, prenom, classe } = req.user;
 
     // Charger les modèles avec la bonne connexion
-    const Voter = require("../models/voter")(req.db_voters);  // 🔥 correction ici
+    const Voter = require("../models/voter")(req.db_voter);  // 🔥 correction ici
     const Parti = require("../models/Parti")(req.db_partis);  // 🔥 et ici aussi (pas .partis)
 
     // Vérifier si la personne a déjà voté
