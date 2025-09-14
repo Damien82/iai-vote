@@ -19,7 +19,7 @@ const verifyUserRoute = require("./src/routes/userRoutes");
 const partisRoutes = require('./src/routes/partiRoutes');
 const partisRoutesData = require('./src/routes/partiRoutedata');
 const systemRoutes = require("./src/routes/systemRoutes");
-
+const voterRoutes = require('./src/routes/voterRoutes');
 const authMiddleware = require("./src/middlewares/authMiddleware_supadmin");
 const { changePassword } = require("./src/controllers/authController_admin");
 const { changePasswordsup } = require("./src/controllers/authController_superadmin");
@@ -138,7 +138,7 @@ app.use("/api/listeadmin", adminlisteRoutes)
 app.use('/api/users', usersRoutes2);
 app.use('/api/admins', adminlisteRoutes);
 app.use('/api/superadmins', superAdminRoutes2);
-
+app.use('/api/voters', voterRoutes);
 app.put('/api/changepassword', authMiddleware, changePassword);
 app.put('/api/changepasswordsup', authMiddleware, changePasswordsup);
 
