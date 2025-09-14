@@ -10,9 +10,7 @@ const VoterSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = (connection) => {
-  if (!connection || !connection.models) {
-    throw new Error("La connexion MongoDB pour Voter n'est pas définie !");
-  }
-  return connection.models.Voter || connection.model("Voter", VoterSchema);
+// Cette fonction vérifie si le modèle existe déjà dans la connexion personnalisée
+module.exports = (db_voters) => {
+  return db_voters.models.Voter || db_voters.model("Voter", VoterSchema);
 };
