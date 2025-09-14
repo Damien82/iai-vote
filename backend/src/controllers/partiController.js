@@ -49,18 +49,21 @@ exports.voteForParty = async (req, res) => {
   try {
     const { partyName } = req.body;
 
-    // Infos utilisateur depuis le token
+    // Vérifier que la connexion existe
+    if (!req.db_voter || !req.db_voter.voters) {
+      console.error("Erreur : req.db_voter.voters est undefined !");
+      return res.status(500).json({ message: "Connexion Voter non disponible" });
+    }
+
     const { matricule, nom, prenom, classe } = req.user;
 
-    // Charger les modèles avec la bonne connexion
-    const Voter = require("../models/voter")(req.db_voter.voter);  // 🔥 correction ici
-    const Parti = require("../models/Parti")(req.db_partis.partis);  // 🔥 et ici aussi (pas .partis)
+    // Charger les modèles avec la connexion injectée
+    const Voter = require("../models/voter")(req.db_voter.voter);
+    const Parti = require("../models/Parti")(req.db_partis.partis);
 
-    // Vérifier si la personne a déjà voté
+    // Vérifier si l'utilisateur a déjà voté
     const alreadyVoted = await Voter.findOne({ matricule });
-    if (alreadyVoted) {
-      return res.status(403).json({ message: "Vous avez déjà voté !" });
-    }
+    if (alreadyVoted) return res.status(403).json({ message: "Vous avez déjà voté !" });
 
     // Enregistrer le votant
     await Voter.create({ matricule, nom, prenom, classe });
@@ -78,8 +81,6 @@ exports.voteForParty = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
-
-
 
 
 
