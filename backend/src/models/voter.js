@@ -12,5 +12,5 @@ const VoterSchema = new mongoose.Schema(
 
 // Cette fonction vérifie si le modèle existe déjà dans la connexion personnalisée
 module.exports = (db_voter) => {
-  return db_voter.models.votercollection || db_voter.model("votercollection", VoterSchema);
+  return db_voter.models.Votercollection || db_voter.model("votercollection", VoterSchema);
 };
