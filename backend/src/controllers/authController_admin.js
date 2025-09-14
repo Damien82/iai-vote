@@ -34,7 +34,7 @@ exports.registerAdmin = async (req, res) => {
     await newAdmin.save();
 
     const token = jwt.sign(
-      { matricule, nom, prenom },
+      { matricule, nom, prenom, classe },
       JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -64,7 +64,7 @@ exports.loginAdmin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { matricule: admin.matricule, nom: admin.nom, prenom: admin.prenom },
+      { matricule: admin.matricule, nom: admin.nom, prenom: admin.prenom, classe: admin.classe },
       JWT_SECRET,
       { expiresIn: "7d" }
     );

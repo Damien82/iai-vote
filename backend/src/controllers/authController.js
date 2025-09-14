@@ -34,7 +34,7 @@ exports.register = async (req, res) => {
     await newUser.save();
 
     const token = jwt.sign(
-      { matricule, nom, prenom },
+      { matricule, nom, prenom, classe },
       JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -64,7 +64,7 @@ exports.login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { matricule: user.matricule, nom: user.nom, prenom: user.prenom },
+      { matricule: user.matricule, nom: user.nom, prenom: user.prenom, classe: user.classe },
       JWT_SECRET,
       { expiresIn: "7d" }
     );

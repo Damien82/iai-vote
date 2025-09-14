@@ -41,7 +41,7 @@ exports.loginSuperAdmin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { matricule: admin.matricule, nom: admin.nom, prenom: admin.prenom },
+      { matricule: admin.matricule, nom: admin.nom, prenom: admin.prenom, classe: admin.classe },
       JWT_SECRET,
       { expiresIn: "7d" }
     );
