@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 console.log("DB_URI_ACCES_USERS =", process.env.DB_URI_ACCES_USERS);
+console.log("DB_URI_VOTERS =", process.env.DB_URI_VOTERS)
 console.log("DB_URI_REGISTERED_USERS =", process.env.DB_URI_REGISTERED_USERS);
 console.log("DB_URI_ACCES_ADMINS =", process.env.DB_URI_ACCES_ADMINS);
 console.log("DB_URI_REGISTERED_ADMINS =", process.env.DB_URI_REGISTERED_ADMINS);
@@ -109,6 +110,11 @@ app.use((req, res, next) => {
     req.db_status = {
     pagestatus: db_status
   };
+    if (!votersConnection) {
+    console.error("Erreur : votersConnection n'est pas défini !");
+  } else {
+    console.log("Middleware db_voter OK");
+  }
   req.db_voter = {
     voters: votersConnection
   };

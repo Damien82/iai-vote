@@ -57,8 +57,13 @@ exports.voteForParty = async (req, res) => {
 
     const { matricule, nom, prenom, classe } = req.user;
 
+  if (!req.db_voter || !req.db_voter.voters) {
+  console.error("req.db_voter.voters est undefined !");
+  return res.status(500).json({ message: "Connexion Voter non disponible" });
+}
+
     // Charger les modèles avec la connexion injectée
-    const Voter = require("../models/voter")(req.db_voter.voter);
+    const Voter = require("../models/voter")(req.db_voter.voters);
     const Parti = require("../models/Parti")(req.db_partis.partis);
 
     // Vérifier si l'utilisateur a déjà voté
