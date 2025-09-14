@@ -6,6 +6,7 @@ const {
   getAllAdmins,
   deleteAdmins,
   getAdminCount,
+  getTotalVotes,
 } = require("../controllers/adminuserController");
 
 // Route POST : Ajouter un utilisateur dans la base ref (base de référence)
@@ -19,6 +20,10 @@ router.delete("/:id", deleteAdmins);
 
 // Route GET : compter le nombre d'utilisateur
 router.get('/count', getAdminCount);
+
+// Route GET : compter le nombre de votes
+router.get('/countvote', getTotalVotes);
+
 
 
 module.exports = router;

@@ -90,9 +90,28 @@ const getAdminCount = async (req, res) => {
   }
 };
 
+const getTotalVotes = async (req, res) => {
+  try {
+    const Parti = require('../models/Parti')(req.db_partis.partis);
+
+    // Récupérer tous les partis
+    const partis = await Parti.find();
+
+    // Calculer le total des votes
+    const totalVotes = partis.reduce((acc, parti) => acc + (parti.votes || 0), 0);
+
+    res.json({ totalVotes });
+  } catch (error) {
+    console.error('Erreur lors du calcul du nombre total de votes :', error);
+    res.status(500).json({ error: "Erreur lors du calcul des votes." });
+  }
+};
+
+
 module.exports = {
   ajouterAdmin,
   getAllAdmins,
   getAdminCount,
-  deleteAdmins, // <-- nouvelle fonction
+  deleteAdmins,
+  getTotalVotes, 
 };
