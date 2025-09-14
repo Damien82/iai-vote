@@ -138,11 +138,11 @@ app.put('/api/changepasswordsup', authMiddleware, changePasswordsup);
 
 app.use("/api/system", systemRoutes);
 
-// ⛔ Gestion des erreurs Multer
+// Gestion des erreurs Multer
 const errorHandler = require("./src/middlewares/errorHandler");
 app.use(errorHandler);
 
 // Lancement du serveur
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur backend lancé sur le port ${PORT}`);
+  console.log(` Serveur backend lancé sur le port ${PORT}`);
 });
