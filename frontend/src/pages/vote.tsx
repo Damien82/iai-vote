@@ -41,7 +41,6 @@ const handleVote = async (partyName: string) => {
       body: JSON.stringify({ partyName })
     });
 
-    alert(`Vous avez voté pour ${ partyName}`);
   } catch (error) {
     alert("Impossible d'envoyer le vote, réessayez.");
   }

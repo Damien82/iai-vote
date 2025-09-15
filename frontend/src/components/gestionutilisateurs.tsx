@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface User {
   _id: string;
@@ -20,11 +23,15 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const [loading, setLoading] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<User | null>(null);
   const [filteredUser, setFilteredUser] = useState<User[]>([]);
+  const [exportModal, setExportModal] = useState(false); // 🔹 nouveau modal
+  const [exportFormat, setExportFormat] = useState<'excel' | 'pdf'>('excel');
 
   const validTextRegex = /^[a-zA-ZÀ-ÿ0-9 \-']*$/;
   const [nomError, setNomError] = useState('');
   const [prenomError, setPrenomError] = useState('');
   const [matriculeError, setMatriculeError] = useState('');
+
+  
 
   useEffect(() => {
     fetchUsers();
@@ -133,6 +140,42 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
       console.error(err);
     }
   };
+
+   // 🔹 Export Excel
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      filteredUser.map(u => ({
+        Matricule: u.matricule,
+        Nom: u.nom,
+        Prénom: u.prenom,
+        Classe: u.classe,
+      }))
+    );
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Utilisateurs");
+    XLSX.writeFile(workbook, "utilisateurs.xlsx");
+  };
+
+  // 🔹 Export PDF
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    const tableData = filteredUser.map(u => [u.matricule, u.nom, u.prenom, u.classe]);
+    autoTable(doc, {
+      head: [['Matricule', 'Nom', 'Prénom', 'Classe']],
+      body: tableData,
+    });
+    doc.save("utilisateurs.pdf");
+  };
+
+  const handleExport = () => {
+    if (exportFormat === 'excel') {
+      exportToExcel();
+    } else {
+      exportToPDF();
+    }
+    setExportModal(false);
+  };
+
 
   const filteredUsers = filteredUser.filter(user =>
     `${user.nom} ${user.prenom} ${user.matricule}`.toLowerCase().includes(search.toLowerCase())
@@ -309,6 +352,31 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
           </div>
         </div>
       )}
+      
+      {/* 🔹 Modal Export */}
+      {exportModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className={`p-6 rounded shadow-lg space-y-4 w-96 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+            <h2 className="text-lg font-bold">Exporter les données</h2>
+
+            <label className="block text-sm mb-2">Choisir le format :</label>
+            <select
+              value={exportFormat}
+              onChange={e => setExportFormat(e.target.value as 'excel' | 'pdf')}
+              className={inputClass}
+            >
+              <option value="excel">Excel (.xlsx)</option>
+              <option value="pdf">PDF (.pdf)</option>
+            </select>
+
+            <div className="flex justify-end gap-2">
+              <button onClick={() => setExportModal(false)} className="px-4 py-2 bg-gray-400 text-white rounded">Annuler</button>
+              <button onClick={handleExport} className="px-4 py-2 bg-blue-600 text-white rounded">Exporter</button>
+            </div>
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 };
