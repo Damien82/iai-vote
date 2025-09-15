@@ -68,7 +68,7 @@ exports.voteForParty = async (req, res) => {
 
     // Vérifier si l'utilisateur a déjà voté
     const alreadyVoted = await Voter.findOne({ matricule });
-    if (alreadyVoted) return res.status(403).json({ message: "Vous avez déjà voté !" });
+    if (alreadyVoted) return res.status(403).json({ message: "Vous avez déjà voté !" }) && alert("vous avez déjà voté !");
 
     // Enregistrer le votant
     await Voter.create({ matricule, nom, prenom, classe });
