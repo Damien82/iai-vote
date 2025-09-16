@@ -1,14 +1,22 @@
 // controllers/purgeController.js
 // 🔹 Controller pour la purge avancée des bases
 const connectDB = require("../config/db"); // chemin selon ton projet
-const { refConnection, mainConnection } = connectDB();
+const { refConnection, mainConnection } = connectDB(); 
+const connectRefAdminDB = require("../config/db_admin");
+const { refConnection: refAdminConn, mainConnection: mainAdminConn } = connectRefAdminDB();
+const connectRefPartiDB = require("../config/db_partis");
+const { refConnection: refUserConn1} = connectRefPartiDB();
+const connectRefvoterDB = require("../config/db_voter");
+const { votersConnection: refvoterConn} = connectRefvoterDB();
+
+
 // Import des schémas
 const userSchema = require('../models/Users');(mainConnection)
 const userRefSchema = require('../models/EtudiantReference');(refConnection)
-const adminSchema = require('../models/Admins');
-const adminRefSchema = require('../models/AdminReference');
-const voterSchema = require('../models/voter');
-const partiSchema = require('../models/Parti');
+const adminSchema = require('../models/Admins');(mainAdminConn)
+const adminRefSchema = require('../models/AdminReference');(refAdminConn)
+const voterSchema = require('../models/voter');(refvoterConn)
+const partiSchema = require('../models/Parti');(refUserConn1)
 
 exports.purgeDatabase = async (req, res) => {
   const { database } = req.body; // 'Utilisateurs', 'Votant', 'Partis', 'UtilisateursRef', 'AdministrateurRef', 'Administrateurs'
