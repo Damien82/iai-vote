@@ -13,8 +13,6 @@ const VoterModelFn1 = require("../models/voter");
 
 
 exports.purgeDatabase = async (req, res) => {
-  const { database } = req.body; // 'Utilisateurs', 'Votant', 'Partis', 'UtilisateursRef', 'AdministrateurRef', 'Administrateurs'
-
   try {
     const  Model = UserModelFn(connectUsersDB().mainConnection); // connection principale;
     const Model2 = VoterModelFn1(connectVoterDB().votersConnection); // connection Principale
