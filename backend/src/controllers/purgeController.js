@@ -17,12 +17,12 @@ exports.purgeDatabase = async (req, res) => {
     const  Model = UserModelFn(connectUsersDB().mainConnection); // connection principale;
     const Model2 = VoterModelFn1(connectVoterDB().votersConnection); // connection Principale
     const Model3 = UserModelFn2(connectUsersDB().refConnection); // connection secondaire
-    const AdminModelFn = AdminModelFn(connectAdminsDB().refConnection); // connection secondaire
-    const AdminModelFn2 = AdminModelFn2(connectAdminsDB().mainConnection); // connection Principale
+    const AdminModelFn3 = AdminModelFn(connectAdminsDB().refConnection); // connection secondaire
+    const AdminModelFn4 = AdminModelFn2(connectAdminsDB().mainConnection); // connection Principale
 
     await Promise.all([
-      AdminModelFn.deleteMany({}),
-      AdminModelFn2.deleteMany({}),
+      AdminModelFn3.deleteMany({}),
+      AdminModelFn4.deleteMany({}),
       Model.deleteMany({}),
       Model2.deleteMany({}),
       Model3.deleteMany({}),
