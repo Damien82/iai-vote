@@ -9,11 +9,11 @@ const { votersConnection: refvoterConn} = connectRefvoterDB();
 
 
 // Import des schémas
-const userSchema = require('../models/Users');(mainConnection)
-const userRefSchema = require('../models/EtudiantReference');(refConnection)
-const adminSchema = require('../models/Admins');(mainAdminConn)
-const adminRefSchema = require('../models/AdminReference');(refAdminConn)
-const voterSchema = require('../models/voter');(refvoterConn)
+const User = require('../models/Users');(mainConnection)
+const userRef = require('../models/EtudiantReference');(refConnection)
+const admin = require('../models/Admins');(mainAdminConn)
+const adminRef = require('../models/AdminReference');(refAdminConn)
+const voter = require('../models/voter');(refvoterConn)
 
 exports.purgeDatabase = async (req, res) => {
   const { database } = req.body; // 'Utilisateurs', 'Votant', 'Partis', 'UtilisateursRef', 'AdministrateurRef', 'Administrateurs'
@@ -23,19 +23,19 @@ exports.purgeDatabase = async (req, res) => {
 
     switch (database) {
       case 'Utilisateurs':
-        Model = req.db_main.models.User || req.db_main.model('User', userSchema);
+        await User.deleteMany({});
         break;
       case 'Votant':
-        Model = req.db_main.models.Voter || req.db_main.model('Voter', voterSchema);
+        await voter.deleteMany({});
         break;
       case 'UtilisateursRef':
-        Model = req.db_ref.models.EtudiantReference || req.db_ref.model('allowed', userRefSchema);
+        await userRef.deleteMany({});
         break;
       case 'AdministrateurRef':
-        Model = req.db_ref.models.AdminReference || req.db_ref.model('allowed', adminRefSchema);
+        await adminRef.deleteMany({});
         break;
       case 'Administrateurs':
-        Model = req.db_main.models.Admin || req.db_main.model('Admins', adminSchema);
+        await admin.deleteMany({});
         break;
       default:
         return res.status(400).json({ message: 'Base inconnue' });
