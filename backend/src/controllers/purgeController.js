@@ -21,11 +21,12 @@ exports.purgeDatabase = async (req, res) => {
     const Model5 = AdminModelFn2(connectAdminsDB().mainConnection); // connection Principale
 
     await Promise.all([
+      Model4.deleteMany({}),
+      Model5.deleteMany({}),
       Model.deleteMany({}),
       Model2.deleteMany({}),
       Model3.deleteMany({}),
-      Model4.deleteMany({}),
-      Model5.deleteMany({}),
+
     ]);
 
     return res.json({ message: `Vidange de toutes les bases terminée` });
