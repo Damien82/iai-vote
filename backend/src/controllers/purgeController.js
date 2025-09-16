@@ -1,6 +1,6 @@
 // controllers/purgeController.js
 // 🔹 Controller pour la purge avancée des bases
-const connectDB = require("../config/db"); // chemin selon ton projet
+/*const connectDB = require("../config/db"); // chemin selon ton projet
 const { refConnection, mainConnection } = connectDB(); 
 const connectRefAdminDB = require("../config/db_admin");
 const { refConnection: refAdminConn, mainConnection: mainAdminConn } = connectRefAdminDB();
@@ -13,7 +13,9 @@ const User = require('../models/Users')(mainConnection);
 const userRef = require('../models/EtudiantReference');(refConnection);
 const admin = require('../models/Admins')(mainAdminConn);
 const adminRef = require('../models/AdminReference')(refAdminConn);
-const voter = require('../models/voter')(refvoterConn);
+const voter = require('../models/voter')(refvoterConn);*/
+const connectUsersDB = require("../config/db");
+const UserModelFn = require("../models/Users");
 
 exports.purgeDatabase = async (req, res) => {
   const { database } = req.body; // 'Utilisateurs', 'Votant', 'Partis', 'UtilisateursRef', 'AdministrateurRef', 'Administrateurs'
@@ -23,7 +25,7 @@ exports.purgeDatabase = async (req, res) => {
 
     switch (database) {
       case 'Utilisateurs':
-        await User.deleteMany({});
+        Model = UserModelFn(connectUsersDB().mainConnection); // connection principale
         break;
       case 'Votant':
         await voter.deleteMany({});
