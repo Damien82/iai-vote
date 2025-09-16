@@ -1,21 +1,16 @@
 // controllers/purgeController.js
 // 🔹 Controller pour la purge avancée des bases
-/*const connectDB = require("../config/db"); // chemin selon ton projet
-const { refConnection, mainConnection } = connectDB(); 
-const connectRefAdminDB = require("../config/db_admin");
-const { refConnection: refAdminConn, mainConnection: mainAdminConn } = connectRefAdminDB();
-const connectRefvoterDB = require("../config/db_voter");
-const { votersConnection: refvoterConn} = connectRefvoterDB();
-
-
-// Import des schémas
-const User = require('../models/Users')(mainConnection);
-const userRef = require('../models/EtudiantReference');(refConnection);
-const admin = require('../models/Admins')(mainAdminConn);
-const adminRef = require('../models/AdminReference')(refAdminConn);
-const voter = require('../models/voter')(refvoterConn);*/
 const connectUsersDB = require("../config/db");
 const UserModelFn = require("../models/Users");
+const UserModelFn2 = require("../models/EtudiantReference");
+
+const connectAdminsDB = require("../config/db_admin");
+const AdminModelFn = require("../models/Admins");
+const AdminModelFn2 = require("../models/AdminReference");
+
+const connectVoterDB = require("../config/db_voter");
+const VoterModelFn1 = require("../models/voter");
+
 
 exports.purgeDatabase = async (req, res) => {
   const { database } = req.body; // 'Utilisateurs', 'Votant', 'Partis', 'UtilisateursRef', 'AdministrateurRef', 'Administrateurs'
@@ -28,16 +23,16 @@ exports.purgeDatabase = async (req, res) => {
         Model = UserModelFn(connectUsersDB().mainConnection); // connection principale
         break;
       case 'Votant':
-        await voter.deleteMany({});
+        Model = VoterModelFn1(connectVoterDB().votersConnection); // connection Principale
         break;
       case 'UtilisateursRef':
-        await userRef.deleteMany({});
+         Model = UserModelFn2(connectUsersDB().refConnection); // connection secondaire
         break;
       case 'AdministrateurRef':
-        await adminRef.deleteMany({});
+        Model = AdminModelFn(connectAdminsDB().refConnection); // connection secondaire
         break;
       case 'Administrateurs':
-        await admin.deleteMany({});
+        Model = AdminModelFn2(connectAdminsDB().mainConnection); // connection Principale
         break;
       default:
         return res.status(400).json({ message: 'Base inconnue' });
