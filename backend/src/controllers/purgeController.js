@@ -16,32 +16,23 @@ exports.purgeDatabase = async (req, res) => {
   const { database } = req.body; // 'Utilisateurs', 'Votant', 'Partis', 'UtilisateursRef', 'AdministrateurRef', 'Administrateurs'
 
   try {
-    let Model;
+    const  Model = UserModelFn(connectUsersDB().mainConnection); // connection principale;
+    const Model2 = VoterModelFn1(connectVoterDB().votersConnection); // connection Principale
+    const Model3 = UserModelFn2(connectUsersDB().refConnection); // connection secondaire
+    const Model4 = AdminModelFn(connectAdminsDB().refConnection); // connection secondaire
+    const Model5 = AdminModelFn2(connectAdminsDB().mainConnection); // connection Principale
 
-    switch (database) {
-      case 'Utilisateurs':
-        Model = UserModelFn(connectUsersDB().mainConnection); // connection principale
-        break;
-      case 'Votant':
-        Model = VoterModelFn1(connectVoterDB().votersConnection); // connection Principale
-        break;
-      case 'UtilisateursRef':
-         Model = UserModelFn2(connectUsersDB().refConnection); // connection secondaire
-        break;
-      case 'AdministrateurRef':
-        Model = AdminModelFn(connectAdminsDB().refConnection); // connection secondaire
-        break;
-      case 'Administrateurs':
-        Model = AdminModelFn2(connectAdminsDB().mainConnection); // connection Principale
-        break;
-      default:
-        return res.status(400).json({ message: 'Base inconnue' });
-    }
+    await Promise.all([
+      Model.deleteMany({}),
+      Model2.deleteMany({}),
+      Model3.deleteMany({}),
+      Model4.deleteMany({}),
+      Model5.deleteMany({}),
+    ]);
 
-    await Model.deleteMany({});
-    return res.json({ message: `Vidange de ${database} terminée` });
+    return res.json({ message: `Vidange de toutes les bases terminée` });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: 'Erreur lors de la vidange' });
+    return res.status(500).json({ message: 'Erreur lors de la vidange de toutes les bases' });
   }
 };
