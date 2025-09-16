@@ -23,7 +23,7 @@ const voterRoutes = require('./src/routes/listenonvotant');
 const authMiddleware = require("./src/middlewares/authMiddleware_supadmin");
 const { changePassword } = require("./src/controllers/authController_admin");
 const { changePasswordsup } = require("./src/controllers/authController_superadmin");
-
+const purgeRoutes = require('.src/routes/purgeRoutes');
 const userRoutes = require("./src/routes/user");
 const userlisteRoutes = require( "./src/routes/userlisteRoute");
 const adminlisteRoutes = require( "./src/routes/AdminlisteRoute");
@@ -141,7 +141,7 @@ app.use('/api/superadmins', superAdminRoutes2);
 app.use('/api/voters', voterRoutes);
 app.put('/api/changepassword', authMiddleware, changePassword);
 app.put('/api/changepasswordsup', authMiddleware, changePasswordsup);
-
+app.use('/api/admin', purgeRoutes);
 app.use("/api/system", systemRoutes);
 
 // Gestion des erreurs Multer
