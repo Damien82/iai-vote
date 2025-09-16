@@ -4,8 +4,6 @@ const connectDB = require("../config/db"); // chemin selon ton projet
 const { refConnection, mainConnection } = connectDB(); 
 const connectRefAdminDB = require("../config/db_admin");
 const { refConnection: refAdminConn, mainConnection: mainAdminConn } = connectRefAdminDB();
-const connectRefPartiDB = require("../config/db_partis");
-const { refConnection: refUserConn1} = connectRefPartiDB();
 const connectRefvoterDB = require("../config/db_voter");
 const { votersConnection: refvoterConn} = connectRefvoterDB();
 
@@ -16,7 +14,6 @@ const userRefSchema = require('../models/EtudiantReference');(refConnection)
 const adminSchema = require('../models/Admins');(mainAdminConn)
 const adminRefSchema = require('../models/AdminReference');(refAdminConn)
 const voterSchema = require('../models/voter');(refvoterConn)
-const partiSchema = require('../models/Parti');(refUserConn1)
 
 exports.purgeDatabase = async (req, res) => {
   const { database } = req.body; // 'Utilisateurs', 'Votant', 'Partis', 'UtilisateursRef', 'AdministrateurRef', 'Administrateurs'
@@ -30,9 +27,6 @@ exports.purgeDatabase = async (req, res) => {
         break;
       case 'Votant':
         Model = req.db_main.models.Voter || req.db_main.model('Voter', voterSchema);
-        break;
-      case 'Partis':
-        Model = req.db_main.models.Parti || req.db_main.model('Parti', partiSchema);
         break;
       case 'UtilisateursRef':
         Model = req.db_ref.models.EtudiantReference || req.db_ref.model('allowed', userRefSchema);
