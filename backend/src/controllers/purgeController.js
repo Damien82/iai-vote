@@ -1,5 +1,5 @@
 const UserRef = require('../models/EtudiantReference');
-const User = require('../models/User');
+const User = require('../models/Users');
 const Voter = require('../models/voter');
 const AdminRef = require('../models/AdminReference')
 const Admin = require('../models/Admins')
