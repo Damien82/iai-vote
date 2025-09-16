@@ -23,7 +23,7 @@ exports.purgeDatabase = async (req, res) => {
     await Promise.all([
       Model4.deleteMany({}),
       Model5.deleteMany({}),
-      console.log(supre),
+      console.log("supre"),
       Model.deleteMany({}),
       Model2.deleteMany({}),
       Model3.deleteMany({}),
