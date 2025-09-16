@@ -9,11 +9,11 @@ const { votersConnection: refvoterConn} = connectRefvoterDB();
 
 
 // Import des schémas
-const User = require('../models/Users');(mainConnection)
-const userRef = require('../models/EtudiantReference');(refConnection)
-const admin = require('../models/Admins');(mainAdminConn)
-const adminRef = require('../models/AdminReference');(refAdminConn)
-const voter = require('../models/voter');(refvoterConn)
+const User = require('../models/Users')(mainConnection);
+const userRef = require('../models/EtudiantReference');(refConnection);
+const admin = require('../models/Admins')(mainAdminConn);
+const adminRef = require('../models/AdminReference')(refAdminConn);
+const voter = require('../models/voter')(refvoterConn);
 
 exports.purgeDatabase = async (req, res) => {
   const { database } = req.body; // 'Utilisateurs', 'Votant', 'Partis', 'UtilisateursRef', 'AdministrateurRef', 'Administrateurs'
