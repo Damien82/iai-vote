@@ -1,9 +1,10 @@
 // controllers/purgeController.js
 // 🔹 Controller pour la purge avancée des bases
-
+const connectDB = require("../config/db"); // chemin selon ton projet
+const { refConnection, mainConnection } = connectDB();
 // Import des schémas
-const userSchema = require('../models/Users');
-const userRefSchema = require('../models/EtudiantReference');
+const userSchema = require('../models/Users');(mainConnection)
+const userRefSchema = require('../models/EtudiantReference');(refConnection)
 const adminSchema = require('../models/Admins');
 const adminRefSchema = require('../models/AdminReference');
 const voterSchema = require('../models/voter');
