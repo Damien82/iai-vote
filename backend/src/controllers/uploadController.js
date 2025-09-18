@@ -1,6 +1,5 @@
 const XLSX = require('xlsx');
 const User = require('../models/EtudiantReference');
-const Admin = require('../models/AdminReference')
 
 exports.uploadExcel = async (req, res) => {
   const { database } = req.body;
@@ -12,11 +11,8 @@ exports.uploadExcel = async (req, res) => {
     const jsonData = XLSX.utils.sheet_to_json(sheet);
 
     switch (database) {
-      case 'Utilisateurs':
+      case 'UtilisateursRef':
         await User.insertMany(jsonData);
-        break;
-      case 'Administrateurs':
-        await Admin.insertMany(jsonData);
         break;
       default:
         return res.status(400).json({ message: 'Base inconnue' });
