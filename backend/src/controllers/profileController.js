@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const connectUsersDB = require('../config/db');
-const UserModelFn = require('../models/Userslist'); // ou EtudiantReference selon ta base
+const UserModelFn = require('../models/Users'); // ou EtudiantReference selon ta base
 
 exports.getProfile = async (req, res) => {
   try {
