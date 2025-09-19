@@ -9,10 +9,18 @@ exports.uploadExcel = async (req, res) => {
     const workbook = XLSX.read(req.file.buffer);
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const jsonData = XLSX.utils.sheet_to_json(sheet);
-    console.log("📄 Données Excel importées :", jsonData);
+
+        let formattedData;
+
+
     switch (database) {
       case 'UtilisateursRef':
-        await User.insertMany(jsonData);
+          formattedData = jsonData.map(item => ({
+          matricule: item.Matricule,
+          nom: item.Nom,
+          prenom: item['Prénom']
+        }));
+        await User.insertMany(formattedData);
         break;
       default:
         return res.status(400).json({ message: 'Base inconnue' });
