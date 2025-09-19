@@ -17,8 +17,9 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [search, setSearch] = useState('');
-    const [exportModal, setExportModal] = useState(false); // 🔹 nouveau modal
-    const [exportFormat, setExportFormat] = useState<'excel' | 'pdf'>('excel');
+  const [exportModal, setExportModal] = useState(false); // 🔹 nouveau modal
+  const [exportFormat, setExportFormat] = useState<'excel' | 'pdf'>('excel');
+  const [pdfTitle, setPdfTitle] = useState("Liste des utilisateurs");
 
   useEffect(() => {
     fetchUsers();
@@ -51,24 +52,30 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   };
 
   // 🔹 Export PDF
-  const exportToPDF = () => {
+  const exportToPDF = (filename: string, title: string) => {
     const doc = new jsPDF();
+      // Ajouter un titre en haut
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text(title, doc.internal.pageSize.getWidth() / 2, 15, { align: "center" });
     const tableData = filteredUsers.map(u => [u.matricule, u.nom, u.prenom, u.classe]);
     autoTable(doc, {
+      startY: 25, 
       head: [['Matricule', 'Nom', 'Prénom', 'Classe']],
       body: tableData,
     });
-    doc.save("utilisateurs.pdf");
+    doc.save(filename + '.pdf');
   };
 
   const handleExport = () => {
     if (exportFormat === 'excel') {
       exportToExcel();
     } else {
-      exportToPDF();
+    exportToPDF('Utilisateurs', pdfTitle);
     }
     setExportModal(false);
   };
+
 
   // Filtrer les non votants
   const showNonVoters = async () => {
@@ -77,6 +84,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
       const votedMatricules: string[] = await res.json();
       const nonVoters = users.filter(user => !votedMatricules.includes(user.matricule));
       setFilteredUsers(nonVoters);
+      setPdfTitle("Liste des utilisateurs ayant voté"); 
     } catch (err) {
       console.error('Erreur récupération non votants :', err);
     }
@@ -89,6 +97,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
       const votedMatricules: string[] = await res.json();
       const voters = users.filter(user => votedMatricules.includes(user.matricule));
       setFilteredUsers(voters);
+      setPdfTitle("Liste des utilisateurs ayant voté"); 
     } catch (err) {
       console.error('Erreur récupération votants :', err);
     }
@@ -114,7 +123,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
         />
       </div>
 
-      <div className="flex flex-row justify-center gap-6">
+      <div className="flex flex-row justify-center gap-6  tel:flex-col sm:flex-col lg:flex-col">
         <button
           onClick={showNonVoters}
           className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
@@ -133,6 +142,13 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
         >
           Tables des utilisateurs
         </button>
+
+        <button
+            onClick={() => setExportModal(true)}
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            Exporter
+          </button>
       </div>
 
       <div className={`overflow-x-auto border border-gray-300 rounded-lg shadow-lg ${darkMode ? 'border-gray-700' : ''}`}>

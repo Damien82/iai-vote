@@ -20,55 +20,68 @@ const VotePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [parties, setParties] = useState<Parti[]>([]);
 
+  // Popup state
+  const [popup, setPopup] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+
   // Vérification de l'état du système
   useEffect(() => {
     fetch("https://iai-vote.onrender.com/api/system/getsystemstate")
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         setAllowed(data.isActive);
         setLoading(false);
       });
   }, []);
 
-const handleVote = async (partyName: string) => {
-  try {
-    await fetch("https://iai-vote.onrender.com/api/partis/vote", {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}`
-      },
-      body: JSON.stringify({ partyName })
-    });
-
-  } catch (error) {
-    alert("Impossible d'envoyer le vote, réessayez.");
-  }
-};
-
-
   // Récupération des partis
-useEffect(() => {
-  if (!allowed) return;
-  const fetchParties = async () => {
-    try {
-      const res = await fetch("https://iai-vote.onrender.com/api/partissecond/getAllPartis");
-      if (!res.ok) throw new Error(`Erreur HTTP ! status: ${res.status}`);
-      const data = await res.json();
-      console.log("Partis récupérés:", data); 
-      const formattedParties = data.map((p: any) => ({
-        name: p.name,   
-        image: p.image,  
-        votes: p.votes ?? 0
-      }));
-      setParties(formattedParties);
-    } catch (error) {
-      console.error("Erreur récupération partis:", error);
-    }
-  };
-  fetchParties();
-}, [allowed]);
+  useEffect(() => {
+    if (!allowed) return;
+    const fetchParties = async () => {
+      try {
+        const res = await fetch("https://iai-vote.onrender.com/api/partissecond/getAllPartis");
+        if (!res.ok) throw new Error(`Erreur HTTP ! status: ${res.status}`);
+        const data = await res.json();
+        const formattedParties = data.map((p: any) => ({
+          name: p.name,
+          image: p.image,
+          votes: p.votes ?? 0
+        }));
+        setParties(formattedParties);
+      } catch (error) {
+        console.error("Erreur récupération partis:", error);
+      }
+    };
+    fetchParties();
+  }, [allowed]);
 
+  // 🔹 Fonction de vote avec popup
+  const handleVote = async (partyName: string) => {
+    try {
+      const res = await fetch("https://iai-vote.onrender.com/api/partis/vote", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({ partyName })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setPopup({ message: "Votre vote a été enregistré avec succès ✅", type: "success" });
+      } else if (data.message && data.message.toLowerCase().includes("déjà voté")) {
+        setPopup({ message: "Vous avez déjà voté ❌", type: "error" });
+      } else {
+        setPopup({ message: "Une erreur est survenue, veuillez réessayer ⚠️", type: "error" });
+      }
+    } catch (error) {
+      setPopup({ message: "Impossible d'envoyer le vote, réessayez ⚠️", type: "error" });
+    }
+
+    // Masquer automatiquement après 3 secondes
+    setTimeout(() => setPopup(null), 3000);
+  };
 
   if (loading) return (
     <div className="flex justify-center items-center h-screen">
@@ -95,7 +108,7 @@ useEffect(() => {
   }
 
   return (
-    <div className="min-h-screen bg-white pt-16">
+    <div className="min-h-screen bg-white pt-16 relative">
       <Header />
       <section className="py-24 bg-gray-200">
         <div className="max-w-7xl mx-auto px-6">
@@ -122,6 +135,19 @@ useEffect(() => {
         </div>
       </section>
       <Footer />
+
+      {/* 🔹 Popup vote */}
+      {popup && (
+        <div
+          className={`fixed top-20 left-1/2 transform -translate-x-1/2 px-6 py-4 rounded shadow-lg text-white z-50 transition-opacity duration-500 ease-in-out
+            ${popup.type === 'success' ? 'bg-green-500' :
+              popup.type === 'error' ? 'bg-red-500' :
+              'bg-yellow-500'}
+          `}
+        >
+          {popup.message}
+        </div>
+      )}
     </div>
   );
 };

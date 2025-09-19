@@ -235,7 +235,7 @@ const handleAdd = async () => {
       {/* Table */}
       <div className={`overflow-x-auto rounded-2xl border border-gray-300 shadow-lg ${darkMode ? 'border-gray-900 bg-gray-800' : ' bg-white'}`}>
         <table className="min-w-full">
-          <thead className={darkMode ? 'bg-gray-400' : 'bg-gray-100'}>
+          <thead className={darkMode ? 'bg-gray-400' : 'bg-gray-400'}>
             <tr>
               <th className="px-6 py-3 text-left text-sm font-bold">Image</th>
               <th className="px-6 py-3 text-left text-sm font-bold">Nom</th>

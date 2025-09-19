@@ -30,6 +30,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   const [nomError, setNomError] = useState('');
   const [prenomError, setPrenomError] = useState('');
   const [matriculeError, setMatriculeError] = useState('');
+  const [pdfTitle, setPdfTitle] = useState("Liste des utilisateurs");
 
   
 
@@ -61,6 +62,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
       // Filtrer ceux qui n'ont pas voté
       const nonVoters = allUsers.filter(user => !votedMatricules.includes(user.matricule));
       setFilteredUser(nonVoters);
+      setPdfTitle("Liste des utilisateurs n’ayant pas voté");
     } catch (err) {
       console.error("Erreur récupération non votants :", err);
     }
@@ -74,6 +76,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
 
       const voters = users.filter(user => votedMatricules.includes(user.matricule));
       setFilteredUser(voters);
+      setPdfTitle("Liste des utilisateurs ayant voté"); 
     } catch (err) {
       console.error("Erreur récupération votants :", err);
     }
@@ -85,6 +88,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
       const resUsers = await fetch(API_URL);
       const allUsers: User[] = await resUsers.json();
       setFilteredUser(allUsers);
+      setPdfTitle("Liste des utilisateurs");
     } catch (err) {
       console.error("Erreur réinitialisation table :", err);
     }
@@ -157,21 +161,26 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   };
 
   // 🔹 Export PDF
-  const exportToPDF = () => {
+  const exportToPDF = ( data: User[], filename: string, title: string) => {
     const doc = new jsPDF();
+      // Ajouter un titre en haut
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text(title, doc.internal.pageSize.getWidth() / 2, 15, { align: "center" });
     const tableData = filteredUser.map(u => [u.matricule, u.nom, u.prenom, u.classe]);
     autoTable(doc, {
+      startY: 25, 
       head: [['Matricule', 'Nom', 'Prénom', 'Classe']],
       body: tableData,
     });
-    doc.save("utilisateurs.pdf");
+    doc.save(filename + '.pdf');
   };
 
   const handleExport = () => {
     if (exportFormat === 'excel') {
       exportToExcel();
     } else {
-      exportToPDF();
+    exportToPDF(filteredUser, 'Utilisateurs', pdfTitle);
     }
     setExportModal(false);
   };
@@ -195,7 +204,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
           onChange={e => setSearch(e.target.value)}
         />
 
-        <div className='flex flex-row gap-6 items-center justify-center'>
+        <div className='flex flex-row gap-6 items-center justify-center tel:flex-col sm:flex-col lg:flex-col'>
           <button
             onClick={() => setModalOpen(true)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
@@ -223,12 +232,19 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
           >
             Tables utilisateurs
           </button>
+
+          
+          <button
+            onClick={() => setExportModal(true)}
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            Exporter
+          </button>
         </div>
       </div>
-
       <div className={`overflow-x-auto border border-gray-300 rounded-lg shadow-lg ${darkMode ? 'border-gray-700' : ''}`}>
         <table className={`min-w-full ${tableClass}`}>
-          <thead className={darkMode ? 'bg-gray-500 text-black' : 'bg-gray-100'}>
+          <thead className={darkMode ? 'bg-gray-500 text-black' : 'bg-gray-400'}>
             <tr>
               <th className="px-6 py-3 text-left">Matricule</th>
               <th className="px-6 py-3 text-left">Nom</th>
@@ -376,7 +392,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
           </div>
         </div>
       )}
-      
+
     </div>
   );
 };

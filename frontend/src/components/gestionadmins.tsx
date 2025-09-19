@@ -110,7 +110,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
 
       <div className={`overflow-x-auto border border-gray-300 rounded-lg shadow-lg ${darkMode ? 'border-gray-700' : ''}`}>
         <table className={`min-w-full ${tableClass}`}>
-          <thead className={darkMode ? 'bg-gray-500 text-black' : 'bg-gray-100'}>
+          <thead className={darkMode ? 'bg-gray-500 text-black' : 'bg-gray-400'}>
             <tr>
               <th className="px-6 py-3 text-left">Matricule</th>
               <th className="px-6 py-3 text-left">Nom</th>
