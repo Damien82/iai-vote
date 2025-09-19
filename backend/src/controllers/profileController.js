@@ -5,7 +5,7 @@ const UserModelFn = require('../models/Userslist'); // ou EtudiantReference selo
 exports.getProfile = async (req, res) => {
   try {
     const User = UserModelFn(connectUsersDB().mainConnection); 
-    const user = await User.findOne({ matricule: req.user.matricule }).select('-__v -_id');
+    const user = await User.findOne({ matricule: req.user.matricule }).select('-password');
 
     if (!user) return res.status(404).json({ message: 'Utilisateur introuvable' });
 
