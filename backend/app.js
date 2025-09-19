@@ -29,6 +29,7 @@ const userlisteRoutes = require( "./src/routes/userlisteRoute");
 const adminlisteRoutes = require( "./src/routes/AdminlisteRoute");
 const usersRoutes2 = require('./src/routes/userlisteRoute'); 
 const superAdminRoutes2 = require('./src/routes/authRoutes_superadmin'); 
+const profileRoutes = require('./src/routes/profileRoutes');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -143,6 +144,7 @@ app.put('/api/changepassword', authMiddleware, changePassword);
 app.put('/api/changepasswordsup', authMiddleware, changePasswordsup);
 app.use('/api/admin', purgeRoutes);
 app.use("/api/system", systemRoutes);
+app.use('/api/userssecond', profileRoutes);
 
 // Gestion des erreurs Multer
 const errorHandler = require("./src/middlewares/errorHandler");
