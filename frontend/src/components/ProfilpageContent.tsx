@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Button from "../components/ui/buttons/button";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 interface UserData {
   matricule: string;
