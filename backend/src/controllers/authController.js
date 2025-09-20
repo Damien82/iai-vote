@@ -108,7 +108,7 @@ exports.verifyUser = async (req, res) => {
 
 // === Réinitialisation du mot de passe via question de sécurité ===
 exports.resetPassword = async (req, res) => {
-  const { matricule, questionDeSecurite, reponseDeSecurite, nouveauMotDePasse } = req.body;
+  const { matricule, questiondesecurite, reponsedesecurite, nouveauMotDePasse } = req.body;
 
   const User = require("../models/Users")(req.db.registeredUsers);
 
@@ -121,8 +121,8 @@ exports.resetPassword = async (req, res) => {
 
     // Vérifier question + réponse
     if (
-      user.questiondesecurite !== questionDeSecurite ||
-      user.reponsedesecurite.toLowerCase() !== reponseDeSecurite.toLowerCase()
+      user.questiondesecurite !== questiondesecurite ||
+      user.reponsedesecurite.toLowerCase() !== reponsedesecurite.toLowerCase()
     ) {
       return res.status(400).json({ message: "Question ou réponse incorrecte." });
     }
