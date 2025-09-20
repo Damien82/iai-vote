@@ -24,12 +24,6 @@ module.exports = (db) => {
   reponsedesecurite: {
     type: String,
     required: true,
-    validate: {
-      validator: function (v) {
-        return /^[A-Za-z0-9\s-]*$/.test(v); // Regex : lettres & chiffres, min 3 max 30
-      },
-      message: props => `${props.value} n'est pas une réponse valide !`
-    }
   }
 });
 
