@@ -11,6 +11,20 @@ module.exports = (db_admin) => {
     prenom: { type: String, required: true },
     classe: { type: String, required: true },
     motDePasse: { type: String, required: true },
+    questiondesecurite: { 
+    type: String, 
+    enum: [
+      "Quel est le prénom de votre mère ?",
+      "Quel est le nom de votre premier animal ?",
+      "Quelle est votre ville de naissance ?",
+      "Quel est le nom de votre meilleur ami d’enfance ?"
+    ],
+    required: true
+  },
+  reponsedesecurite: {
+    type: String,
+    required: true,
+  }
   });
 
   return db_admin.model("Admins", AdminSchema);

@@ -104,3 +104,38 @@ exports.verifyUser = async (req, res) => {
     return res.status(500).json({ message: "Erreur serveur" });
   }
 };
+
+
+// === Réinitialisation du mot de passe via question de sécurité ===
+exports.resetPassword = async (req, res) => {
+  const { matricule, questionDeSecurite, reponseDeSecurite, nouveauMotDePasse } = req.body;
+
+  const User = require("../models/Users")(req.db.registeredUsers);
+
+  try {
+    // Vérifier si l'utilisateur existe
+    const user = await User.findOne({ matricule });
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    // Vérifier question + réponse
+    if (
+      user.questionDeSecurite !== questionDeSecurite ||
+      user.reponseDeSecurite.toLowerCase() !== reponseDeSecurite.toLowerCase()
+    ) {
+      return res.status(400).json({ message: "Question ou réponse incorrecte." });
+    }
+
+    // Hachage du nouveau mot de passe
+    const hashedPassword = await bcrypt.hash(nouveauMotDePasse, 10);
+    user.motDePasse = hashedPassword;
+
+    await user.save();
+
+    res.status(200).json({ message: "Mot de passe réinitialisé avec succès." });
+  } catch (err) {
+    console.error("Erreur serveur :", err);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+};
