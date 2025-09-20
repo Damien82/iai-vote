@@ -133,3 +133,44 @@ exports.changePassword = async (req, res) => {
   }
 };
 
+// === Réinitialisation du mot de passe via question de sécurité ===
+exports.resetPassword = async (req, res) => {
+  const { matricule, questiondesecurite, reponsedesecurite, nouveauMotDePasse } = req.body;
+
+  const Admin = require('../models/Admins')(req.db_admin.registeredAdmins);
+
+  try {
+    // Vérifier si l'utilisateur existe
+    const admin = await Admin.findOne({ matricule });
+    if (!admin) {
+      return res.status(404).json({ message: "Administrateur non trouvé." });
+    }
+
+    // Vérifier question + réponse
+    const isAnswerValid = await bcrypt.compare(reponsedesecurite.trim(), admin.reponsedesecurite);
+
+    if (admin.questiondesecurite !== questiondesecurite) {
+      return res.status(400).json({ message: "Question incorrecte." });
+    }
+
+    if (!isAnswerValid) {
+      return res.status(400).json({ message: "Réponse incorrecte." });
+    }
+
+    if (!nouveauMotDePasse || nouveauMotDePasse.trim() === "") {
+      return res.status(400).json({ message: "Le nouveau mot de passe est requis." });
+    }
+    
+    // Hachage du nouveau mot de passe
+    const hashedPassword = await bcrypt.hash(nouveauMotDePasse, 10);
+    admin.motDePasse = hashedPassword;
+
+    await admin.save();
+
+    res.status(200).json({ message: "Mot de passe réinitialisé avec succès." });
+  } catch (err) {
+    console.error("Erreur serveur :", err);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+};
+
