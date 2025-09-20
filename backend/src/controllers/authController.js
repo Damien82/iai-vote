@@ -109,7 +109,7 @@ exports.verifyUser = async (req, res) => {
 // === Réinitialisation du mot de passe via question de sécurité ===
 exports.resetPassword = async (req, res) => {
   const { matricule, questiondesecurite, reponsedesecurite, nouveauMotDePasse } = req.body;
-
+  console.log("Données reçues resetPassword:", req.body);
   const User = require("../models/Users")(req.db.registeredUsers);
 
   try {
@@ -130,7 +130,10 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ message: "Réponse incorrecte." });
     }
 
-
+    if (!nouveauMotDePasse || nouveauMotDePasse.trim() === "") {
+      return res.status(400).json({ message: "Le nouveau mot de passe est requis." });
+    }
+    
     // Hachage du nouveau mot de passe
     const hashedPassword = await bcrypt.hash(nouveauMotDePasse, 10);
     user.motDePasse = hashedPassword;
