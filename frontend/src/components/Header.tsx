@@ -41,7 +41,7 @@ const Header: React.FC = () => {
 
         {/* Menu Desktop */}
         <nav className="hidden md:flex items-center space-x-8 lg:flex xl:flex 2xl:flex">
-          {["/", "/vote", "/results"].map((path) => (
+          {["/", "/vote", "/results","/profil"].map((path) => (
             <NavLink
               key={path}
               to={path}
@@ -53,7 +53,7 @@ const Header: React.FC = () => {
                 }`
               }
             >
-              {path === "/" ? "Accueil" : path === "/vote" ? "Voter" : "Résultats"}
+              {path === "/" ? "Accueil" : path === "/vote" ? "Voter" : path === "/profil" ? "Profil" : "Résultats"}
             </NavLink>
           ))}
           <Button
@@ -90,6 +90,7 @@ const Header: React.FC = () => {
             { path: "/", label: "Accueil" },
             { path: "/vote", label: "Voter" },
             { path: "/results", label: "Résultats" },
+            { path: "/profil", label: "Profil" },
           ].map(({ path, label }) => (
             <button
               key={path}

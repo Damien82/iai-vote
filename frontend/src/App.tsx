@@ -10,6 +10,7 @@ import Vote from "./pages/vote";
 import "./assets/fonts/font.css";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
+import Profil from './components/ProfilpageContent.tsx';
 import Dashboard from "./pages/Dashboard";
 import SimpleDashboard from "./pages/SimpleDashboard";
 import { ThemeProvider } from './context/ThemeContext';
@@ -20,7 +21,9 @@ import EnregistrementAD from "./pages/Enregistrement_admin.js";
 import Progression from "./pages/progression.tsx";
 import Choixrole from "./pages/choixrole.tsx";
 import ConnexionSAD from "./pages/connexion_superadmin.tsx"
-import { Analytics } from "@vercel/analytics/react"; // ✅
+import Resetpage from "./pages/Reinitialisation.tsx"
+import ResetpageAD from "./pages/ReinitialisationAD.tsx"
+import { Analytics } from "@vercel/analytics/react"; 
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import '../src/index.css';
 import './header.js';
@@ -35,12 +38,15 @@ const App: React.FC = () => {
         <Route path="/Dashboard" element={<PrivateRoute><RequireSuperAdmin><ThemeProvider><Dashboard /></ThemeProvider></RequireSuperAdmin></PrivateRoute>} />
         <Route path="/SimpleDashboard" element={<PrivateRoute><RequireAdmin><ThemeProvider><SimpleDashboard /></ThemeProvider></RequireAdmin></PrivateRoute>} />
         <Route path="/vote" element={<PrivateRoute><RequireUser><Vote /></RequireUser></PrivateRoute>} />
+        <Route path="/profil" element={<PrivateRoute><Profil darkMode={true} /></PrivateRoute>} />
         <Route path="/choixrole" element={<Choixrole />} />
         <Route path="/Connexion" element={<Connexion />} />
         <Route path="/ConnexionAD" element={<ConnexionAD />} />
         <Route path="/EnregistrementAD" element={<EnregistrementAD />} />
         <Route path="/results" element={<PrivateRoute><Progression /></PrivateRoute>} />
         <Route path="/Enregistrement" element={<Enregistrement />} />
+        <Route path="/Resetpage" element={<Resetpage />} />
+        <Route path="/ResetpageAD" element={<ResetpageAD />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/unauthorizedAD" element={<UnauthorizedAD />} />
         <Route path="/ConnexionSAD" element={<ConnexionSAD />} />

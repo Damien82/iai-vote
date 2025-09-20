@@ -66,13 +66,14 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white rounded shadow relative">
-      <h2 className="text-2xl mb-6 text-center font-bold">Connexion</h2>
+    <div className="">
+      <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+      <h2 className="text-2xl mb-6 text-center text-white font-bold">Connexion</h2>
 
       <label className="block mb-5 relative">
         <FontAwesomeIcon
           icon={faEnvelope}
-          className="absolute left-3 top-[18px] text-gray-400"
+          className="absolute left-3 top-[18px] text-gray-300"
         />
         <input
           type="text"
@@ -80,7 +81,7 @@ const LoginForm: React.FC = () => {
           value={matricule}
           onChange={handleMatriculeChange}
           required
-          className={`mb-1 w-full p-3 pl-10 border rounded ${matriculeError ? "border-red-600" : ""}`}
+          className={`mb-1 w-full p-3 pl-10 border bg-gray-700 text-white border-gray-500 rounded ${matriculeError ? "border-red-600" : ""}`}
         />
       </label>
       {matriculeError && <p className="mb-4 text-red-600 font-semibold">{matriculeError}</p>}
@@ -88,7 +89,7 @@ const LoginForm: React.FC = () => {
       <label className="block mb-4 relative">
         <FontAwesomeIcon
           icon={faLock}
-          className="absolute left-3 top-[18px] text-gray-400"
+          className="absolute left-3 top-[18px] text-gray-300"
         />
         <input
           type={showPassword ? "text" : "password"}
@@ -96,12 +97,12 @@ const LoginForm: React.FC = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="mb-4 w-full p-3 pl-10 border rounded"
+          className="mb-4 w-full p-3 pl-10 border rounded text-white bg-gray-700 border-gray-500"
         />
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-[18px] text-gray-600 focus:outline-none"
+          className="absolute right-3 top-[18px] text-gray-300 focus:outline-none"
           aria-label={showPassword ? "Cacher le mot de passe" : "Afficher le mot de passe"}
         >
           <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
@@ -117,7 +118,7 @@ const LoginForm: React.FC = () => {
         Se connecter
       </button>
 
-      <p className="mt-6 text-center text-sm text-gray-700">
+      <p className="mt-6 text-center text-sm text-gray-100">
         Pas encore de compte ?{" "}
         <button
           type="button"
@@ -127,7 +128,18 @@ const LoginForm: React.FC = () => {
           S'inscrire
         </button>
       </p>
+        <p className="mt-6 text-center text-sm text-gray-100">
+          Mot de passe oublié ?{" "}
+        <button
+          type="button"
+          onClick={() => navigate("/Resetpage")}
+          className="text-blue-600 hover:underline font-semibold"
+        >
+          Reinitialiser
+        </button>
+      </p>
     </form>
+    </div>
   );
 };
 
