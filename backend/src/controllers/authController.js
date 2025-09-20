@@ -5,34 +5,42 @@ const JWT_SECRET = process.env.JWT_SECRET || "tonSecretJwtIci";
 
 // === ROUTE: POST /api/auth/register ===
 exports.register = async (req, res) => {
-  const { matricule, nom, prenom, classe, motDePasse } = req.body;
+  const { matricule, nom, prenom, classe, motDePasse, questiondesecurite, reponsedesecurite } = req.body;
 
   const AllowedUser = require("../models/EtudiantReference")(req.db.accesUsers);
   const User = require("../models/Users")(req.db.registeredUsers);
 
   try {
+    // Vérification matricule autorisé
     const allowedUser = await AllowedUser.findOne({ matricule });
     if (!allowedUser) {
       return res.status(403).json({ message: "Matricule non autorisé." });
     }
 
+    // Vérification utilisateur déjà inscrit
     const existingUser = await User.findOne({ matricule });
     if (existingUser) {
       return res.status(400).json({ message: "Utilisateur déjà inscrit." });
     }
 
+    // Hash mot de passe et réponse sécurité
     const hashedPassword = await bcrypt.hash(motDePasse, 10);
+    const hashedAnswer = await bcrypt.hash(reponsedesecurite, 10);
 
+    // Création utilisateur
     const newUser = new User({
       matricule,
       nom,
       prenom,
       classe,
       motDePasse: hashedPassword,
+      questiondesecurite,  // Stocker la question choisie
+      reponsedesecurite: hashedAnswer, // Stocker la réponse hashée
     });
 
     await newUser.save();
 
+    // Génération token
     const token = jwt.sign(
       { matricule, nom, prenom, classe },
       JWT_SECRET,
