@@ -119,10 +119,19 @@ exports.resetPassword = async (req, res) => {
       return res.status(404).json({ message: "Utilisateur non trouvé." });
     }
 
+    console.log("🔹 Données reçues côté backend :");
+console.log("question envoyée :", questiondesecurite);
+console.log("réponse envoyée :", reponsedesecurite);
+
+console.log("🔹 Données en base pour l’utilisateur :");
+console.log("question enregistrée :", user.questiondesecurite);
+console.log("réponse enregistrée :", user.reponsedesecurite);
+
+
     // Vérifier question + réponse
     if (
       user.questiondesecurite !== questiondesecurite ||
-      user.reponsedesecurite.toLowerCase() !== reponsedesecurite.toLowerCase()
+      user.reponsedesecurite.toLowerCase().trim() !== reponsedesecurite.toLowerCase().trim()
     ) {
       return res.status(400).json({ message: "Question ou réponse incorrecte." });
     }
