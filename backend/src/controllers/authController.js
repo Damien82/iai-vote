@@ -119,22 +119,17 @@ exports.resetPassword = async (req, res) => {
       return res.status(404).json({ message: "Utilisateur non trouvé." });
     }
 
-    console.log("🔹 Données reçues côté backend :");
-console.log("question envoyée :", questiondesecurite);
-console.log("réponse envoyée :", reponsedesecurite);
-
-console.log("🔹 Données en base pour l’utilisateur :");
-console.log("question enregistrée :", user.questiondesecurite);
-console.log("réponse enregistrée :", user.reponsedesecurite);
-
-
     // Vérifier question + réponse
-    if (
-      user.questiondesecurite !== questiondesecurite.trim() ||
-      user.reponsedesecurite.toLowerCase().trim() !== reponsedesecurite.toLowerCase().trim()
-    ) {
-      return res.status(400).json({ message: "Question ou réponse incorrecte." });
+    const isAnswerValid = await bcrypt.compare(reponsedesecurite.trim(), user.reponsedesecurite);
+
+    if (user.questiondesecurite !== questiondesecurite) {
+      return res.status(400).json({ message: "Question incorrecte." });
     }
+
+    if (!isAnswerValid) {
+      return res.status(400).json({ message: "Réponse incorrecte." });
+    }
+
 
     // Hachage du nouveau mot de passe
     const hashedPassword = await bcrypt.hash(nouveauMotDePasse, 10);
