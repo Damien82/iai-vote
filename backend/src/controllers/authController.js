@@ -130,7 +130,7 @@ console.log("réponse enregistrée :", user.reponsedesecurite);
 
     // Vérifier question + réponse
     if (
-      user.questiondesecurite !== questiondesecurite ||
+      user.questiondesecurite !== questiondesecurite.trim() ||
       user.reponsedesecurite.toLowerCase().trim() !== reponsedesecurite.toLowerCase().trim()
     ) {
       return res.status(400).json({ message: "Question ou réponse incorrecte." });
