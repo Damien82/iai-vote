@@ -121,8 +121,8 @@ exports.resetPassword = async (req, res) => {
 
     // Vérifier question + réponse
     if (
-      user.questionDeSecurite !== questionDeSecurite ||
-      user.reponseDeSecurite.toLowerCase() !== reponseDeSecurite.toLowerCase()
+      user.questiondesecurite !== questionDeSecurite ||
+      user.reponsedesecurite.toLowerCase() !== reponseDeSecurite.toLowerCase()
     ) {
       return res.status(400).json({ message: "Question ou réponse incorrecte." });
     }

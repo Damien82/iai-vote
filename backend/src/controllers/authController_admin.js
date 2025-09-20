@@ -5,7 +5,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "tonSecretJwtIci";
 
 // === ROUTE: POST /api/auth/register ===
 exports.registerAdmin = async (req, res) => {
-  const { matricule, nom, prenom, classe, motDePasse } = req.body;
+  const { matricule, nom, prenom, classe, motDePasse, questiondesecurite, reponsedesecurite  } = req.body;
 
   const AllowedAdmin = require("../models/AdminReference")(req.db_admin.accesAdmins);
   const Admin = require("../models/Admins")(req.db_admin.registeredAdmins);
@@ -22,6 +22,7 @@ exports.registerAdmin = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(motDePasse, 10);
+    const hashedAnswer = await bcrypt.hash(reponsedesecurite, 10);
 
     const newAdmin = new Admin({
       matricule,
@@ -29,6 +30,8 @@ exports.registerAdmin = async (req, res) => {
       prenom,
       classe,
       motDePasse: hashedPassword,
+      questiondesecurite, 
+      reponsedesecurite: hashedAnswer,
     });
 
     await newAdmin.save();
