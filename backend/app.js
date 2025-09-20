@@ -1,12 +1,5 @@
 require("dotenv").config();
 
-console.log("DB_URI_ACCES_USERS =", process.env.DB_URI_ACCES_USERS);
-console.log("DB_URI_VOTERS =", process.env.DB_URI_VOTERS)
-console.log("DB_URI_REGISTERED_USERS =", process.env.DB_URI_REGISTERED_USERS);
-console.log("DB_URI_ACCES_ADMINS =", process.env.DB_URI_ACCES_ADMINS);
-console.log("DB_URI_REGISTERED_ADMINS =", process.env.DB_URI_REGISTERED_ADMINS);
-console.log("DB_URI_REGISTERED_SUPERADMINS =", process.env.DB_URI_REGISTERED_SUPERADMINS);
-
 const express = require("express");
 const connectDB = require("./src/config/db");
 const connectDB2 = require("./src/config/db_admin");
