@@ -1,4 +1,3 @@
-import * as React from "react"; // alternative plus "tolérante"
 
 // src/components/Loader.tsx
 const Loader = () => {

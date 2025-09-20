@@ -161,7 +161,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
   };
 
   // 🔹 Export PDF
-  const exportToPDF = ( data: User[], filename: string, title: string) => {
+  const exportToPDF = ( filename: string, title: string) => {
     const doc = new jsPDF();
       // Ajouter un titre en haut
   doc.setFontSize(16);
@@ -180,7 +180,7 @@ const UsersPage: React.FC<{ darkMode: boolean }> = ({ darkMode }) => {
     if (exportFormat === 'excel') {
       exportToExcel();
     } else {
-    exportToPDF(filteredUser, 'Utilisateurs', pdfTitle);
+    exportToPDF('Utilisateurs', pdfTitle);
     }
     setExportModal(false);
   };

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext"; // Import du contexte Auth
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -38,7 +38,6 @@ const Topbar: React.FC<TopbarProps> = ({
 }) => {
 
     const navigate = useNavigate();
-    const location = useLocation();
     const { logout } = useAuth(); // récupération de la fonction logout
 
     // Nouvelle fonction pour gérer la déconnexion
